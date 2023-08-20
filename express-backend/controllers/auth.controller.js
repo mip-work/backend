@@ -16,6 +16,7 @@ exports.register = async (req, res) => {
     await client.member.create({ data: { userId: user.id, projectId: 4 } });
     res.json(user).end(); // send back newly created user obj
   } catch (err) {
+    console.log(err);
     return badRequest(res);
   }
 };

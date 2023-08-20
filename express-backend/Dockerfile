@@ -1,0 +1,20 @@
+# Use uma imagem base do Node.js
+FROM node:16
+
+# Crie um diretório de trabalho no contêiner
+WORKDIR /app
+
+# Copie o package.json e yarn.lock para o diretório de trabalho
+COPY package.json yarn.lock ./
+
+# Instale as dependências usando o Yarn
+RUN yarn install
+
+# Copie todo o código-fonte para o diretório de trabalho
+COPY . .
+
+# Porta em que sua aplicação irá ouvir
+EXPOSE 3009
+
+# Comando para iniciar sua aplicação usando o Yarn run dev
+CMD ["yarn", "run", "dev"]

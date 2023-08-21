@@ -27,3 +27,5 @@ yarn-error.log*
 **/node_modules
 **/migrations
 **/.env
+
+express-backend/dados_mysq/*

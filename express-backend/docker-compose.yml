@@ -9,6 +9,8 @@ services:
       - "3009:3009"
     depends_on:
       - db
+    networks:
+      - app-network
 
   db:
     image: mysql:latest
@@ -21,3 +23,9 @@ services:
       - "3306:3306"
     volumes:
       - ./dados_mysql:/var/lib/mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

@@ -8,7 +8,7 @@ generator client {
 
 datasource db {
   provider             = "mysql"
-  url                  = env("DATABASE_URL_PLANET_SCALE")
+  url                  = "mysql://seu_usuario:sua_senha@mysql:3306/sua_base_de_dados?connect_timeout=300"//env("DATABASE_URL_PLANET_SCALE")
   referentialIntegrity = "prisma"
 }
 

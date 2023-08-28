@@ -4,7 +4,7 @@ services:
   mysql:
     image: mysql:latest
     container_name: mysql
-    #hostname: mysql
+    # hostname: mysql
     ports:
       - 3306:3306
     environment:
@@ -23,6 +23,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3009:3009"
+    tty: true # Adicione esta linha para permitir um terminal interativo
     depends_on:
       - mysql
     restart: always

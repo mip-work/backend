@@ -14,6 +14,7 @@ services:
       MYSQL_PASSWORD: sua_senha
     volumes:
       - my-db1:/var/lib/mysql
+      - ./grant_permissions.sql:/docker-entrypoint-initdb.d/init.sql
     restart: unless-stopped
 
   app:

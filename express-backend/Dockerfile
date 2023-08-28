@@ -1,26 +1,24 @@
-# Use uma imagem base do Node.js
-FROM node:16
-
-# Crie um diretório de trabalho no contêiner
+#FROM node:16
+FROM node:alpine
 WORKDIR /app
 
-# Copie o package.json e yarn.lock para o diretório de trabalho
-COPY package.json yarn.lock ./
+# COPY package.json and package-lock.json files
+COPY package*.json ./
 
-# Instale as dependências usando o Yarn
-RUN yarn
+# generated prisma files
+COPY prisma ./prisma/
 
-# Copie todo o código-fonte para o diretório de trabalho
+# COPY ENV variable
+COPY .env ./
+
 COPY . .
 
-# Instale o Prisma CLI globalmente (caso ainda não esteja instalado)
-RUN yarn global add prisma
+RUN npm install
+#RUN npx prisma db push
+RUN npx prisma generate
 
-# Gere o Prisma Client com os binários apropriados
-RUN prisma generate
-
-# Porta em que sua aplicação irá ouvir
+# Run and expose the server on port 3000
 EXPOSE 3009
 
-# Comando para iniciar sua aplicação usando o Yarn run dev
-CMD ["yarn", "run", "dev"]
+# A command to start the server
+CMD npm start

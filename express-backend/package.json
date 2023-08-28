@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "generate": "npx prisma generate",
+    "migrate": "npx prisma migrate dev",
+    "container": "sh container.sh express-backend-app"
   },
   "author": "",
   "license": "ISC",

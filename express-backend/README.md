@@ -2,7 +2,8 @@
 instalar apt install docker
 instalar apt install docker-compose
 sudo chown $USER /var/run/docker.sock 
-
+sudo groupadd docker 
+sudo usermod -aG docker $USER
 
 no express-backend copie o .env-exemple .env
 

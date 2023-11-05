@@ -43,7 +43,7 @@ exports.createIssue = async (req, res) => {
     const { projectId, listId, assignees, ...data } = req.body; // opt out projectId
     const { _count: order } = await client.issue.aggregate({ where: { listId }, _count: true });
     const { id: issueId } = await client.issue.create({
-      data: { ...data, order: order + 1, listId },
+      data: { ...data, order: order + 1, listId, progress: 0},
     });
     // create assignee[] rows with new issue id
     await client.assignee.createMany({
@@ -83,8 +83,10 @@ exports.updateIssue = async (req, res) => {
           updatedAt(id),
         ]);
         break;
-      default:
+      case 'progress':
         await client.issue.update({ where: { id }, data: { [type]: value } });
+        break;
+      default:
         break;
     }
     res.end();

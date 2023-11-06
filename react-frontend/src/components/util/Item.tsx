@@ -23,8 +23,9 @@ const Item = (props: Props) => {
         ) : (
             <Avatar 
             name={text} 
-            size={size} 
-            className={`mr-4 grid text-ms text-white ${className}`} />
+            className={`mr-4 grid text-ms text-white 
+            ${className}
+            ${size}`}/>
         ))}
     {text}
     </div>

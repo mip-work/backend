@@ -87,6 +87,7 @@ exports.updateIssue = async (req, res) => {
         await client.issue.update({ where: { id }, data: { [type]: value } });
         break;
       default:
+        await client.issue.update({ where: { id }, data: { [type]: value } });
         break;
     }
     res.end();

@@ -105,13 +105,14 @@ const IssueDetailModal = (props: IssueModalProps) => {
             </WithLabel>
             {members && (
               <WithLabel label='Reporter'>
-                <div className='rounded-sm bg-[#f4f5f7] px-4 py-[5px] sm:w-fit'>
+                <div className='rounded-sm flex bg-[#f4f5f7] px-4 py-[5px] sm:w-fit'>
                   <Item
                     {...reporter}
-                    text={reporter.text + (isMine ? ' (you)' : '')}
+                    text={reporter.text}
                     size='h-6 w-6'
                     variant='ROUND'
                   />
+                  <span className={'ml-1'}>{isMine ? ' (you)' : ''}</span>
                 </div>
               </WithLabel>
             )}

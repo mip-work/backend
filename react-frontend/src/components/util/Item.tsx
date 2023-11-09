@@ -1,12 +1,15 @@
+import Avatar from "./Avatar";
+
 interface Props {
   text: string;
   icon?: string;
   size: string;
   variant?: 'ROUND' | 'SQUARE';
+  className?: string;
 }
 
 const Item = (props: Props) => {
-  const { text, icon, size, variant = 'SQUARE' } = props;
+  const { className, text, icon, size, variant = 'SQUARE' } = props;
 
   return (
     <div className='flex items-center truncate font-normal text-c-1'>
@@ -18,13 +21,13 @@ const Item = (props: Props) => {
             className={`mr-4 ${size} ${variant === 'ROUND' ? 'rounded-full object-cover' : ''}`}
           />
         ) : (
-          <div
-            className={`mr-4 grid place-items-center rounded-full bg-amber-800 text-sm text-white ${size}`}
-          >
-            {text.slice(0, 1).toUpperCase()}
-          </div>
+            <Avatar 
+            name={text} 
+            className={`mr-4 grid text-ms text-white 
+            ${className}
+            ${size}`}/>
         ))}
-      {text}
+    {text}
     </div>
   );
 };

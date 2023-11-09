@@ -68,6 +68,7 @@ model Issue {
   order      Int
   priority   Int
   type       Int
+  progress   Int
   summary    String     @db.VarChar(100)
   descr      String?    @db.VarChar(500)
   createdAt  DateTime   @default(now())

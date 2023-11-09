@@ -83,9 +83,7 @@ exports.updateIssue = async (req, res) => {
           updatedAt(id),
         ]);
         break;
-      case 'progress':
-        await client.issue.update({ where: { id }, data: { [type]: value } });
-        break;
+        
       default:
         await client.issue.update({ where: { id }, data: { [type]: value } });
         break;

@@ -3,6 +3,37 @@ module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
+      keyframes: {
+        scaleKey: {
+          from: {
+            transform: 'scale(0)'
+          },
+          to: {
+            transform: 'scale(1)'
+          }
+        },
+        slideToLeft: {
+          from: {
+            transform: 'translateX(50%)'
+          },
+          to: {
+            transform: 'translateX(0)'
+          }
+        },
+        slideToRight: {
+          from: {
+            transform: 'translateX(-50%)'
+          },
+          to: {
+            transform: 'translateX(0)'
+          }
+        },
+      },
+      animation: {
+        scale: 'scaleKey 1s ease-in-out',
+        slideLeft: 'slideToLeft 1s ease-out',
+        slideRight: 'slideToRight 1s ease-in',
+      },
       colors: {
         primary: 'var(--primary)',
         secondary: 'var(--secondary)',

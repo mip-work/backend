@@ -14,21 +14,21 @@ const InputWithValidation = (props: Props) => {
     type,
   } = props;
   return (
-    <div>
+    <div className='flex flex-col'>
       <label
         htmlFor={label}
-        className={`text-sm tracking-wide ${darkEnabled ? 'text-c-5' : 'text-gray-800'}`}
+        className={`text-sm tracking-wide ${darkEnabled ? 'text-c-5' : 'text-gray-800'} animate-slideRight`}
       >
         {label}
       </label>
       <input
         id={label}
         defaultValue={defaultValue ?? ''}
-        className={`mt-2 block w-full rounded-sm border-2 px-3 py-1 text-sm outline-none duration-200 focus:border-chakra-blue ${
-          darkEnabled
-            ? 'bg-c-6 text-c-text hover:bg-c-7 focus:bg-c-1'
-            : 'bg-slate-100 hover:border-gray-400'
-        } ${inputClass ?? ' border-transparent'} ${readOnly ? 'pointer-events-none' : ''}`}
+        className={
+        `mt-2 block w-full rounded-sm border-2 px-3 py-1 text-sm outline-none duration-200 focus:border-chakra-blue animate-slideLeft
+        ${darkEnabled ? 'bg-c-6 text-c-text hover:bg-c-7 focus:bg-c-1' : 'bg-slate-100 hover:border-gray-400'} 
+        ${inputClass ?? ' border-transparent'} 
+        ${readOnly ? 'pointer-events-none' : ''}`}
         {...{ placeholder, readOnly, autoFocus, type }}
         {...register}
       />

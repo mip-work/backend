@@ -50,6 +50,7 @@ function Form(props: Props) {
           })}
           error={errors.email as FieldError}
           inputClass='border-gray-500'
+          placeholder='user@gmail.com'
           autoFocus
         />
         {type === 'SIGNUP' && (
@@ -68,6 +69,7 @@ function Form(props: Props) {
             })}
             error={errors.username as FieldError}
             inputClass='border-gray-500'
+            placeholder='username'
           />
         )}
         <InputWithValidation
@@ -83,6 +85,7 @@ function Form(props: Props) {
           error={errors.pwd as FieldError}
           inputClass='border-gray-500'
           type='password'
+          placeholder='password'
         />
       </div>
       {error && <span className='mt-3 block text-red-400'>{error}</span>}

@@ -6,6 +6,7 @@ import { getTheme } from './utils';
 import Welcome from './components/auth/Welcome';
 import Home from './components/home/Home';
 import { Toaster } from 'react-hot-toast';
+import Members from './components/project/Members';
 
 const Setting = lazy(() => import('./components/project/Setting'));
 const Project = lazy(() => import('./components/project/Project'));
@@ -27,6 +28,14 @@ function App() {
                 element={
                   <S>
                     <Setting />
+                  </S>
+                }
+              />
+              <R
+                path=':projectId/members'
+                element={
+                  <S>
+                    <Members />
                   </S>
                 }
               />

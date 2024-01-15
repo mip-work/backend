@@ -5,13 +5,15 @@ const client = new PrismaClient();
 
 exports.getIssuesInProject = async (req, res) => {
   try {
-    const { projectId } = req.customParams;
+    const { projectId, summary } = req.customParams;
     const { userId } = req.query;
+    
     const listIssues = await client.list.findMany({
       where: { projectId: +projectId },
       orderBy: { order: 'asc' },
       include: {
         issues: {
+          ...(summary && { where: { summary: { contains: summary.toLowerCase() }}}),
           ...(userId && { where: { assignees: { some: { userId: +userId } } } }),
           orderBy: { order: 'asc' },
           include: {

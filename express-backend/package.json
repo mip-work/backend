@@ -9,7 +9,7 @@
     "start": "node server.js",
     "generate": "npx prisma generate",
     "migrate": "npx prisma migrate dev",
-    "container": "sh container.sh express-backend-app"
+    "container": "sh container.sh express-backend_app"
   },
   "author": "",
   "license": "ISC",

@@ -12,9 +12,21 @@ import type {
 export const extendedApi = api.injectEndpoints({
   endpoints: (builder) => ({
     issues: builder.query<Issues, IssueQuery>({
-      query: ({ projectId, userId: uid }) => ({
-        url: `project/${projectId}/issues${uid ? '?userId=' + uid : ''}`,
-      }),
+      query: ({ projectId, userId: uid, issueSearched }) => {
+        let queryParams = [];
+    
+        if (uid) {
+          queryParams.push(`?userId=${uid}`);
+        }
+    
+        if (issueSearched) {
+          queryParams.push(`?summary=${issueSearched}`);
+        }
+    
+        return {
+          url: `project/${projectId}/issues${queryParams}`,
+        };
+      },
       providesTags: ['Issues'],
     }),
     createIssue: builder.mutation<void, CreateIssue>({

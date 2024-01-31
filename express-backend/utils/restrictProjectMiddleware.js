@@ -4,12 +4,17 @@ const client = new PrismaClient();
 
 exports.restrictProjectMiddleware = async (req, res, next) => {
   const projectId = Number(req.params.projectId ?? req.body.projectId ?? req.query.projectId);
+  const { summary } = req.query
+  
   if (!projectId) return reject(res);
+
   const project = await client.member.findFirst({
     where: { AND: { userId: req.user.uid, projectId } },
   });
+  
   if (!project) return reject(res);
-  req.customParams = req.params;
+
+  req.customParams = { projectId, summary }
   next();
 };
 

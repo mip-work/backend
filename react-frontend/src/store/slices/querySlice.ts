@@ -1,7 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface QuerySlice {
-  issue: { userId?: number };
+  issue: { 
+    userId?: number;
+    issueSearched?: string ;
+  };
 }
 
 const initialState: QuerySlice = { issue: {} };

@@ -170,6 +170,7 @@ export interface DeleteIssue {
 export interface IssueQuery {
   projectId: number;
   userId?: number;
+  issueSearched?: string;
 }
 
 export interface APIERROR {

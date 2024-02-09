@@ -22,8 +22,8 @@ const ConfirmModel = lazy(() => import('../util/ConfirmModel'));
 const IssueDetailModal = (props: IssueModalProps) => {
   const { issue: Issue, projectId, members, lists, types, priorities, onClose } = props;
   const issue = Issue as IssueMetaData;
-  const { userId } = useAppSelector((s) => s.query.issue);
-  const { issues } = selectIssuesArray({ listId: issue.listId, projectId, userId });
+  const { userId, issueSearched } = useAppSelector((s) => s.query.issue);
+  const { issues } = selectIssuesArray({ listId: issue.listId, projectId, userId, issueSearched });
   const { authUser: u } = selectAuthUser();
   const {
     id,

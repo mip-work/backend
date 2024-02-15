@@ -6,11 +6,12 @@ const {
   deleteList,
   updateList,
 } = require('../controllers/list.controller');
+const { authMiddleware } = require('../middlewares/authMiddleware');
 
 // neon
-router.post('/create', createList);
-router.delete('/:id/delete', deleteList);
-router.patch('/:id/update', updateList);
-router.put('/reorder', reorderLists);
+router.post('/create', authMiddleware, createList);
+router.delete('/:id/delete', authMiddleware, deleteList);
+router.patch('/:id/update', authMiddleware, updateList);
+router.put('/reorder', authMiddleware, reorderLists);
 
 module.exports = router;

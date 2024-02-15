@@ -17,7 +17,7 @@ cp .env.example .env
 ##Executando o projeto pela 1ª faça os seguintes passos:
 
 ```bash
-docker-compose up
+docker-compose up --build -d
 sh container.sh express-backend_app
 ```
 apos entrar no container execute:
@@ -26,14 +26,14 @@ npx prisma migrate dev
 ```
 apos executar o comando acima
 ```bash
-npm run dev
+npm run dev:windows/dev:linux
 ``` 
 
 <hr>
 ##Executando o projeto a partir da 2ª vez faça os seguintes passos:
 
 ```bash
-docker-compose up   
+docker-compose up -d
 sh container.sh express-backend_app
-npm run dev
+npm run dev:windows/dev:linux
 ```

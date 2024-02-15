@@ -27,6 +27,11 @@ services:
     depends_on:
       - mysql
     restart: always
+    volumes:
+      - type: bind
+        source: .
+        target: /app
 
 volumes:
   my-db1:
+  

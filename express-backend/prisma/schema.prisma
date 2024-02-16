@@ -9,7 +9,7 @@ generator client {
 datasource db {
   provider             = "mysql"
   url                  = env("DATABASE_URL_PLANET_SCALE")
-  referentialIntegrity = "prisma"
+  referentialIntegrity = "prisma" 
 }
 
 model User {
@@ -38,6 +38,7 @@ model Project {
   updatedAt    DateTime   @updatedAt
   User         User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       Int
+  sprints      Sprint[]    
   lists        List[]
   members      Member[]
   assignees    Assignee[]
@@ -79,6 +80,8 @@ model Issue {
   listId              Int
   User                User?      @relation(fields: [reporterId], references: [id], onDelete: Cascade)
   reporterId          Int
+  Sprint              Sprint?    @relation(fields: [sprintId], references: [id], onDelete: Cascade)
+  sprintId            Int
   comments            Comment[]
   assignees           Assignee[]
 }
@@ -102,4 +105,15 @@ model Comment {
   issueId   Int
   User      User?    @relation(fields: [userId], references: [id])
   userId    Int
+}
+
+model Sprint {
+  id          Int       @id @default(autoincrement())
+  name        String
+  createdAt   DateTime  @default(now())
+  Project     Project?  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId   Int
+  initialDate DateTime 
+  finalDate   DateTime
+  issues      Issue[]
 }

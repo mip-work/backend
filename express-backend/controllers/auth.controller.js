@@ -60,26 +60,6 @@ exports.changePwd = async (req, res) => {
   }
 };
 
-exports.authMiddleware = (req, res, next) => {
-  const cookie = req.cookies['jira-clone'];
-  if (!cookie)
-    return res
-      .status(401)
-      .json({ status: 401, message: 'please log in to access this resource' })
-      .end();
-  const token = JSON.parse(cookie).token;
-  try {
-    const payload = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
-    req.user = payload;
-    next();
-  } catch (err) {
-    return res
-      .clearCookie('jira-clone', cookieConfig)
-      .status(401)
-      .json({ message: err.message })
-      .end();
-  }
-};
 
 const generateJwt = (payload) =>
   jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '15d' });

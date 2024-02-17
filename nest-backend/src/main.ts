@@ -11,7 +11,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(3009, () => {
+  await app.listen(process.env.PORT, () => {
     console.log('Server running correctly');
   });
 }

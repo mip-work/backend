@@ -7,9 +7,9 @@ generator client {
 }
 
 datasource db {
-  provider             = "mysql"
-  url                  = env("DATABASE_URL_PLANET_SCALE")
-  referentialIntegrity = "prisma" 
+  provider     = "mysql"
+  url          = env("DATABASE_URL_PLANET_SCALE")
+  relationMode = "prisma"
 }
 
 model User {
@@ -32,16 +32,18 @@ model Project {
   id           String     @id @default(uuid())
   name         String     @db.VarChar(50)
   descr        String?    @db.VarChar(200)
-  abbreviation String?    @db.VarChar(2)
   repo         String?
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   User         User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
-  sprints      Sprint[]    
+  sprints      Sprint[]
   lists        List[]
   members      Member[]
   assignees    Assignee[]
+
+
+  @@index([userId])
 }
 
 model Member {
@@ -52,6 +54,9 @@ model Member {
   projectId String
   User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
+
+  @@index([projectId])
+  @@index([userId])
 }
 
 model List {
@@ -63,6 +68,8 @@ model List {
   issues    Issue[]
   Project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
+
+  @@index([projectId])
 }
 
 model Issue {
@@ -73,7 +80,6 @@ model Issue {
   progress            Int
   summary             String     @db.VarChar(100)
   descr               String?    @db.VarChar(500)
-  abbreviationProject String?    @db.VarChar(2)
   createdAt           DateTime   @default(now())
   updatedAt           DateTime   @updatedAt
   List                List?      @relation(fields: [listId], references: [id], onDelete: Cascade)
@@ -84,6 +90,10 @@ model Issue {
   sprintId            String
   comments            Comment[]
   assignees           Assignee[]
+
+  @@index([listId])
+  @@index([reporterId])
+  @@index([sprintId])
 }
 
 model Assignee {
@@ -95,6 +105,10 @@ model Assignee {
   issueId   String
   Project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
+
+  @@index([userId])
+  @@index([issueId])
+  @@index([projectId])
 }
 
 model Comment {
@@ -105,15 +119,20 @@ model Comment {
   issueId   String
   User      User?    @relation(fields: [userId], references: [id])
   userId    String
+
+  @@index([issueId])
+  @@index([userId])
 }
 
 model Sprint {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
-  createdAt   DateTime  @default(now())
-  Project     Project?  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  Project     Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId   String
-  initialDate DateTime 
+  initialDate DateTime
   finalDate   DateTime
   issues      Issue[]
+
+  @@index([projectId])
 }

@@ -1,4 +1,4 @@
-import { IsArray, IsInt, IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsInt, IsNotEmpty, IsString, IsUUID } from "class-validator";
 
 export abstract class CreateIssueDto {
     @IsInt()
@@ -15,15 +15,15 @@ export abstract class CreateIssueDto {
     @IsString()
     descr: string;
 
-    @IsInt()
-    listId: number | null;
+    @IsUUID()
+    listId: string | null;
 
-    @IsInt()
-    reporterId: number | null;
+    @IsUUID()
+    reporterId: string | null;
 
-    @IsInt()
-    sprintId: number | null;
+    @IsUUID()
+    sprintId: string | null;
 
     @IsArray()
-    assignees: Array<Number>;
+    assignees: Array<string>;
 }

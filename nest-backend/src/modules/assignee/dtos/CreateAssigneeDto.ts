@@ -1,12 +1,12 @@
-import { IsInt } from "class-validator";
+import { IsUUID } from "class-validator";
 
 export abstract class CreateAssigneeDto {
-    @IsInt()
-    userId: number;
+    @IsUUID()
+    userId: string;
 
-    @IsInt()
-    issueId: number;
+    @IsUUID()
+    issueId: string;
 
-    @IsInt()
-    projectId: number;
+    @IsUUID()
+    projectId: string;
 }

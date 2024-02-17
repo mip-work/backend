@@ -1,12 +1,12 @@
-import { IsArray, IsDate, IsInt, IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsDate, IsNotEmpty, IsString, IsUUID } from "class-validator";
 
 export abstract class CreateSprintDto {
     @IsNotEmpty({message: "This field cannot be empty"})
     @IsString()
     name: string;
 
-    @IsInt()
-    projectId: number;
+    @IsUUID()
+    projectId: string;
 
     @IsDate()
     initialDate: Date;
@@ -15,5 +15,5 @@ export abstract class CreateSprintDto {
     finalDate: Date;
 
     @IsArray()
-    issues: Array<number>;
+    issues: Array<string>;
 }

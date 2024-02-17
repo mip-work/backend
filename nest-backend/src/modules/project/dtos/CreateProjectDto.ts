@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString, IsUUID } from "class-validator";
 
 export abstract class CreateProjectDto {
     @IsNotEmpty({message: "This field cannot be empty"})
@@ -13,6 +13,6 @@ export abstract class CreateProjectDto {
     @IsString()
     repo: string;
 
-    @IsInt()
-    userId: number;
+    @IsUUID()
+    userId: string;
 }

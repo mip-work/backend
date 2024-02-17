@@ -1,9 +1,9 @@
-import { IsInt } from "class-validator";
+import { IsUUID } from "class-validator";
 
 export abstract class CreateMemberDto {
-    @IsInt()
-    projectId: number;
+    @IsUUID()
+    projectId: string;
     
-    @IsInt()
-    userId: number;
+    @IsUUID()
+    userId: string;
 }

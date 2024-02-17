@@ -1,12 +1,12 @@
-import { IsArray, IsInt, IsString } from "class-validator";
+import { IsArray, IsString, IsUUID } from "class-validator";
 
 export abstract class CreateListDto {
     @IsString()
     name: string;
 
     @IsArray()
-    issues: Array<number>;
+    issues: Array<string>;
 
-    @IsInt()
-    projectId: number;
+    @IsUUID()
+    projectId: string;
 }

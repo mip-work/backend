@@ -13,7 +13,7 @@ datasource db {
 }
 
 model User {
-  id           Int        @id @default(autoincrement())
+  id           String     @id @default(uuid())
   email        String
   username     String
   pwd          String
@@ -29,7 +29,7 @@ model User {
 }
 
 model Project {
-  id           Int        @id @default(autoincrement())
+  id           String     @id @default(uuid())
   name         String     @db.VarChar(50)
   descr        String?    @db.VarChar(200)
   abbreviation String?    @db.VarChar(2)
@@ -37,7 +37,7 @@ model Project {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   User         User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       Int
+  userId       String
   sprints      Sprint[]    
   lists        List[]
   members      Member[]
@@ -45,28 +45,28 @@ model Project {
 }
 
 model Member {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   isAdmin   Boolean  @default(false)
   createdAt DateTime @default(now())
   Project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId Int
+  projectId String
   User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
+  userId    String
 }
 
 model List {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String   @default("unnamed list")
   order     Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   issues    Issue[]
   Project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId Int
+  projectId String
 }
 
 model Issue {
-  id                  Int        @id @default(autoincrement())
+  id                  String     @id @default(uuid())
   order               Int
   priority            Int
   type                Int
@@ -77,42 +77,42 @@ model Issue {
   createdAt           DateTime   @default(now())
   updatedAt           DateTime   @updatedAt
   List                List?      @relation(fields: [listId], references: [id], onDelete: Cascade)
-  listId              Int
+  listId              String
   User                User?      @relation(fields: [reporterId], references: [id], onDelete: Cascade)
-  reporterId          Int
+  reporterId          String
   Sprint              Sprint?    @relation(fields: [sprintId], references: [id], onDelete: Cascade)
-  sprintId            Int
+  sprintId            String
   comments            Comment[]
   assignees           Assignee[]
 }
 
 model Assignee {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
+  userId    String
   Issue     Issue?   @relation(fields: [issueId], references: [id], onDelete: Cascade)
-  issueId   Int
+  issueId   String
   Project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId Int
+  projectId String
 }
 
 model Comment {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   descr     String   @db.VarChar(200)
   createdAt DateTime @default(now())
   Issue     Issue?   @relation(fields: [issueId], references: [id], onDelete: Cascade)
-  issueId   Int
+  issueId   String
   User      User?    @relation(fields: [userId], references: [id])
-  userId    Int
+  userId    String
 }
 
 model Sprint {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @default(uuid())
   name        String
   createdAt   DateTime  @default(now())
   Project     Project?  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId   Int
+  projectId   String
   initialDate DateTime 
   finalDate   DateTime
   issues      Issue[]

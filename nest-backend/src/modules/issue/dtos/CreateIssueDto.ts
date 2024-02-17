@@ -1,5 +1,16 @@
 import { IsArray, IsInt, IsNotEmpty, IsString } from "class-validator";
 
+interface PropsCreateIssue {
+    priority: number;
+    type: number;
+    summary: string;
+    descr: string;
+    listId: number;
+    reporterId: number;
+    sprintId: number;
+    assignees: Array<number>;
+}
+
 export class CreateIssueDto {
     @IsInt()
     priority: number;
@@ -25,5 +36,16 @@ export class CreateIssueDto {
     sprintId: number | null;
 
     @IsArray()
-    assigness: Array<Number>;
+    assignees: Array<Number>;
+
+    constructor(props: PropsCreateIssue) {
+        this.priority = props.priority;
+        this.type = props.type;
+        this.summary = props.summary;
+        this.descr = props.descr;
+        this.listId = props.listId;
+        this.reporterId = props.reporterId;
+        this.sprintId = props.sprintId;
+        this.assignees = props.assignees;
+    }
 }

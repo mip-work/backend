@@ -1,28 +1,17 @@
 import { IsArray, IsInt, IsNotEmpty, IsString } from "class-validator";
 
-interface PropsCreateIssue {
-    priority: number;
-    type: number;
-    summary: string;
-    descr: string;
-    listId: number;
-    reporterId: number;
-    sprintId: number;
-    assignees: Array<number>;
-}
-
-export class CreateIssueDto {
+export abstract class CreateIssueDto {
     @IsInt()
     priority: number;
 
     @IsInt()
     type: number;
 
-    @IsNotEmpty({message: "Esse campo não pode ser vazio"})
+    @IsNotEmpty({message: "This field cannot be empty"})
     @IsString()
     summary: string;
 
-    @IsNotEmpty({message: "Esse campo não pode ser vazio"})
+    @IsNotEmpty({message: "This field cannot be empty"})
     @IsString()
     descr: string;
 
@@ -37,15 +26,4 @@ export class CreateIssueDto {
 
     @IsArray()
     assignees: Array<Number>;
-
-    constructor(props: PropsCreateIssue) {
-        this.priority = props.priority;
-        this.type = props.type;
-        this.summary = props.summary;
-        this.descr = props.descr;
-        this.listId = props.listId;
-        this.reporterId = props.reporterId;
-        this.sprintId = props.sprintId;
-        this.assignees = props.assignees;
-    }
 }

@@ -1,13 +1,7 @@
 import { IsInt, IsNotEmpty, IsString } from "class-validator";
 
-interface PropsCreateComment {
-    descr: string;
-    issueId: number;
-    userId: number;
-}
-
-export class CreateCommentDto {
-    @IsNotEmpty({message: "Este campo não pode ser vazio"})
+export abstract class CreateCommentDto {
+    @IsNotEmpty({message: "This field cannot be empty"})
     @IsString()
     descr: string;
 
@@ -16,10 +10,4 @@ export class CreateCommentDto {
 
     @IsInt()
     userId: number;
-
-    constructor(props: PropsCreateComment) {
-        this.descr = props.descr;
-        this.issueId = props.issueId;
-        this.userId = props.userId;
-    }
 }

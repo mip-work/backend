@@ -6,10 +6,26 @@ import { CreateUserDTO } from '../dtos/create-user.dto';
 export class UserRepository {
   constructor(private prisma: PrismaService) {}
 
-  async create(dto: CreateUserDTO) {
-    const user = await this.prisma.user.create({
-      data: dto,
+  async create(userDTO: CreateUserDTO) {
+    return await this.prisma.user.create({
+      data: userDTO,
     });
-    return user;
   }
+
+  async findById(id: string) {
+    return await this.prisma.user.findFirst({
+      where: {
+        id
+      }
+    });
+  }
+
+  async delete(id: string) {
+    return await this.prisma.user.delete({ where: { id } });
+  }
+
+  async update(id: string, userDto: CreateUserDTO) {
+    return await this.prisma.user.update({ where: { id }, data: userDto });
+  }
+
 }

@@ -7,9 +7,9 @@ export class ListRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateListDto) {
-    const user = await this.prisma.list.create({
+    const list = await this.prisma.list.create({
       data: dto,
     });
-    return user;
+    return list;
   }
 }

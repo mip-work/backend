@@ -1,6 +1,4 @@
 import { IsInt, IsNotEmpty, IsString, IsUUID } from 'class-validator';
-import { Assignee } from 'src/modules/assignee/dtos/assignee.dto';
-import { Comment } from 'src/modules/comment/dtos/comment.dto';
 
 export class Issue {
   id: string;
@@ -33,8 +31,4 @@ export class Issue {
 
   @IsUUID()
   sprintId: string | null;
-
-  comments: Comment[];
-
-  assignees: Assignee[];
 }

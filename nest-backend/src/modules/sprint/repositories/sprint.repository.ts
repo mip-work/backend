@@ -7,9 +7,9 @@ export class SprintRespository {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateSprintDto) {
-    const user = await this.prisma.sprint.create({
+    const sprint = await this.prisma.sprint.create({
       data: dto,
     });
-    return user;
+    return sprint;
   }
 }

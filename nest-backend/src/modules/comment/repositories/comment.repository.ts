@@ -7,9 +7,9 @@ export class CommentRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateCommentDto) {
-    const user = await this.prisma.comment.create({
+    const comment = await this.prisma.comment.create({
       data: dto,
     });
-    return user;
+    return comment;
   }
 }

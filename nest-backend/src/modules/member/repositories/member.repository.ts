@@ -7,9 +7,9 @@ export class MemberRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateMemberDto) {
-    const user = await this.prisma.member.create({
+    const member = await this.prisma.member.create({
       data: dto,
     });
-    return user;
+    return member;
   }
 }

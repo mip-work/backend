@@ -1,6 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserRepository } from '../repositories/user.repository';
 import { CreateUserDTO } from '../dtos/create-user.dto';
+import { UserBuilder } from '../builder/user.builder';
+import { ViewUserDTO } from '../dtos/view-user.dto';
+import { UpdateUserDTO } from '../dtos/update-user.dto';
 
 @Injectable()
 export class UserServices {
@@ -9,7 +12,9 @@ export class UserServices {
   async create(userDTO: CreateUserDTO) {
     const user = await this.userRepository.create(userDTO);
 
-    return user;
+    const viewUser: ViewUserDTO = UserBuilder.createViewUser(user);
+
+    return viewUser;
   }
 
   async findById(id: string) {
@@ -19,7 +24,9 @@ export class UserServices {
       throw new HttpException("User Not Found", HttpStatus.BAD_REQUEST);
     }
 
-    return user;
+    const viewUser: ViewUserDTO = UserBuilder.createViewUser(user);
+
+    return viewUser;
   }
 
   async delete(id: string) {
@@ -30,12 +37,14 @@ export class UserServices {
     return user;
   }
 
-  async update(id: string, userDTO: CreateUserDTO) {
+  async update(id: string, userDTO: UpdateUserDTO) {
     const user = await this.findById(id);
 
     const userUpdate = await this.userRepository.update(user.id, userDTO);
 
-    return userUpdate;
+    const viewUser: ViewUserDTO = UserBuilder.createViewUser(userUpdate);
+
+    return viewUser;
   }
 
 }

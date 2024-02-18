@@ -1,21 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserRepository } from '../repositories/user.repository';
-import { CreateUserDTO } from '../dtos/create-user.dto';
+import { CreateUserDTO } from '../dtos/requests/create-user.dto';
 import { UserBuilder } from '../builder/user.builder';
-import { ViewUserDTO } from '../dtos/view-user.dto';
-import { UpdateUserDTO } from '../dtos/update-user.dto';
+import { ViewUserDTO } from '../dtos/responses/view-user.dto';
+import { UpdateUserDTO } from '../dtos/requests/update-user.dto';
 
 @Injectable()
 export class UserServices {
   constructor(private userRepository: UserRepository) {}
-
-  async create(userDTO: CreateUserDTO) {
-    const user = await this.userRepository.create(userDTO);
-
-    const viewUser: ViewUserDTO = UserBuilder.createViewUser(user);
-
-    return viewUser;
-  }
 
   async findById(id: string) {
     const user = await this.userRepository.findById(id);

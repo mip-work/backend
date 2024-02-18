@@ -1,23 +1,14 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Res } from '@nestjs/common';
-import { CreateUserDTO } from '../dtos/create-user.dto';
+import { CreateUserDTO } from '../dtos/requests/create-user.dto';
 import { UserServices } from '../services/users.services';
 import { Response } from 'express';
-import { UpdateUserDTO } from '../dtos/update-user.dto';
+import { UpdateUserDTO } from '../dtos/requests/update-user.dto';
 import { RestExceptionHandler } from 'src/modules/utils/rest-exception-handler';
 
 @Controller("user")
 export class UserControllers {
   constructor(private userService: UserServices) {}
-  @Post("register")
-  async create(@Body() userDTO: CreateUserDTO, @Res() res: Response) {
-    try {
-      const user = await this.userService.create(userDTO);
-      return res.status(HttpStatus.CREATED).json({data: user, status: HttpStatus.CREATED});
-    } catch (err) {
-      RestExceptionHandler.handleException(err, res);
-    }    
-  }
-
+  
   @Get(":id")
   async findById(@Param('id') id: string, @Res() res: Response) {
     try {

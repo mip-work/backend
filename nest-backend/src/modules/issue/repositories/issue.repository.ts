@@ -7,9 +7,9 @@ export class IssueRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateIssueDto) {
-    const user = await this.prisma.issue.create({
+    const issue = await this.prisma.issue.create({
       data: dto,
     });
-    return user;
+    return issue;
   }
 }

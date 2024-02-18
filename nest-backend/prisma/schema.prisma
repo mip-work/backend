@@ -14,7 +14,7 @@ datasource db {
 
 model User {
   id           String     @id @default(uuid())
-  email        String
+  email        String     @unique
   username     String
   pwd          String
   profileUrl   String     @default("")

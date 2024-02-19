@@ -4,10 +4,24 @@ import { CreateUserDTO } from '../dtos/requests/create-user.dto';
 import { UserBuilder } from '../builder/user.builder';
 import { ViewUserDTO } from '../dtos/responses/view-user.dto';
 import { UpdateUserDTO } from '../dtos/requests/update-user.dto';
+import { RegisterUserDTO } from '../dtos/requests/register-user.dto';
 
 @Injectable()
 export class UserServices {
   constructor(private userRepository: UserRepository) {}
+
+  async register(registerUserDTO: RegisterUserDTO): Promise<ViewUserDTO> {
+
+      if (registerUserDTO.pwd !== registerUserDTO.repeatPwd) {
+          throw new HttpException("Passwords are not the same", HttpStatus.BAD_REQUEST);
+      }
+
+      const {email, username, pwd, profileUrl} = registerUserDTO;
+
+      const user = await this.userRepository.create({email, username, pwd, profileUrl});
+      
+      return UserBuilder.createViewUser(user);
+  }
 
   async findById(id: string) {
     const user = await this.userRepository.findById(id);

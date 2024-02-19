@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
   HttpStatus,
   Param,
   Patch,
@@ -26,12 +25,6 @@ export class UserControllers {
         .status(HttpStatus.OK)
         .json({ data: user, status: HttpStatus.OK });
     } catch (err) {
-      if (err instanceof HttpException) {
-        return res.status(err.getStatus()).json({
-          message: err.message,
-          status: err.getStatus(),
-        });
-      }
       return RestExceptionHandler.handleException(err, res);
     }
   }
@@ -42,12 +35,6 @@ export class UserControllers {
       await this.userService.delete(id);
       return res.status(HttpStatus.CREATED).json({});
     } catch (err) {
-      if (err instanceof HttpException) {
-        return res.status(err.getStatus()).json({
-          message: err.message,
-          status: err.getStatus(),
-        });
-      }
       return RestExceptionHandler.handleException(err, res);
     }
   }
@@ -64,12 +51,6 @@ export class UserControllers {
         .status(HttpStatus.OK)
         .json({ data: user, status: HttpStatus.OK });
     } catch (err) {
-      if (err instanceof HttpException) {
-        return res.status(err.getStatus()).json({
-          message: err.message,
-          status: err.getStatus(),
-        });
-      }
       return RestExceptionHandler.handleException(err, res);
     }
   }

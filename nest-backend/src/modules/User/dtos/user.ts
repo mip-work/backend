@@ -13,7 +13,7 @@ export class User {
   pwd: string;
 
   profileUrl?: string;
-
+  
   lastLoggedIn: Date;
 
   createdAt: Date;

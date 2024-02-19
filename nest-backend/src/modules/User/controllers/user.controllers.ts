@@ -11,7 +11,7 @@ import {
 import { UserServices } from '../services/users.services';
 import { Response } from 'express';
 import { UpdateUserDTO } from '../dtos/requests/update-user.dto';
-import { RestExceptionHandler } from 'src/modules/utils/rest-exception-handler';
+import { RestExceptionHandler } from 'src/utils/rest-exception-handler';
 
 @Controller('user')
 export class UserControllers {

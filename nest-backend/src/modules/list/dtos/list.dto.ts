@@ -12,6 +12,4 @@ export class List {
 
   @IsUUID()
   projectId: string;
-
-  issues: Issue[];
 }

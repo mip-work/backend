@@ -1,4 +1,4 @@
-export class ViewUserDTO {
+export interface ViewUserDTO {
     id: string;
     username: string;
     email: string;

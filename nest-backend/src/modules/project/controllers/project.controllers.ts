@@ -9,6 +9,7 @@ import {
 import { CreateProjectDto } from '../dtos/requests/create-project.dto';
 import { ProjectServices } from '../services/project.services';
 import { Response } from 'express';
+import { RestExceptionHandler } from 'src/modules/utils/rest-exception-handler';
 
 @Controller('project')
 export class ProjectControllers {
@@ -28,6 +29,7 @@ export class ProjectControllers {
           status: err.getStatus(),
         });
       }
+      return RestExceptionHandler.handleException(err, res);
     }
   }
 }

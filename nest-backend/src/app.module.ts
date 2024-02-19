@@ -9,6 +9,7 @@ import { IssueModule } from './modules/issue/issue.module';
 import { ListModule } from './modules/list/list.module';
 import { MemberModule } from './modules/member/member.module';
 import { SprintModule } from './modules/sprint/sprint.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { SprintModule } from './modules/sprint/sprint.module';
       isGlobal: true,
       envFilePath: './.env',
     }),
+    AuthModule,
     CommentModule,
     AssigneeModule,
     IssueModule,

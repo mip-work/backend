@@ -7,7 +7,10 @@ import { UserServices } from 'src/modules/User/services/users.services';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthServices, private userService: UserServices) {}
+  constructor(
+    private authService: AuthServices,
+    private userService: UserServices,
+  ) {}
 
   @Post('register')
   async register(@Body() userDTO: RegisterUserDTO, @Res() res: Response) {

@@ -9,7 +9,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
   app.enableCors();
   app.use(cookieParser());
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   await app.listen(process.env.PORT, () => {
     console.log('Server running correctly');

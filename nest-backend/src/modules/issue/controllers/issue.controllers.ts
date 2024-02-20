@@ -1,7 +1,9 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { CreateIssueDto } from '../dtos/create-issue.dto';
+import { CreateIssueDto } from '../dtos/requests/create-issue.dto';
 import { IssueServices } from '../services/issue.services';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Issue')
 @Controller('issue')
 export class IssueControllers {
   constructor(private issueService: IssueServices) {}

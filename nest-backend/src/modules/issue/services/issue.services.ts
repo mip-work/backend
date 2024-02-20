@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IssueRepository } from '../repositories/issue.repository';
-import { CreateIssueDto } from '../dtos/create-issue.dto';
+import { CreateIssueDto } from '../dtos/requests/create-issue.dto';
 
 @Injectable()
 export class IssueServices {

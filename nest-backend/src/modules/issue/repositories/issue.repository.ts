@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../db/prisma.service';
-import { CreateIssueDto } from '../dtos/create-issue.dto';
+import { CreateIssueDto } from '../dtos/requests/create-issue.dto';
 
 @Injectable()
 export class IssueRepository {

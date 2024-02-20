@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Request,
   Res,
 } from '@nestjs/common';
 import { CreateListDto } from '../dtos/requests/create-list.dto';
@@ -21,7 +22,7 @@ import { UpdateListDTO } from '../dtos/requests/update-list-dto';
 export class ListControllers {
   constructor(private listService: ListServices) {}
   @Post()
-  async create(@Body() request: CreateListDto, @Res() res: Response) {
+  async create(@Body() @Request() request: CreateListDto, @Res() res: Response) {
     try {
       const list = await this.listService.create(request);
       return res.status(HttpStatus.CREATED).json({

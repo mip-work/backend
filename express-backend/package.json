@@ -1,0 +1,31 @@
+{
+  "name": "express-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:windows": "nodemon -L server.js",
+    "dev:linux": "nodemon server.js",
+    "start": "node server.js",
+    "generate": "npx prisma generate",
+    "migrate": "npx prisma migrate dev",
+    "container": "sh container.sh express-backend_app"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19",
+    "prisma": "^5.1.1",
+    "dotenv": "^8.6.0"
+  }
+}

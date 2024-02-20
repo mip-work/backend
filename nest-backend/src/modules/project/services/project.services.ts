@@ -8,7 +8,7 @@ import { CreateProjectDto } from '../dtos/requests/create-project.dto';
 import { UserRepository } from 'src/modules/User/repositories/user.repository';
 import { ProjectBuilder } from '../builders/project.builder';
 import { Project } from '../dtos/project.dto';
-import { UpdateProjectDto } from '../dtos/requests/update-product.dto';
+import { UpdateProjectDto } from '../dtos/requests/update-project.dto';
 
 @Injectable()
 export class ProjectServices {

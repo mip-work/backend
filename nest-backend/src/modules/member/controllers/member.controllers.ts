@@ -1,7 +1,9 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { CreateMemberDto } from '../dtos/create-member.dto';
+import { CreateMemberDto } from '../dtos/requests/create-member.dto';
 import { MemberServices } from '../services/member.services';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Member')
 @Controller('member')
 export class MemberControllers {
   constructor(private memberService: MemberServices) {}

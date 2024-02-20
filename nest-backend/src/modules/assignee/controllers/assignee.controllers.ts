@@ -1,7 +1,9 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { CreateAssigneeDto } from '../dtos/create-assignee.dto';
+import { CreateAssigneeDto } from '../dtos/requests/create-assignee.dto';
 import { AssigneeServices } from '../services/assignee.services';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Assignee')
 @Controller('assignee')
 export class AssigneeControllers {
   constructor(private assigneeService: AssigneeServices) {}

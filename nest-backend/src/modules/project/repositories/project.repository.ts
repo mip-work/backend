@@ -17,4 +17,5 @@ export class ProjectRepository {
     const project = await this.prisma.project.findFirst({ where: { id } });
     return project;
   }
+  
 }

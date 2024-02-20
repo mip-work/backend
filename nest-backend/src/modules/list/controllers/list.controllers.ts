@@ -1,8 +1,19 @@
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { CreateListDto } from '../dtos/requests/create-list.dto';
 import { ListServices } from '../services/list.services';
 import { Response } from 'express';
 import { RestExceptionHandler } from 'src/utils/rest-exception-handler';
+import { UpdateListDTO } from '../dtos/requests/update-list-dto';
 
 @Controller('list')
 export class ListControllers {
@@ -19,4 +30,49 @@ export class ListControllers {
       return RestExceptionHandler.handleException(err, res);
     }
   }
+  @Get('/:id')
+  async get(@Param('id') id: string, @Res() res: Response) {
+    try {
+      const list = await this.listService.get(id);
+      return res.status(HttpStatus.OK).json({
+        data: list,
+        status: HttpStatus.OK,
+      });
+    } catch (err) {
+      return RestExceptionHandler.handleException(err, res);
+    }
+  }
+  @Delete('/:id')
+  async delete(@Param('id') id: string, @Res() res: Response) {
+    try {
+      const list = await this.listService.delete(id);
+      return res.status(HttpStatus.OK).json();
+    } catch (err) {
+      return RestExceptionHandler.handleException(err, res);
+    }
+  }
+  @Get('/all/:id')
+  async getAll(@Param('id') id: string, @Res() res: Response) {
+    try {
+      const list = await this.listService.getAll(id);
+      return res.status(HttpStatus.OK).json({
+        data: list,
+        status: HttpStatus.OK,
+      });
+    } catch (err) {
+      return RestExceptionHandler.handleException(err, res);
+    }
+  }
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() request: UpdateListDTO, @Res() res: Response) {
+    try {
+      const list = await this.listService.update(id, request);
+      return res.status(HttpStatus.OK).json({
+        data: list,
+        status: HttpStatus.OK,
+      });
+    } catch (err) {
+      return RestExceptionHandler.handleException(err, res);
+    }
+  }  
 }

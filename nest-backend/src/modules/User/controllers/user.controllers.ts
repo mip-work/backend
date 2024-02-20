@@ -6,21 +6,27 @@ import {
   HttpStatus,
   Param,
   Patch,
+  Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { UserServices } from '../services/users.services';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { UpdateUserDTO } from '../dtos/requests/update-user.dto';
 import { RestExceptionHandler } from 'src/utils/rest-exception-handler';
+import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/modules/auth/guards/auth-guard';
 
+@ApiTags('User')
 @Controller("user")
 export class UserControllers {
   constructor(private userService: UserServices) {}
 
-  @Get(':id')
-  async findById(@Param('id') id: string, @Res() res: Response) {
+  @UseGuards(AuthGuard)
+  @Get('')
+  async findById(@Req() req: Request, @Res() res: Response) {
     try {
-      const user = await this.userService.findById(id);
+      const user = await this.userService.findById(req.user.id);
       return res
         .status(HttpStatus.OK)
         .json({ data: user, status: HttpStatus.OK });
@@ -29,24 +35,26 @@ export class UserControllers {
     }
   }
 
-  @Delete('delete/:id')
-  async delete(@Param('id') id: string, @Res() res: Response) {
+  @UseGuards(AuthGuard)
+  @Delete('delete')
+  async delete(@Req() req: Request, @Res() res: Response) {
     try {
-      await this.userService.delete(id);
+      await this.userService.delete(req.user.id);
       return res.status(HttpStatus.CREATED).json({});
     } catch (err) {
       return RestExceptionHandler.handleException(err, res);
     }
   }
 
-  @Patch('update/:id')
+  @UseGuards(AuthGuard)
+  @Patch('update')
   async update(
-    @Param('id') id: string,
+    @Req() req: Request,
     @Body() userDTO: UpdateUserDTO,
     @Res() res: Response,
   ) {
     try {
-      const user = await this.userService.update(id, userDTO);
+      const user = await this.userService.update(req.user.id, userDTO);
       return res
         .status(HttpStatus.OK)
         .json({ data: user, status: HttpStatus.OK });

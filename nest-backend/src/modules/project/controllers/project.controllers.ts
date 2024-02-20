@@ -14,7 +14,7 @@ import { ProjectServices } from '../services/project.services';
 import { RestExceptionHandler } from 'src/utils/rest-exception-handler';
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
-import { UpdateProjectDto } from '../dtos/requests/update-product.dto';
+import { UpdateProjectDto } from '../dtos/requests/update-project.dto';
 
 @ApiTags('Project')
 @Controller('project')

@@ -1,5 +1,5 @@
 import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { AuthServices } from '../services/auth.services';
 import { RestExceptionHandler } from 'src/utils/rest-exception-handler';
 import { RegisterUserDTO } from 'src/modules/User/dtos/requests/register-user.dto';

@@ -13,8 +13,10 @@ import { CreateListDto } from '../dtos/requests/create-list.dto';
 import { ListServices } from '../services/list.services';
 import { Response } from 'express';
 import { RestExceptionHandler } from 'src/utils/rest-exception-handler';
+import { ApiTags } from '@nestjs/swagger';
 import { UpdateListDTO } from '../dtos/requests/update-list-dto';
 
+@ApiTags('List')
 @Controller('list')
 export class ListControllers {
   constructor(private listService: ListServices) {}

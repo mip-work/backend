@@ -7,19 +7,22 @@ import {
   Param,
   Patch,
   Post,
+  Request,
   Res,
 } from '@nestjs/common';
 import { CreateListDto } from '../dtos/requests/create-list.dto';
 import { ListServices } from '../services/list.services';
 import { Response } from 'express';
 import { RestExceptionHandler } from 'src/utils/rest-exception-handler';
+import { ApiTags } from '@nestjs/swagger';
 import { UpdateListDTO } from '../dtos/requests/update-list-dto';
 
+@ApiTags('List')
 @Controller('list')
 export class ListControllers {
   constructor(private listService: ListServices) {}
   @Post()
-  async create(@Body() request: CreateListDto, @Res() res: Response) {
+  async create(@Body() @Request() request: CreateListDto, @Res() res: Response) {
     try {
       const list = await this.listService.create(request);
       return res.status(HttpStatus.CREATED).json({

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../db/prisma.service';
 import { CreateListDto } from '../dtos/requests/create-list.dto';
+import { UpdateListDTO } from '../dtos/requests/update-list-dto';
 
 @Injectable()
 export class ListRepository {
@@ -17,4 +18,20 @@ export class ListRepository {
     const list = await this.prisma.list.findFirst({ where: { id } });
     return list;
   }
+
+  async getAll(projectId: string) {
+    const list = await this.prisma.list.findMany({ where: { projectId } });
+    return list;
+  }
+
+  async delete(id: string) {
+    const list = await this.prisma.list.delete({ where: { id } });
+    return list;
+  }
+
+  async update(id: string, dto: UpdateListDTO) {
+    const list = await this.prisma.list.update({ where: { id }, data: dto });
+    return list;
+  }   
+  
 }

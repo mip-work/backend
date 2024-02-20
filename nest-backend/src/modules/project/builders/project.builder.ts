@@ -6,4 +6,13 @@ export class ProjectBuilder {
     const { id, name, descr, repo } = project;
     return { id, name, descr, repo };
   }
+
+  static listProjectView(projects: Project[]): ViewProjectDTO[] {
+    const viewProjects: ViewProjectDTO[] = [];
+    projects.map((project) => {
+      const { id, name, descr, repo } = project;
+      viewProjects.push({ id, name, descr, repo });
+    });
+    return viewProjects;
+  }
 }

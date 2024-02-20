@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from 'src/app.module';
 import * as cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
@@ -10,6 +11,14 @@ async function bootstrap() {
   app.enableCors();
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+
+  const config = new DocumentBuilder()
+    .setTitle('Mip Manager')
+    .setDescription('A manager for teams')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   await app.listen(process.env.PORT, () => {
     console.log('Server running correctly');

@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UserRepository } from '../repositories/user.repository';
 import { UserBuilder } from '../builder/user.builder';
 import { ViewUserDTO } from '../dtos/responses/view-user.dto';
@@ -38,7 +38,7 @@ export class UserServices {
     const user = await this.userRepository.findById(id);
 
     if (!user) {
-      throw new HttpException('User Not Found', HttpStatus.BAD_REQUEST);
+      throw new NotFoundException('User Not Found');
     }
 
     const viewUser: ViewUserDTO = UserBuilder.createViewUser(user);
@@ -68,7 +68,7 @@ export class UserServices {
     const user = await this.userRepository.findByEmail(email);
 
     if (!user) {
-      throw new HttpException("Credentials Invalid", HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException("Credentials Invalid");
     }
 
     return user;

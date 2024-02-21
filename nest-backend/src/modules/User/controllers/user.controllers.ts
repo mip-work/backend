@@ -23,7 +23,7 @@ export class UserControllers {
   constructor(private userService: UserServices) {}
 
   @UseGuards(AuthGuard)
-  @Get('')
+  @Get()
   async findById(@Req() req: Request, @Res() res: Response) {
     try {
       const user = await this.userService.findById(req.user.id);

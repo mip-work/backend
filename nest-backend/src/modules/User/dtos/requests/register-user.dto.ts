@@ -7,6 +7,7 @@ export class RegisterUserDTO {
     email: string;
   
     @ApiProperty()
+    @IsNotEmpty()
     @IsString({ message: 'Value must be a string' })
     username: string;
   

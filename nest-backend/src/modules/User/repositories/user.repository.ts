@@ -29,4 +29,9 @@ export class UserRepository {
     return await this.prisma.user.update({ where: { id }, data: userDto });
   }
 
+  async findByEmail(email: string) {
+    const user = await this.prisma.user.findFirst({ where: { email } });
+    return user;
+  }
+
 }

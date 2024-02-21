@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UserRepository } from '../repositories/user.repository';
 import { UserBuilder } from '../builder/user.builder';
 import { ViewUserDTO } from '../dtos/responses/view-user.dto';
@@ -10,10 +10,15 @@ export class UserServices {
   constructor(private userRepository: UserRepository) {}
 
   async register(registerUserDTO: RegisterUserDTO): Promise<ViewUserDTO> {
+    const emailAlreadyExists = await this.userRepository.findByEmail(registerUserDTO.email);
+
+    if (emailAlreadyExists) {
+      throw new BadRequestException('User already exists');
+    }
+
     if (registerUserDTO.pwd !== registerUserDTO.repeatPwd) {
-      throw new HttpException(
-        'Passwords are not the same',
-        HttpStatus.BAD_REQUEST,
+      throw new BadRequestException(
+        'Passwords are not the same'
       );
     }
 
@@ -33,7 +38,7 @@ export class UserServices {
     const user = await this.userRepository.findById(id);
 
     if (!user) {
-      throw new HttpException('User Not Found', HttpStatus.BAD_REQUEST);
+      throw new NotFoundException('User Not Found');
     }
 
     const viewUser: ViewUserDTO = UserBuilder.createViewUser(user);
@@ -57,5 +62,15 @@ export class UserServices {
     const viewUser: ViewUserDTO = UserBuilder.createViewUser(userUpdate);
 
     return viewUser;
+  }
+
+  async findByEmail(email: string) {
+    const user = await this.userRepository.findByEmail(email);
+
+    if (!user) {
+      throw new UnauthorizedException("Credentials Invalid");
+    }
+
+    return user;
   }
 }

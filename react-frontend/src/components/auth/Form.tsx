@@ -52,6 +52,8 @@ function Form(props: Props) {
           inputClass='border-gray-500'
           placeholder='user@gmail.com'
           autoFocus
+          animationsInput='animate-slideLeft'
+          animationsLabel='animate-slideRight'
         />
         {type === 'SIGNUP' && (
           <InputWithValidation
@@ -70,6 +72,8 @@ function Form(props: Props) {
             error={errors.username as FieldError}
             inputClass='border-gray-500'
             placeholder='username'
+            animationsInput='animate-slideLeft'
+            animationsLabel='animate-slideRight'
           />
         )}
         <InputWithValidation
@@ -86,6 +90,8 @@ function Form(props: Props) {
           inputClass='border-gray-500'
           type='password'
           placeholder='password'
+          animationsInput='animate-slideLeft'
+          animationsLabel='animate-slideRight'
         />
       </div>
       {error && <span className='mt-3 block text-red-400'>{error}</span>}
@@ -100,8 +106,8 @@ function Form(props: Props) {
             ? 'registering ...'
             : 'Join now'
           : loading
-          ? 'logging in ...'
-          : 'Log In'}
+            ? 'logging in ...'
+            : 'Log In'}
       </button>
     </form>
   );

@@ -12,12 +12,14 @@ const InputWithValidation = (props: Props) => {
     autoFocus,
     inputClass,
     type,
+    animationsInput,
+    animationsLabel
   } = props;
   return (
     <div className='flex flex-col'>
       <label
         htmlFor={label}
-        className={`text-sm tracking-wide ${darkEnabled ? 'text-c-5' : 'text-gray-800'} animate-slideRight`}
+        className={`text-sm tracking-wide ${darkEnabled ? 'text-c-5' : 'text-gray-800'} ${animationsLabel}`}
       >
         {label}
       </label>
@@ -25,10 +27,11 @@ const InputWithValidation = (props: Props) => {
         id={label}
         defaultValue={defaultValue ?? ''}
         className={
-        `mt-2 block w-full rounded-sm border-2 px-3 py-1 text-sm outline-none duration-200 focus:border-chakra-blue animate-slideLeft
+        `mt-2 block w-full rounded-sm border-2 px-3 py-1 text-sm outline-none duration-200 focus:border-chakra-blue
         ${darkEnabled ? 'bg-c-6 text-c-text hover:bg-c-7 focus:bg-c-1' : 'bg-slate-100 hover:border-gray-400'} 
         ${inputClass ?? ' border-transparent'} 
-        ${readOnly ? 'pointer-events-none' : ''}`}
+        ${readOnly ? 'pointer-events-none' : ''}
+        ${animationsInput}`}
         {...{ placeholder, readOnly, autoFocus, type }}
         {...register}
       />
@@ -50,4 +53,6 @@ type Props = {
   darkEnabled?: boolean;
   inputClass?: string;
   type?: string;
+  animationsInput?: string;
+  animationsLabel?: string;
 };

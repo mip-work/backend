@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   HttpStatus,
-  Param,
   Patch,
   Req,
   Res,
@@ -13,7 +12,6 @@ import {
 import { UserServices } from '../services/users.services';
 import { Request, Response } from 'express';
 import { UpdateUserDTO } from '../dtos/requests/update-user.dto';
-import { RestExceptionHandler } from 'src/utils/rest-exception-handler';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/modules/auth/guards/auth-guard';
 
@@ -25,25 +23,17 @@ export class UserControllers {
   @UseGuards(AuthGuard)
   @Get()
   async findById(@Req() req: Request, @Res() res: Response) {
-    try {
       const user = await this.userService.findById(req.user.id);
       return res
         .status(HttpStatus.OK)
         .json({ data: user, status: HttpStatus.OK });
-    } catch (err) {
-      return RestExceptionHandler.handleException(err, res);
-    }
   }
 
   @UseGuards(AuthGuard)
   @Delete('delete')
   async delete(@Req() req: Request, @Res() res: Response) {
-    try {
       await this.userService.delete(req.user.id);
-      return res.status(HttpStatus.CREATED).json({});
-    } catch (err) {
-      return RestExceptionHandler.handleException(err, res);
-    }
+      return res.status(HttpStatus.OK).json({});
   }
 
   @UseGuards(AuthGuard)
@@ -53,13 +43,9 @@ export class UserControllers {
     @Body() userDTO: UpdateUserDTO,
     @Res() res: Response,
   ) {
-    try {
       const user = await this.userService.update(req.user.id, userDTO);
       return res
         .status(HttpStatus.OK)
         .json({ data: user, status: HttpStatus.OK });
-    } catch (err) {
-      return RestExceptionHandler.handleException(err, res);
-    }
   }
 }

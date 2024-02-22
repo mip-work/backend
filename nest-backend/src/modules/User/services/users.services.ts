@@ -4,6 +4,7 @@ import { UserBuilder } from '../builder/user.builder';
 import { ViewUserDTO } from '../dtos/responses/view-user.dto';
 import { UpdateUserDTO } from '../dtos/requests/update-user.dto';
 import { RegisterUserDTO } from '../dtos/requests/register-user.dto';
+import { hash } from "bcrypt";
 
 @Injectable()
 export class UserServices {
@@ -22,7 +23,9 @@ export class UserServices {
       );
     }
 
-    const { email, username, pwd, profileUrl } = registerUserDTO;
+    const pwd = await hash(registerUserDTO.pwd, 10);
+
+    const { email, username, profileUrl } = registerUserDTO;
 
     const user = await this.userRepository.create({
       email,

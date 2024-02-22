@@ -4,6 +4,7 @@ import { UserServices } from 'src/modules/User/services/users.services';
 import { AuthBuilder } from '../builder/auth.builder';
 import { SavePayloadUser } from '../dtos/save-token-user.dto';
 import { JwtService } from '@nestjs/jwt';
+import { compare } from 'bcrypt';
 
 @Injectable()
 export class AuthServices {
@@ -12,7 +13,9 @@ export class AuthServices {
   async login({email, pwd}: PayloadLoginDTO) {
     const user = await this.userService.findByEmail(email);
 
-    if (user.pwd !== pwd) {
+    const isValidPwd = await compare(pwd, user.pwd);
+    
+    if (!isValidPwd) {
       throw new UnauthorizedException("Credentials Invalid");
     }
 

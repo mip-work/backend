@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../db/prisma.service';
 import { CreateMemberDto } from '../dtos/requests/create-member.dto';
+import { UpdateMemberDto } from '../dtos/requests/updateMember.dto';
 
 @Injectable()
 export class MemberRepository {
@@ -13,18 +14,18 @@ export class MemberRepository {
     return member;
   }
 
-  async get(id: string) {
+  async getByUserId(userId: string) {
     const member = await this.prisma.member.findFirst({
       where: {
-        id,
+        userId,
       },
     });
     return member;
   }
 
-  async findInProject(id: string, projectId: string) {
+  async findInProject(userId: string, projectId: string) {
     const member = await this.prisma.member.findFirst({
-      where: { userId: id, projectId },
+      where: { userId, projectId },
     });
     return member;
   }
@@ -40,6 +41,15 @@ export class MemberRepository {
 
   async delete(id: string) {
     const member = await this.prisma.member.delete({ where: { id } });
+    return member;
+  }
+
+  async changeRole(dto: UpdateMemberDto) {
+    const member = await this.prisma.member.update({
+      where: { id: dto.id, projectId: dto.projectId },
+      data: { role: dto.role },
+    });
+
     return member;
   }
 }

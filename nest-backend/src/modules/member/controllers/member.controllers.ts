@@ -5,6 +5,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Req,
   Res,
@@ -16,6 +17,7 @@ import { Request, Response } from 'express';
 import { DeleteMemberDto } from '../dtos/requests/delete-member.dto';
 import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
 import { CreateMemberDto } from '../dtos/requests/create-member.dto';
+import { UpdateMemberDto } from '../dtos/requests/updateMember.dto';
 
 @ApiTags('Member')
 @Controller('member')
@@ -51,8 +53,8 @@ export class MemberControllers {
   }
 
   @UseGuards(AuthGuard)
-  @Get(':projectId')
-  async show(
+  @Get('/list/:projectId')
+  async listMembers(
     @Param('projectId') projectId: string,
     @Req() req: Request,
     @Res() res: Response,
@@ -64,6 +66,37 @@ export class MemberControllers {
 
     return res.status(HttpStatus.OK).json({
       data: members,
+      status: HttpStatus.OK,
+    });
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch()
+  async changeRole(
+    @Body() dto: UpdateMemberDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const member = await this.memberService.changeRole(dto, req.user.id);
+    return res.status(HttpStatus.OK).json({
+      data: member,
+      status: HttpStatus.OK,
+    });
+  }
+
+  @UseGuards(AuthGuard)
+  @Get(':projectId')
+  async getMember(
+    @Param('projectId') projectId: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const member = await this.memberService.showMember(
+      req.body.userId,
+      projectId,
+    );
+    return res.status(HttpStatus.OK).json({
+      data: member,
       status: HttpStatus.OK,
     });
   }

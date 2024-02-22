@@ -4,6 +4,7 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { MemberRepository } from '../repositories/member.repository';
 import { UserRepository } from 'src/modules/User/repositories/user.repository';
@@ -11,6 +12,7 @@ import { ProjectRepository } from 'src/modules/project/repositories/project.repo
 import { DeleteMemberDto } from '../dtos/requests/delete-member.dto';
 import { Role } from '../dtos/enums/role.enum';
 import { CreateMemberDto } from '../dtos/requests/create-member.dto';
+import { UpdateMemberDto } from '../dtos/requests/updateMember.dto';
 
 @Injectable()
 export class MemberServices {
@@ -114,5 +116,53 @@ export class MemberServices {
 
     await this.memberRepository.delete(member.id);
     return;
+  }
+
+  async changeRole(dto: UpdateMemberDto, userId: string) {
+    const currentMember = await this.memberRepository.findInProject(
+      userId,
+      dto.projectId,
+    );
+
+    if (!currentMember) {
+      throw new ForbiddenException('You do not have access to this project');
+    }
+
+    if (currentMember.role == Role.COMMON) {
+      throw new UnauthorizedException('Unauthorized');
+    }
+
+    const findMember = await this.memberRepository.findInProject(
+      dto.userId,
+      dto.projectId,
+    );
+
+    if (!findMember) {
+      throw new UnauthorizedException('User not present in project');
+    }
+
+    if (findMember.role == Role.OWNER) {
+      throw new ForbiddenException('You cannot change owner role');
+    }
+
+    const member = await this.memberRepository.changeRole({
+      ...dto,
+      id: findMember.id,
+    });
+
+    return member;
+  }
+
+  async showMember(userId: string, projectId: string) {
+    const memberInProject = await this.memberRepository.findInProject(
+      userId,
+      projectId,
+    );
+
+    if (!memberInProject) {
+      throw new NotFoundException('This user is not in this project');
+    }
+
+    return memberInProject;
   }
 }

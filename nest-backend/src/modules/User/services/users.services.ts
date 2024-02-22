@@ -23,7 +23,7 @@ export class UserServices {
       );
     }
 
-    const pwd = await hash(registerUserDTO.pwd, 10);
+    const pwd = await hash(registerUserDTO.pwd, 12);
 
     const { email, username, profileUrl } = registerUserDTO;
 

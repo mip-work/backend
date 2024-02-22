@@ -16,7 +16,7 @@ import { ProjectServices } from '../services/project.services';
 import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateProjectDto } from '../dtos/requests/update-project.dto';
-import { AuthGuard } from 'src/modules/auth/guards/auth-guard';
+import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
 
 @ApiTags('Project')
 @Controller('project')

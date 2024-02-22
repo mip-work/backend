@@ -14,7 +14,7 @@ import { MemberServices } from '../services/member.services';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { DeleteMemberDto } from '../dtos/requests/delete-member.dto';
-import { AuthGuard } from 'src/modules/auth/guards/auth-guard';
+import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
 import { CreateMemberDto } from '../dtos/requests/create-member.dto';
 
 @ApiTags('Member')

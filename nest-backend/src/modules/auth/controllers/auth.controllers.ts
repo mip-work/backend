@@ -1,11 +1,11 @@
-import { Body, Controller, HttpStatus, Post, Res, UseGuards } from '@nestjs/common';
-import { Response } from 'express';
+import { Body, Controller, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { AuthServices } from '../services/auth.services';
 import { RegisterUserDTO } from 'src/modules/User/dtos/requests/register-user.dto';
 import { UserServices } from 'src/modules/User/services/users.services';
 import { PayloadLoginDTO } from '../dtos/login-user.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { RegisterGuard } from '../guards/register-guard';
+import { RegisterGuard } from '../guards/register.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -25,9 +25,10 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() payload: PayloadLoginDTO, @Res() res: Response) {
-    const accessToken = await this.authService.login(payload);
-    return res.cookie('access_token', accessToken).status(HttpStatus.OK).json({ access_token: accessToken, status: HttpStatus.OK });
+  async login(@Body() payload: PayloadLoginDTO, @Req() req: Request, @Res() res: Response) {
+    const data = await this.authService.login(payload);
+    req['user'] = data.payload;
+    return res.cookie('access_token', data.token).status(HttpStatus.OK).json({ access_token: data.token, status: HttpStatus.OK });
   }
 
   @Post('logout')

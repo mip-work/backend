@@ -13,7 +13,7 @@ import { UserServices } from '../services/users.services';
 import { Request, Response } from 'express';
 import { UpdateUserDTO } from '../dtos/requests/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from 'src/modules/auth/guards/auth-guard';
+import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
 
 @ApiTags('User')
 @Controller("user")

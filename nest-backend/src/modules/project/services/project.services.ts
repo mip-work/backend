@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { ProjectRepository } from '../repositories/project.repository';
@@ -9,26 +10,29 @@ import { UserRepository } from 'src/modules/User/repositories/user.repository';
 import { ProjectBuilder } from '../builders/project.builder';
 import { Project } from '../dtos/project.dto';
 import { UpdateProjectDto } from '../dtos/requests/update-project.dto';
+import { Role } from 'src/modules/member/dtos/enums/role.enum';
+import { MemberRepository } from 'src/modules/member/repositories/member.repository';
 
 @Injectable()
 export class ProjectServices {
   constructor(
     private projectRepository: ProjectRepository,
     private userRepository: UserRepository,
+    private memberRepository: MemberRepository,
   ) {}
 
   async create(dto: CreateProjectDto) {
-    const userId = await this.userRepository.findById(dto.userId);
-
-    if (!userId) {
-      throw new NotFoundException('User not found');
-    }
-
     const project = await this.projectRepository.create(dto);
 
     if (!project) {
-      throw new BadRequestException('Could not create the project');
+      throw new InternalServerErrorException('Could not create the project');
     }
+
+    await this.memberRepository.addMember({
+      userId: dto.userId,
+      projectId: project.id,
+      role: Role.OWNER,
+    });
 
     const projectView = ProjectBuilder.createProjectView(project);
 

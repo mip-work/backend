@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AssigneeRepository } from '../repositories/assignee.repository';
-import { CreateAssigneeDto } from '../dtos/create-assignee.dto';
+import { CreateAssigneeDto } from '../dtos/requests/create-assignee.dto';
 
 @Injectable()
 export class AssigneeServices {

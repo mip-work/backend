@@ -4,54 +4,48 @@ import {
   Delete,
   Get,
   HttpStatus,
-  Param,
   Patch,
+  Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { UserServices } from '../services/users.services';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { UpdateUserDTO } from '../dtos/requests/update-user.dto';
-import { RestExceptionHandler } from 'src/utils/rest-exception-handler';
+import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
 
-@Controller('user')
+@ApiTags('User')
+@Controller("user")
 export class UserControllers {
   constructor(private userService: UserServices) {}
 
-  @Get(':id')
-  async findById(@Param('id') id: string, @Res() res: Response) {
-    try {
-      const user = await this.userService.findById(id);
+  @UseGuards(AuthGuard)
+  @Get()
+  async findById(@Req() req: Request, @Res() res: Response) {
+      const user = await this.userService.findById(req.user.id);
       return res
         .status(HttpStatus.OK)
         .json({ data: user, status: HttpStatus.OK });
-    } catch (err) {
-      return RestExceptionHandler.handleException(err, res);
-    }
   }
 
-  @Delete('delete/:id')
-  async delete(@Param('id') id: string, @Res() res: Response) {
-    try {
-      await this.userService.delete(id);
-      return res.status(HttpStatus.CREATED).json({});
-    } catch (err) {
-      return RestExceptionHandler.handleException(err, res);
-    }
+  @UseGuards(AuthGuard)
+  @Delete('delete')
+  async delete(@Req() req: Request, @Res() res: Response) {
+      await this.userService.delete(req.user.id);
+      return res.status(HttpStatus.OK).json({});
   }
 
-  @Patch('update/:id')
+  @UseGuards(AuthGuard)
+  @Patch('update')
   async update(
-    @Param('id') id: string,
+    @Req() req: Request,
     @Body() userDTO: UpdateUserDTO,
     @Res() res: Response,
   ) {
-    try {
-      const user = await this.userService.update(id, userDTO);
+      const user = await this.userService.update(req.user.id, userDTO);
       return res
         .status(HttpStatus.OK)
         .json({ data: user, status: HttpStatus.OK });
-    } catch (err) {
-      return RestExceptionHandler.handleException(err, res);
-    }
   }
 }

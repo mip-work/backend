@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../db/prisma.service';
-import { CreateSprintDto } from '../dtos/create-sprint.dto';
+import { CreateSprintDto } from '../dtos/requests/create-sprint.dto';
 
 @Injectable()
 export class SprintRespository {

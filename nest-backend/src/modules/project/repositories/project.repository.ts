@@ -14,6 +14,13 @@ export class ProjectRepository {
     return project;
   }
 
+  async getUserProject(id: string, ownerId: string) {
+    const project = await this.prisma.project.findFirst({
+      where: { id, userId: ownerId },
+    });
+    return project;
+  }
+
   async get(id: string) {
     const project = await this.prisma.project.findFirst({ where: { id } });
     return project;

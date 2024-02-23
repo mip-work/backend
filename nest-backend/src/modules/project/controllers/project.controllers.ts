@@ -7,21 +7,33 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateProjectDto } from '../dtos/requests/create-project.dto';
 import { ProjectServices } from '../services/project.services';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateProjectDto } from '../dtos/requests/update-project.dto';
+import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
 
 @ApiTags('Project')
 @Controller('project')
 export class ProjectControllers {
   constructor(private projectService: ProjectServices) {}
+
+  @UseGuards(AuthGuard)
   @Post()
-  async create(@Body() request: CreateProjectDto, @Res() res: Response) {
-    const project = await this.projectService.create(request);
+  async create(
+    @Body() dto: CreateProjectDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const project = await this.projectService.create({
+      ...dto,
+      userId: req.user.id,
+    });
     return res.status(HttpStatus.CREATED).json({
       data: project,
       status: HttpStatus.CREATED,

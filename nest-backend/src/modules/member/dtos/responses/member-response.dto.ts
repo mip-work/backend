@@ -1,9 +1,5 @@
-export class Member {
-  id: string;
-
+export interface MemberResponseDTO {
   projectId: string;
-
   email: string;
-
   role: string;
 }

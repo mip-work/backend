@@ -37,7 +37,6 @@ model Project {
   updatedAt DateTime   @updatedAt
   User      User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  sprints   Sprint[]
   lists     List[]
   members   Member[]
   assignees Assignee[]
@@ -48,7 +47,7 @@ model Project {
 model Member {
   id        String   @id @default(uuid())
   userId    String
-  role      String?   @default("common")
+  role      String?  @default("common")
   createdAt DateTime @default(now())
   Project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
@@ -61,7 +60,6 @@ model Member {
 model List {
   id        String   @id @default(uuid())
   name      String   @default("unnamed list")
-  order     Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   issues    Issue[]
@@ -73,7 +71,6 @@ model List {
 
 model Issue {
   id         String     @id @default(uuid())
-  order      Int
   priority   Int
   type       Int
   progress   Int
@@ -127,11 +124,10 @@ model Sprint {
   id          String   @id @default(uuid())
   name        String
   createdAt   DateTime @default(now())
-  Project     Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId   String
+  issueId     String
   initialDate DateTime
   finalDate   DateTime
   issues      Issue[]
 
-  @@index([projectId])
+  @@index([issueId])
 }

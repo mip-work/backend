@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDateString, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
-export class CreateSprintDto {
+export class CreateSprintRecDto {
   @ApiProperty()
   @IsNotEmpty({ message: 'This field cannot be empty' })
   @IsString()
@@ -10,10 +10,6 @@ export class CreateSprintDto {
   @ApiProperty()
   @IsUUID()
   projectId: string;
-
-  @ApiProperty()
-  @IsDateString()
-  initialDate: Date;
 
   @ApiProperty()
   @IsDateString()

@@ -30,7 +30,7 @@ export class MemberServices {
 
     if (!currentMember) {
       throw new NotFoundException(
-        `User not found in project: ${dto.projectId}`,
+        `User not found in the project: ${dto.projectId}`,
       );
     }
 
@@ -40,7 +40,7 @@ export class MemberServices {
 
     const user = await this.userRepository.findById(dto.userId);
     if (!user) {
-      throw new NotFoundException('This user does not exist');
+      throw new NotFoundException(`This user doesn't exist`);
     }
 
     const checkMember = await this.memberRepository.findInProject(
@@ -59,7 +59,7 @@ export class MemberServices {
     });
 
     if (!member) {
-      throw new InternalServerErrorException('Could not create');
+      throw new InternalServerErrorException('Could not be created');
     }
 
     return member;
@@ -72,7 +72,7 @@ export class MemberServices {
     );
 
     if (!currentUser) {
-      throw new ForbiddenException('You do not have access to this project');
+      throw new ForbiddenException(`You don't have access to this project`);
     }
     const project = await this.projectRepository.get(projectId);
 
@@ -92,7 +92,7 @@ export class MemberServices {
     );
 
     if (!currentUser) {
-      throw new ForbiddenException('You cannot access this project');
+      throw new ForbiddenException('This project cannot be accessed');
     }
 
     if (currentUser.role == Role.COMMON) {
@@ -111,7 +111,7 @@ export class MemberServices {
     }
 
     if (member.role == Role.OWNER) {
-      throw new BadRequestException('You cannot remove the owner');
+      throw new BadRequestException('The owner cannot be removed');
     }
 
     await this.memberRepository.delete(member.id);
@@ -125,11 +125,11 @@ export class MemberServices {
     );
 
     if (!currentMember) {
-      throw new ForbiddenException('You do not have access to this project');
+      throw new ForbiddenException(`You don't have access to this project`);
     }
 
     if (currentMember.role == Role.COMMON) {
-      throw new UnauthorizedException('Unauthorized');
+      throw new UnauthorizedException('Not authorized');
     }
 
     const findMember = await this.memberRepository.findInProject(
@@ -138,11 +138,11 @@ export class MemberServices {
     );
 
     if (!findMember) {
-      throw new UnauthorizedException('User not present in project');
+      throw new UnauthorizedException('User not present in the project');
     }
 
     if (findMember.role == Role.OWNER) {
-      throw new ForbiddenException('You cannot change owner role');
+      throw new ForbiddenException(`The owner's role cannot be changed`);
     }
 
     const member = await this.memberRepository.changeRole({
@@ -160,7 +160,7 @@ export class MemberServices {
     );
 
     if (!memberInProject) {
-      throw new NotFoundException('This user is not in this project');
+      throw new NotFoundException('This member is not a part of this project');
     }
 
     return memberInProject;

@@ -14,13 +14,11 @@ export class UserServices {
     const emailAlreadyExists = await this.userRepository.findByEmail(registerUserDTO.email);
 
     if (emailAlreadyExists) {
-      throw new BadRequestException('User already exists');
+      throw new BadRequestException('The user already exists');
     }
 
     if (registerUserDTO.pwd !== registerUserDTO.repeatPwd) {
-      throw new BadRequestException(
-        'Passwords are not the same'
-      );
+      throw new BadRequestException('Passwords are not the same');
     }
 
     const pwd = await hash(registerUserDTO.pwd, 12);
@@ -71,7 +69,7 @@ export class UserServices {
     const user = await this.userRepository.findByEmail(email);
 
     if (!user) {
-      throw new UnauthorizedException("Credentials Invalid");
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     return user;

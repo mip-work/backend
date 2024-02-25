@@ -38,7 +38,11 @@ export class ListControllers {
   }
   @Delete('/:id')
   async delete(@Param('id') id: string, @Res() res: Response) {
+<<<<<<< HEAD
     const list = await this.listService.delete(id);
+=======
+    await this.listService.delete(id);
+>>>>>>> fdd56f52793c83b0a3b58949a9ee77d5df4f2408
     return res.status(HttpStatus.OK).json();
   }
   @Get('/all/:id')
@@ -50,11 +54,23 @@ export class ListControllers {
     });
   }
   @Patch(':id')
+<<<<<<< HEAD
   async update(@Param('id') id: string, @Body() request: UpdateListDTO, @Res() res: Response) {
+=======
+  async update(
+    @Param('id') id: string,
+    @Body() request: UpdateListDTO,
+    @Res() res: Response,
+  ) {
+>>>>>>> fdd56f52793c83b0a3b58949a9ee77d5df4f2408
     const list = await this.listService.update(id, request);
     return res.status(HttpStatus.OK).json({
       data: list,
       status: HttpStatus.OK,
     });
+<<<<<<< HEAD
   }  
+=======
+  }
+>>>>>>> fdd56f52793c83b0a3b58949a9ee77d5df4f2408
 }

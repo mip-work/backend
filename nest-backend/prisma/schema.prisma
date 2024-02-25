@@ -29,31 +29,29 @@ model User {
 }
 
 model Project {
-  id           String     @id @default(uuid())
-  name         String     @db.VarChar(50)
-  descr        String?    @db.VarChar(200)
-  repo         String?
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  User         User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String
-  sprints      Sprint[]
-  lists        List[]
-  members      Member[]
-  assignees    Assignee[]
-
+  id        String     @id @default(uuid())
+  name      String     @db.VarChar(50)
+  descr     String?    @db.VarChar(200)
+  repo      String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  User      User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  lists     List[]
+  members   Member[]
+  assignees Assignee[]
 
   @@index([userId])
 }
 
 model Member {
   id        String   @id @default(uuid())
-  isAdmin   Boolean  @default(false)
+  userId    String
+  role      String?  @default("common")
   createdAt DateTime @default(now())
   Project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
   User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
 
   @@index([projectId])
   @@index([userId])
@@ -62,7 +60,6 @@ model Member {
 model List {
   id        String   @id @default(uuid())
   name      String   @default("unnamed list")
-  order     Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   issues    Issue[]
@@ -73,23 +70,22 @@ model List {
 }
 
 model Issue {
-  id                  String     @id @default(uuid())
-  order               Int
-  priority            Int
-  type                Int
-  progress            Int
-  summary             String     @db.VarChar(100)
-  descr               String?    @db.VarChar(500)
-  createdAt           DateTime   @default(now())
-  updatedAt           DateTime   @updatedAt
-  List                List?      @relation(fields: [listId], references: [id], onDelete: Cascade)
-  listId              String
-  User                User?      @relation(fields: [reporterId], references: [id], onDelete: Cascade)
-  reporterId          String
-  Sprint              Sprint?    @relation(fields: [sprintId], references: [id], onDelete: Cascade)
-  sprintId            String
-  comments            Comment[]
-  assignees           Assignee[]
+  id         String     @id @default(uuid())
+  priority   Int
+  type       Int
+  progress   Int
+  summary    String     @db.VarChar(100)
+  descr      String?    @db.VarChar(500)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  List       List?      @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId     String
+  User       User?      @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  reporterId String
+  Sprint     Sprint?    @relation(fields: [sprintId], references: [id], onDelete: Cascade)
+  sprintId   String
+  comments   Comment[]
+  assignees  Assignee[]
 
   @@index([listId])
   @@index([reporterId])
@@ -128,11 +124,10 @@ model Sprint {
   id          String   @id @default(uuid())
   name        String
   createdAt   DateTime @default(now())
-  Project     Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId   String
+  issueId     String
   initialDate DateTime
   finalDate   DateTime
   issues      Issue[]
 
-  @@index([projectId])
+  @@index([issueId])
 }

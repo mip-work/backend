@@ -8,6 +8,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { RegisterGuard } from '../guards/register.guard';
 import { PayloadChangePwdDTO } from '../dtos/change-pwd-user.dto';
 import { UserBuilder } from 'src/modules/User/builder/user.builder';
+import { AuthGuard } from '../guards/auth.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -33,11 +34,13 @@ export class AuthController {
     return res.cookie('access_token', data.token).status(HttpStatus.OK).json({ access_token: data.token, status: HttpStatus.OK });
   }
 
+  @UseGuards(AuthGuard)
   @Post('logout')
   async logout(@Res() res: Response) {
     return res.clearCookie('access_token').status(HttpStatus.OK).json({ access_token: null, status: HttpStatus.OK });
   }
 
+  @UseGuards(AuthGuard)
   @Patch('changepass')
   async changePwd(@Body() payload: PayloadChangePwdDTO, @Res() res: Response) {
     const user = await this.authService.changePwd(payload);

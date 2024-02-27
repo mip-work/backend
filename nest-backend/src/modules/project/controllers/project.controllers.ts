@@ -29,10 +29,6 @@ export class ProjectControllers {
 
   @UseGuards(AuthGuard)
   @Post()
-<<<<<<< HEAD
-  async create(@Body() request: CreateProjectDto, @Res() res: Response) {
-    const project = await this.projectService.create(request);
-=======
   async create(
     @Body() dto: CreateProjectDto,
     @Req() req: Request,
@@ -42,7 +38,6 @@ export class ProjectControllers {
       ...dto,
       userId: req.user.id,
     });
->>>>>>> fdd56f52793c83b0a3b58949a9ee77d5df4f2408
     return res.status(HttpStatus.CREATED).json({
       data: project,
       status: HttpStatus.CREATED,

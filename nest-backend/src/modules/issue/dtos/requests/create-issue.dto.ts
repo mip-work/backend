@@ -33,6 +33,10 @@ export class CreateIssueDto {
   listId: string | null;
 
   @ApiProperty()
+  @IsInt()
+  position: number;
+
+  @ApiProperty()
   @IsUUID()
   reporterId: string | null;
 

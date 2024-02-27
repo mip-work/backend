@@ -10,5 +10,5 @@ export class UpdateListDTO {
   @ApiProperty()
   @IsOptional()
   @IsInt()
-  order: number;
+  position: number;
 }

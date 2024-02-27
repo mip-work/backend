@@ -62,6 +62,7 @@ model List {
   name      String   @default("unnamed list")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  position  Int
   issues    Issue[]
   Project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
@@ -72,6 +73,7 @@ model List {
 model Issue {
   id         String     @id @default(uuid())
   priority   Int
+  position   Int
   type       Int
   progress   Int
   summary    String     @db.VarChar(100)

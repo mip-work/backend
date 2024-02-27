@@ -29,9 +29,7 @@ export class MemberServices {
     );
 
     if (!currentMember) {
-      throw new NotFoundException(
-        `User not found in project: ${dto.projectId}`,
-      );
+      throw new UnauthorizedException('You do not have permission');
     }
 
     if (currentMember.role == Role.COMMON) {

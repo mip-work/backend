@@ -32,6 +32,5 @@ export class ListRepository {
   async update(id: string, dto: UpdateListDTO) {
     const list = await this.prisma.list.update({ where: { id }, data: dto });
     return list;
-  }   
-  
+  }
 }

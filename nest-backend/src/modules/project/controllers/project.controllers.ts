@@ -13,11 +13,7 @@ import {
 } from '@nestjs/common';
 import { CreateProjectDto } from '../dtos/requests/create-project.dto';
 import { ProjectServices } from '../services/project.services';
-<<<<<<< HEAD
-import { Response } from 'express';
-=======
 import { Request, Response } from 'express';
->>>>>>> fdd56f52793c83b0a3b58949a9ee77d5df4f2408
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateProjectDto } from '../dtos/requests/update-project.dto';
 import { AuthGuard } from 'src/modules/auth/guards/auth.guard';

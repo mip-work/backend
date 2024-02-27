@@ -5,10 +5,10 @@ export class UpdateListDTO {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
 
   @ApiProperty()
   @IsOptional()
   @IsInt()
-  position: number;
+  position?: number;
 }

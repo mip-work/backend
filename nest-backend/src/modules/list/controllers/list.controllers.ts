@@ -11,12 +11,12 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { CreateListDto } from '../dtos/requests/create-list.dto';
 import { ListServices } from '../services/list.services';
 import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateListDTO } from '../dtos/requests/update-list-dto';
 import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
+import { CreateListReqDto } from '../dtos/requests/create-list-req.dto';
 
 @ApiTags('List')
 @Controller('list')
@@ -25,7 +25,7 @@ export class ListControllers {
   @UseGuards(AuthGuard)
   @Post()
   async create(
-    @Body() body: CreateListDto,
+    @Body() body: CreateListReqDto,
     @Req() req: Request,
     @Res() res: Response,
   ) {
@@ -35,37 +35,58 @@ export class ListControllers {
       status: HttpStatus.CREATED,
     });
   }
+
   @UseGuards(AuthGuard)
-  @Get('/:id')
-  async get(@Param('id') id: string, @Res() res: Response) {
-    const list = await this.listService.get(id);
-    return res.status(HttpStatus.OK).json({
-      data: list,
-      status: HttpStatus.OK,
-    });
-  }
-  @UseGuards(AuthGuard)
-  @Delete('/:id')
-  async delete(@Param('id') id: string, @Res() res: Response) {
-    await this.listService.delete(id);
-    return res.status(HttpStatus.OK).json();
-  }
-  @UseGuards(AuthGuard)
-  @Get('/all/:id')
-  async getAll(@Param('id') id: string, @Res() res: Response) {
-    const list = await this.listService.getAll(id);
-    return res.status(HttpStatus.OK).json({
-      data: list,
-      status: HttpStatus.OK,
-    });
-  }
-  @Patch(':id')
-  async update(
+  @Get('/:projectId/:id')
+  async get(
+    @Param('projectId') projectId: string,
     @Param('id') id: string,
-    @Body() request: UpdateListDTO,
+    @Req() req: Request,
     @Res() res: Response,
   ) {
-    const list = await this.listService.update(id, request);
+    const list = await this.listService.get(id, projectId, req.user.id);
+    return res.status(HttpStatus.OK).json({
+      data: list,
+      status: HttpStatus.OK,
+    });
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('/:projectId')
+  async delete(
+    @Param('projectId') projectId: string,
+    @Body('id') id: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    await this.listService.delete(id, projectId, req.user.id);
+    return res.status(HttpStatus.OK).json();
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/:projectId')
+  async getAll(
+    @Param('projectId') projectId: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const list = await this.listService.getAll(projectId, req.user.id);
+    return res.status(HttpStatus.OK).json({
+      data: list,
+      status: HttpStatus.OK,
+    });
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch(':projectId/:id')
+  async update(
+    @Param('projectId') projectId: string,
+    @Param('id') id: string,
+    @Body() dto: UpdateListDTO,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const list = await this.listService.update(id, projectId, req.user.id, dto);
     return res.status(HttpStatus.OK).json({
       data: list,
       status: HttpStatus.OK,

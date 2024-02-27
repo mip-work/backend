@@ -76,4 +76,13 @@ export class UserServices {
 
     return user;
   }
+
+  async changePwd(id: string, newPwd: string) {
+    const user = await this.findById(id);
+
+    const userUpdate = await this.userRepository.changePwd(user.id, newPwd);
+
+    return userUpdate;
+  }
+
 }

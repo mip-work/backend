@@ -17,4 +17,9 @@ export class AssigneeRepository {
     const assignee = await this.prisma.assignee.findFirst({ where: { id } });
     return assignee;
   }
+
+  async delete(id: string) {
+    const assignee = await this.prisma.assignee.delete({ where: { id } });
+    return assignee;
+  }
 }

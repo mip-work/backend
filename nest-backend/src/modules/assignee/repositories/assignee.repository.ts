@@ -22,4 +22,12 @@ export class AssigneeRepository {
     const assignee = await this.prisma.assignee.delete({ where: { id } });
     return assignee;
   }
+
+  async update(id: string, dto: UpdateAssigneeDto) {
+    const assignee = await this.prisma.assignee.update({
+      where: { id },
+      data: dto,
+    });
+    return assignee;
+  }
 }

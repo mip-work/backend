@@ -12,4 +12,9 @@ export class AssigneeRepository {
     });
     return assignee;
   }
+
+  async get(id: string) {
+    const assignee = await this.prisma.assignee.findFirst({ where: { id } });
+    return assignee;
+  }
 }

@@ -1,10 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PayloadLoginDTO } from '../dtos/login-user.dto';
 import { UserServices } from 'src/modules/User/services/users.services';
 import { AuthBuilder } from '../builder/auth.builder';
 import { SavePayloadUser } from '../dtos/save-token-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcrypt';
+import { PayloadChangePwdDTO } from '../dtos/change-pwd-user.dto';
 
 @Injectable()
 export class AuthServices {
@@ -13,9 +14,9 @@ export class AuthServices {
   async login({email, pwd}: PayloadLoginDTO) {
     const user = await this.userService.findByEmail(email);
 
-    const isValidPwd = await compare(pwd, user.pwd);
-    
-    if (!isValidPwd) {
+    const pwdValid = await this.isValidPwd(pwd, user.pwd);
+
+    if (!pwdValid) {
       throw new UnauthorizedException("Credentials Invalid");
     }
 
@@ -24,6 +25,28 @@ export class AuthServices {
     const token = this.jwtService.sign(payload);
 
     return { payload, token }; 
+  }
+
+  async changePwd({email, currentPwd, newPwd, repeatNewPwd}: PayloadChangePwdDTO) {
+    const user = await this.userService.findByEmail(email);
+
+    const pwdValid = await this.isValidPwd(currentPwd, user.pwd);
+
+    if (!pwdValid) {
+      throw new UnauthorizedException("Current Password Incorrect");
+    }
+
+    if (newPwd != repeatNewPwd) {
+      throw new BadRequestException("Passwords are not the same");
+    }
+
+    const userUpdate = await this.userService.changePwd(user.id, newPwd);
+
+    return userUpdate;
+  }
+
+  async isValidPwd(pwd: string, hash: string): Promise<boolean> {
+    return await compare(pwd, hash);
   }
 
 }

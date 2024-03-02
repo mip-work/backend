@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsDate, IsDateString, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreateSprintDto {
   @ApiProperty()
@@ -9,13 +9,12 @@ export class CreateSprintDto {
 
   @ApiProperty()
   @IsUUID()
-  projectId: string;
+  issueId: string;
 
   @ApiProperty()
   @IsDateString()
-  initialDate: Date;
+  initialDate: string;
 
   @ApiProperty()
-  @IsDateString()
   finalDate: string;
 }

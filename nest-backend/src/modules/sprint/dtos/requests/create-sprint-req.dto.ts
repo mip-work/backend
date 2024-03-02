@@ -9,9 +9,8 @@ export class CreateSprintRecDto {
 
   @ApiProperty()
   @IsUUID()
-  projectId: string;
+  issueId: string;
 
   @ApiProperty()
-  @IsDateString()
   finalDate: string;
 }

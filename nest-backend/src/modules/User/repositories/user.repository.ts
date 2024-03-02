@@ -34,4 +34,8 @@ export class UserRepository {
     return user;
   }
 
+  async changePwd(id: string, newPwd: string) {
+    return await this.prisma.user.update({ where: { id }, data: { pwd: newPwd }});
+  }
+
 }

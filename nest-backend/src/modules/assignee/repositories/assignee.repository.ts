@@ -12,4 +12,22 @@ export class AssigneeRepository {
     });
     return assignee;
   }
+
+  async get(id: string) {
+    const assignee = await this.prisma.assignee.findFirst({ where: { id } });
+    return assignee;
+  }
+
+  async delete(id: string) {
+    const assignee = await this.prisma.assignee.delete({ where: { id } });
+    return assignee;
+  }
+
+  async update(id: string, dto: UpdateAssigneeDto) {
+    const assignee = await this.prisma.assignee.update({
+      where: { id },
+      data: dto,
+    });
+    return assignee;
+  }
 }

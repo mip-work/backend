@@ -1,4 +1,4 @@
-import { IsInt, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class List {
   id: string;
@@ -7,9 +7,13 @@ export class List {
   @IsString()
   name: string;
 
-  @IsInt()
-  position: number;
-
   @IsUUID()
   projectId: string;
+
+  @IsOptional()
+  @IsUUID()
+  parentId: string;
+
+  createdAt: Date;
+  updatedAt: Date;
 }

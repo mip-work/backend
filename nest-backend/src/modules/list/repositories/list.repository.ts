@@ -33,4 +33,18 @@ export class ListRepository {
     const list = await this.prisma.list.update({ where: { id }, data: dto });
     return list;
   }
+
+  async getByParentId(parentId: string, projectId: string) {
+    const list = await this.prisma.list.findFirst({
+      where: { parentId, projectId },
+    });
+    return list;
+  }
+
+  async checkEmptyList(projectId: string) {
+    const list = await this.prisma.list.findFirst({
+      where: { parentId: null, projectId },
+    });
+    return list;
+  }
 }

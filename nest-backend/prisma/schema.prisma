@@ -60,7 +60,7 @@ model Member {
 model List {
   id        String   @id @default(uuid())
   name      String   @default("unnamed list")
-  position  Int
+  parentId  String?   
   projectId String
   issues    Issue[]
   Project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)

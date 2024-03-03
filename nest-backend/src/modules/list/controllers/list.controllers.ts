@@ -14,9 +14,8 @@ import {
 import { ListServices } from '../services/list.services';
 import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
-import { UpdateListDTO } from '../dtos/requests/update-list-dto';
 import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
-import { CreateListReqDto } from '../dtos/requests/create-list-req.dto';
+import { CreateListDto } from '../dtos/requests/create-list.dto';
 
 @ApiTags('List')
 @Controller('list')
@@ -25,7 +24,7 @@ export class ListControllers {
   @UseGuards(AuthGuard)
   @Post()
   async create(
-    @Body() body: CreateListReqDto,
+    @Body() body: CreateListDto,
     @Req() req: Request,
     @Res() res: Response,
   ) {
@@ -78,15 +77,20 @@ export class ListControllers {
   }
 
   @UseGuards(AuthGuard)
-  @Patch(':projectId/:id')
+  @Patch(':projectId/:listId')
   async update(
     @Param('projectId') projectId: string,
-    @Param('id') id: string,
-    @Body() dto: UpdateListDTO,
+    @Param('listId') listId: string,
+    @Body('parentId') parentId: string,
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const list = await this.listService.update(id, projectId, req.user.id, dto);
+    const list = await this.listService.changePosition(
+      listId,
+      projectId,
+      parentId,
+      req.user.id,
+    );
     return res.status(HttpStatus.OK).json({
       data: list,
       status: HttpStatus.OK,

@@ -11,7 +11,8 @@ import { List } from '../dtos/list.dto';
 import { UpdateListDTO } from '../dtos/requests/update-list-dto';
 import { MemberRepository } from 'src/modules/member/repositories/member.repository';
 import { Role } from 'src/modules/member/dtos/enums/role.enum';
-import { CreateListReqDto } from '../dtos/requests/create-list-req.dto';
+import { CreateListDto } from '../dtos/requests/create-list.dto';
+import { orderList } from '../utils/order-list.utils';
 
 @Injectable()
 export class ListServices {
@@ -21,7 +22,7 @@ export class ListServices {
     private memberRepository: MemberRepository,
   ) {}
 
-  async create(dto: CreateListReqDto, userId: string) {
+  async create(dto: CreateListDto, userId: string) {
     const project = await this.projectRepository.get(dto.projectId);
 
     if (!project) {
@@ -41,21 +42,30 @@ export class ListServices {
       throw new UnauthorizedException('Only admins can create a list');
     }
 
-    const lists = await this.listRepository.getAll(dto.projectId);
+    if (dto.parentId) {
+      const checkParentId = await this.listRepository.get(dto.parentId);
 
-    let lastPosition = 0;
-    lists.forEach((list) => {
-      if (list.position > lastPosition) {
-        lastPosition = list.position;
+      if (!checkParentId) {
+        throw new BadRequestException('This parent id does not exist');
       }
-    });
+      const invalidParentId = await this.listRepository.getByParentId(
+        dto.parentId,
+        dto.projectId,
+      );
 
-    const position = lastPosition + 1;
+      if (invalidParentId) {
+        throw new BadRequestException('Invalid parent id');
+      }
+    } else {
+      const listEmpty = await this.listRepository.checkEmptyList(dto.projectId);
 
-    const list = await this.listRepository.create({
-      ...dto,
-      position,
-    });
+      if (listEmpty) {
+        throw new BadRequestException('Project already have a first list');
+      }
+    }
+
+    const list = await this.listRepository.create(dto);
+
     if (!list) {
       throw new BadRequestException('Could not create a list');
     }
@@ -80,13 +90,6 @@ export class ListServices {
     }
     await this.listRepository.delete(id);
 
-    const lists = await this.listRepository.getAll(projectId);
-    lists.forEach(async (list, index) => {
-      if (list.position > listExists.position) {
-        list.position = index + listExists.position;
-        await this.listRepository.update(list.id, { position: list.position });
-      }
-    });
     return;
   }
 
@@ -116,10 +119,12 @@ export class ListServices {
     const lists: List[] = await this.listRepository.getAll(projectId);
 
     if (lists.length < 1) {
-      throw new NotFoundException('DDD');
+      throw new NotFoundException('No list were found');
     }
 
-    return lists;
+    const sortedList = orderList(lists);
+
+    return sortedList;
   }
 
   async update(
@@ -138,12 +143,139 @@ export class ListServices {
       throw new UnauthorizedException('Only admins can update a list');
     }
 
-    const list = await this.listRepository.update(id, dto);
+    const updatedList = await this.listRepository.update(id, dto);
+    return updatedList;
+  }
 
-    if (!list) {
-      throw new NotFoundException('Cannot update');
+  async changePosition(
+    listId: string,
+    projectId: string,
+    parentId: string,
+    userId: string,
+  ) {
+    const member = await this.memberRepository.findInProject(userId, projectId);
+
+    if (!member) {
+      throw new ForbiddenException('Cannot access this project');
     }
 
-    return list;
+    if (member.role == Role.COMMON) {
+      throw new UnauthorizedException('Only admins can update a list');
+    }
+
+    const list = await this.listRepository.get(listId);
+
+    if (!list) {
+      throw new NotFoundException('List not found');
+    }
+
+    if (parentId == undefined) parentId = null;
+
+    if (list.parentId === parentId) {
+      throw new BadRequestException('Cannot change position with itself');
+    }
+
+    const lists = await this.listRepository.getAll(projectId);
+
+    if (lists.length < 2 && list.parentId === parentId) {
+      throw new BadRequestException('Cannot change position with itself');
+    }
+
+    const sortedList = orderList(lists);
+
+    if (parentId) {
+      const parent = sortedList.find((l) => l.id == parentId);
+
+      if (!parent) {
+        throw new BadRequestException('Invalid parent id');
+      }
+
+      const childIndex = sortedList.findIndex((l) => l.parentId === list.id);
+      // FROM LEFT TO RIGHT
+      const lastList = sortedList[sortedList.length - 1];
+      if (lastList.id == parentId) {
+        const child = sortedList[childIndex];
+        if (list.parentId === null) {
+          // IS ON BEGINING
+          child.parentId = null;
+        } else {
+          // IS ON THE MIDDLE
+          child.parentId = list.parentId;
+        }
+        sortedList[childIndex] = child;
+        await this.listRepository.update(child.id, {
+          parentId: child.parentId,
+        });
+        await this.listRepository.update(list.id, { parentId: lastList.id });
+        list.parentId = lastList.id;
+        sortedList.slice(sortedList.indexOf(list), 1);
+        sortedList.push(list);
+        return sortedList;
+      }
+
+      // FROM RIGHT TO LEFT
+      // LIST IS IN MIDDLE
+      if (childIndex != -1) {
+        const child = sortedList[childIndex];
+        child.parentId = list.parentId;
+        await this.listRepository.update(child.id, {
+          parentId: child.parentId,
+        });
+
+        sortedList[childIndex] = child;
+
+        const rightListIndex = sortedList.findIndex(
+          (l) => l.parentId == parent.id,
+        );
+        const rightList = sortedList[rightListIndex];
+        rightList.parentId = list.id;
+        await this.listRepository.update(rightList.id, {
+          parentId: rightList.parentId,
+        });
+
+        sortedList[rightListIndex] = rightList;
+
+        list.parentId = parent.id;
+        await this.listRepository.update(list.id, {
+          parentId: list.parentId,
+        });
+        sortedList.slice(sortedList.indexOf(list), 1);
+        sortedList.splice(sortedList.indexOf(parent), 0, list);
+
+        return sortedList;
+      } else {
+        const rightListIndex = sortedList.findIndex(
+          (l) => l.parentId == parentId,
+        );
+
+        const rightList = sortedList[rightListIndex];
+        rightList.parentId = list.id;
+        await this.listRepository.update(rightList.id, {
+          parentId: rightList.parentId,
+        });
+
+        sortedList[rightListIndex] = rightList;
+
+        list.parentId = parent.id;
+        await this.listRepository.update(list.id, {
+          parentId: list.parentId,
+        });
+        sortedList.slice(sortedList.indexOf(list), 1);
+        sortedList.splice(sortedList.indexOf(parent), 0, list);
+
+        return sortedList;
+      }
+    } else {
+      list.parentId = null; // TO FIRST POSITION
+      sortedList[0].parentId = list.id; // TO SECOND POSITION IN THIS CASE
+
+      await this.listRepository.update(list.id, { parentId: list.parentId });
+      await this.listRepository.update(sortedList[0].id, { parentId: list.id });
+
+      sortedList.slice(sortedList.indexOf(list), 1);
+      sortedList.unshift(list);
+
+      return sortedList;
+    }
   }
 }

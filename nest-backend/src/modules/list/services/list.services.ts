@@ -83,13 +83,26 @@ export class ListServices {
       throw new UnauthorizedException('Only admins can delete a list');
     }
 
-    const listExists = await this.listRepository.get(id);
+    const list = await this.listRepository.get(id);
 
-    if (!listExists) {
+    if (!list) {
       throw new NotFoundException('List does not exist to delete');
     }
-    await this.listRepository.delete(id);
 
+    const lists = await this.listRepository.getAll(projectId);
+
+    const listIndex = lists.findIndex((l) => l.id == list.id);
+
+    const child = lists.find((l) => l.parentId === list.id);
+    lists.splice(listIndex, 1);
+
+    if (!child) {
+      return;
+    }
+    child.parentId = list.parentId;
+    await this.listRepository.update(child.id, { parentId: child.parentId });
+
+    await this.listRepository.delete(id);
     return;
   }
 
@@ -153,6 +166,10 @@ export class ListServices {
     parentId: string,
     userId: string,
   ) {
+    if (listId === parentId) {
+      throw new BadRequestException('You cannot change position with itself');
+    }
+
     const member = await this.memberRepository.findInProject(userId, projectId);
 
     if (!member) {
@@ -186,6 +203,9 @@ export class ListServices {
     if (parentId) {
       const parent = sortedList.find((l) => l.id == parentId);
 
+      const listIndex = sortedList.findIndex((l) => list.id === l.id);
+      const parentIndex = sortedList.findIndex((l) => parent.id === l.id);
+
       if (!parent) {
         throw new BadRequestException('Invalid parent id');
       }
@@ -208,7 +228,7 @@ export class ListServices {
         });
         await this.listRepository.update(list.id, { parentId: lastList.id });
         list.parentId = lastList.id;
-        sortedList.slice(sortedList.indexOf(list), 1);
+        sortedList.splice(listIndex, 1);
         sortedList.push(list);
         return sortedList;
       }
@@ -239,8 +259,8 @@ export class ListServices {
         await this.listRepository.update(list.id, {
           parentId: list.parentId,
         });
-        sortedList.slice(sortedList.indexOf(list), 1);
-        sortedList.splice(sortedList.indexOf(parent), 0, list);
+        sortedList.splice(listIndex, 1);
+        sortedList.splice(parentIndex, 0, list);
 
         return sortedList;
       } else {
@@ -257,22 +277,33 @@ export class ListServices {
         sortedList[rightListIndex] = rightList;
 
         list.parentId = parent.id;
+
         await this.listRepository.update(list.id, {
           parentId: list.parentId,
         });
-        sortedList.slice(sortedList.indexOf(list), 1);
-        sortedList.splice(sortedList.indexOf(parent), 0, list);
+        sortedList.splice(listIndex, 1);
+        sortedList.splice(parentIndex, 0, list);
 
         return sortedList;
       }
     } else {
+      const childIndex = sortedList.findIndex((l) => l.parentId === list.id);
+      if (childIndex != -1) {
+        const child = sortedList[childIndex];
+        child.parentId = list.parentId;
+        await this.listRepository.update(child.id, {
+          parentId: child.parentId,
+        });
+      }
+
       list.parentId = null; // TO FIRST POSITION
       sortedList[0].parentId = list.id; // TO SECOND POSITION IN THIS CASE
 
+      const listIndex = sortedList.findIndex((l) => list.id === l.id);
       await this.listRepository.update(list.id, { parentId: list.parentId });
       await this.listRepository.update(sortedList[0].id, { parentId: list.id });
 
-      sortedList.slice(sortedList.indexOf(list), 1);
+      sortedList.splice(listIndex, 1);
       sortedList.unshift(list);
 
       return sortedList;

@@ -23,7 +23,7 @@ export class ProjectServices {
     const project = await this.projectRepository.create(dto);
 
     if (!project) {
-      throw new InternalServerErrorException('Could not create the project');
+      throw new InternalServerErrorException(`The project couldn't be created`);
     }
 
     await this.memberRepository.addMember({
@@ -52,7 +52,7 @@ export class ProjectServices {
   async getAll(userId: string) {
     const projects: Project[] = await this.projectRepository.getAll(userId);
     if (projects.length < 1) {
-      throw new NotFoundException(`This user doesn't have any projects`);
+      throw new NotFoundException(`You can't create a project`);
     }
 
     const projectsView = ProjectBuilder.listProjectView(projects);
@@ -64,7 +64,7 @@ export class ProjectServices {
     const project = await this.projectRepository.update(id, dto);
 
     if (!project) {
-      throw new BadRequestException('Could not create a project');
+      throw new BadRequestException(`You can't create a project`);
     }
 
     const projectsView = ProjectBuilder.createProjectView(project);

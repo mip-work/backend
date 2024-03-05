@@ -1,14 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsString, IsUUID } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateListDto {
   @ApiProperty()
+  @IsOptional()
   @IsString()
   name: string;
-  @ApiProperty()
-  @IsInt()
-  order: number;
+
   @ApiProperty()
   @IsUUID()
   projectId: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsUUID()
+  parentId: string;
 }

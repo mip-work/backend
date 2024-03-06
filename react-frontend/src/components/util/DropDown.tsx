@@ -11,7 +11,6 @@ type Prop = {
   dispatch: Dispatch<A>;
   actionType: T;
   className?: string;
-  handleProgressBar: (progress: number) => void;
 };
 
 function DropDown(props: Prop) {
@@ -23,7 +22,6 @@ function DropDown(props: Prop) {
     dispatch,
     actionType,
     className,
-    handleProgressBar,
   } = props;
   const isMulti = type === "multiple";
   const [localList, setLocalList] = useState<Category[]>(
@@ -33,7 +31,7 @@ function DropDown(props: Prop) {
   const [current, setCurrent] = useState<Category[] | number>(
     dv || (isMulti ? [list[0]] : 0)
   );
-  const [on, setOn] = useState<boolean>(false);
+  const [on, setOn] = useState(false);
 
   useEffect(() => {
     if (dv !== undefined) return;
@@ -44,32 +42,32 @@ function DropDown(props: Prop) {
     });
   }, []);
 
-  const handleSelect = (idx: number) => () => {
+  const handleSelect = (value: number) => () => {
     const [clone, resultList] = modifyItems(
-      idx,
+      value,
       localList,
       current as Category[]
     );
     dispatch({
       type: actionType,
-      value: isMulti ? parseIds(resultList) : localList[idx].value,
+      value: isMulti ? parseIds(resultList) : value,
     });
     setLocalList(clone);
     setCurrent(resultList);
     setOn(false);
   };
 
-  const handleClick = (idx: number) => () => {
-    if (idx === current) return setOn(false);
-    setCurrent(idx);
-    dispatch({ type: actionType, value: localList[idx].value });
+  const handleClick = (value: number) => () => {
+    if (value === current) return setOn(false);
+    setCurrent(value);
+    dispatch({ type: actionType, value });
     setOn(false);
   };
 
-  const handleDelete = (e: React.MouseEvent<HTMLSpanElement>, idx: number) => {
+  const handleDelete = (e: React.MouseEvent<HTMLSpanElement>, value: number) => {
     e.stopPropagation();
     const [clone, resultList] = modifyItems(
-      idx,
+      value,
       current as Category[],
       localList
     );
@@ -77,11 +75,9 @@ function DropDown(props: Prop) {
     setCurrent(clone);
     dispatch({
       type: actionType,
-      value: isMulti ? parseIds(clone) : localList[idx].value,
+      value: isMulti ? parseIds(clone) : value,
     });
   };
-
-  console.log(current);
 
   return (
     <div
@@ -101,15 +97,11 @@ function DropDown(props: Prop) {
           <div className="flex flex-wrap gap-2">
             {isMulti && typeof current === "object" ? (
               current.length > 0 ? (
-                current.map((props, i) => (
+                current.map((props) => (
                   <div
                     key={props.value}
                     className="flex items-center gap-2 border-[1.5px] border-blue-500 px-2 hover:border-green-500"
-                    onClick={(e) => {
-                      handleDelete(e, i);
-                      handleProgressBar(props.value);
-                      console.log(props.value, "Props Value");
-                    }}
+                    onClick={(e) => handleDelete(e, props.value)}
                   >
                     <Item
                       size="h-5 w-5"
@@ -123,7 +115,9 @@ function DropDown(props: Prop) {
                 <>Select</>
               )
             ) : (
-              <Item size="h-4 w-4" {...list[current as number]} />
+              <>
+              <Item size="h-4 w-4" {...list[list.findIndex(el => el.value == (current as number))]} />
+              </>
             )}
           </div>
           <Icon
@@ -133,15 +127,12 @@ function DropDown(props: Prop) {
         </>
       </button>
       {on && (
-        <div className="absolute bottom-0 z-10 w-full translate-y-[calc(100%+5px)] rounded-[3px] bg-white py-2 shadow-md">
+        <ul className="absolute bottom-0 z-10 w-full translate-y-[calc(100%+5px)] rounded-[3px] bg-white py-2 shadow-md">
           {localList.length > 0 ? (
-            localList.map((props, idx) => (
+            localList.map((props) => (
               <li
                 className="cursor-pointer px-4 py-2 hover:bg-[#e2e8f0]"
-                onClick={() => {
-                  (isMulti ? handleSelect : handleClick)(idx)
-                  handleProgressBar(props.value)
-                }}
+                onClick={(isMulti ? handleSelect : handleClick)(props.value)}
                 key={props.value}
               >
                 <Item
@@ -155,7 +146,7 @@ function DropDown(props: Prop) {
           ) : (
             <span className="my-2 block text-center">no member left</span>
           )}
-        </div>
+        </ul>
       )}
     </div>
   );
@@ -166,7 +157,8 @@ export default DropDown;
 export type Category = { text: string; icon?: string; value: number };
 
 // helpers
-const modifyItems = (idx: number, list: Category[], resultList: Category[]) => {
+const modifyItems = (value: number, list: Category[], resultList: Category[]) => {
+  const idx = list.findIndex(el => el.value == value)
   const clone = list.slice(0);
   const deleted = clone.splice(idx, 1)[0];
   const result = [...resultList, deleted];

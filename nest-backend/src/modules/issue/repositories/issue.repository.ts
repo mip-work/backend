@@ -12,4 +12,39 @@ export class IssueRepository {
     });
     return issue;
   }
+
+  async get(id: string) {
+    const issue = await this.prisma.issue.findFirst({
+      where: { id },
+    });
+    return issue;
+  }
+
+  async getAll(listId: string) {
+    const issue = await this.prisma.issue.findMany({
+      where: { listId },
+    });
+    return issue;
+  }
+
+  async delete(id: string) {
+    const issue = await this.prisma.issue.delete({
+      where: { id },
+    });
+    return issue;
+  }
+
+  async getByParentId(parentId: string, listId: string) {
+    const issue = await this.prisma.issue.findFirst({
+      where: { parentId, listId },
+    });
+    return issue;
+  }
+
+  async checkEmptyIssue(listId: string) {
+    const issue = await this.prisma.issue.findFirst({
+      where: { parentId: null, listId },
+    });
+    return issue;
+  }
 }

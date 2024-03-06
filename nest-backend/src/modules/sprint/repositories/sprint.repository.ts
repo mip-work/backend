@@ -12,4 +12,11 @@ export class SprintRespository {
     });
     return sprint;
   }
+
+  async get(id: string) {
+    const sprint = await this.prisma.sprint.findFirst({
+      where: { id },
+    });
+    return sprint;
+  }
 }

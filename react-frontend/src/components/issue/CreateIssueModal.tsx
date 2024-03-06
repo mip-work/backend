@@ -12,7 +12,7 @@ import TextInput from './TextInput';
 import toast from 'react-hot-toast';
 
 const CreateIssueModel = (props: IssueModalProps) => {
-  const { lists, members, types, priorities, onClose } = props;
+  const { lists, members, types, priorities, onClose, progresses } = props;
   const { authUser: u } = selectAuthUser();
   const [createIssue, { error, isLoading }] = useCreateIssueMutation();
   const [form, dispatch] = useReducer(reducer, initial);
@@ -91,7 +91,7 @@ const CreateIssueModel = (props: IssueModalProps) => {
             type='normal'
             className='w-full'
           />
-        </WithLabel>
+        </WithLabel>    
         {lists && (
           <WithLabel label='Status'>
             <DropDown
@@ -110,7 +110,7 @@ const CreateIssueModel = (props: IssueModalProps) => {
 
 export default CreateIssueModel;
 
-export type T = 'type' | 'summary' | 'descr' | 'assignee' | 'priority' | 'listId';
+export type T = 'type' | 'summary' | 'descr' | 'assignee' | 'priority' | 'listId' | 'progress';
 
 export type A = { type: T; value: number | number[] | string };
 
@@ -119,6 +119,7 @@ const initial: State = {
   summary: '',
   priority: 0,
   type: 0,
+  progress: 0,
   reporterId: null,
   assignees: [],
   listId: null,
@@ -138,6 +139,8 @@ const reducer = (state: State, { type, value }: A): State => {
       return { ...state, assignees: value as number[] };
     case 'priority':
       return { ...state, priority: value as number };
+      case 'progress':
+        return { ...state, progress: value as number };      
     case 'listId':
       return { ...state, listId: value as number };
     default:

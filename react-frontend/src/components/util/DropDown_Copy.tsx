@@ -136,10 +136,10 @@ function DropDown(props: Prop) {
         <div className="absolute bottom-0 z-10 w-full translate-y-[calc(100%+5px)] rounded-[3px] bg-white py-2 shadow-md">
           {localList.length > 0 ? (
             localList.map((props, idx) => (
-              <li
+              <button
                 className="cursor-pointer px-4 py-2 hover:bg-[#e2e8f0]"
                 onClick={() => {
-                  (isMulti ? handleSelect : handleClick)(idx)
+                  isMulti ? handleSelect(idx) : handleClick(idx)
                   handleProgressBar(props.value)
                 }}
                 key={props.value}
@@ -150,7 +150,7 @@ function DropDown(props: Prop) {
                   {...list[current as number]}
                   {...props}
                 />
-              </li>
+              </button>
             ))
           ) : (
             <span className="my-2 block text-center">no member left</span>

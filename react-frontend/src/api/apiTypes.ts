@@ -38,6 +38,7 @@ export interface Issue {
   abbreviationProject: string;
   type: number;
   priority: number;
+  progress: number;
   order: number;
   listId: number;
   reporterId: number;
@@ -136,6 +137,7 @@ export interface CreateIssue {
   assignees: number[];
   listId: number | null;
   priority: number;
+  progress: number;
   summary: string;
   descr: string;
   createdAt?: string;
@@ -149,6 +151,7 @@ export type UpdateIssueType =
   | 'descr'
   | 'assignee'
   | 'priority'
+  | 'progress'
   | 'listId'
   | 'addAssignee'
   | 'removeAssignee';

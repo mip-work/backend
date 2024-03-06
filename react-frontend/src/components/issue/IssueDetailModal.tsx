@@ -27,6 +27,7 @@ const IssueDetailModal = (props: IssueModalProps) => {
     lists,
     types,
     priorities,
+    progresses,
     onClose,
   } = props;
   const issue = Issue as IssueMetaData;
@@ -44,6 +45,7 @@ const IssueDetailModal = (props: IssueModalProps) => {
     listId,
     reporterId,
     priority,
+    progress,
     assignees,
     summary,
     descr,
@@ -58,9 +60,10 @@ const IssueDetailModal = (props: IssueModalProps) => {
   const [updateIssue] = useUpdateIssueMutation();
   const [deleteIssue] = useDeleteIssueMutation();
   const [isOpen, setIsOpen] = useState(false);
+  const [progressBar, setProgressBar] = useState<string>('')
   const isMine = reporterId === u?.id;
   const reporter = members.filter(({ value }) => value === reporterId)[0];
-
+  const handleProgressBar = (progress: number): void => setProgressBar(`${progress}`)
   const dispatchMiddleware = async (data: DispatchMiddleware) => {
     const assigneeIds = assignees.map(({ userId }) => userId);
     const body =
@@ -123,7 +126,7 @@ const IssueDetailModal = (props: IssueModalProps) => {
               apiFunc={dispatchMiddleware}
             />
             <hr className="mx-3" />
-            <CommentSection issueId={id} projectId={projectId} />
+            <CommentSection issueId={id} projectId={projectId} progressBar={progressBar} />
           </div>
           <div className="mt-3 shrink-0 sm:w-[15rem]">
             <WithLabel label="Status">
@@ -134,6 +137,7 @@ const IssueDetailModal = (props: IssueModalProps) => {
                 actionType="listId"
                 type="normal"
                 variant="small"
+                handleProgressBar={handleProgressBar}
               />
             </WithLabel>
             {members && (
@@ -160,6 +164,7 @@ const IssueDetailModal = (props: IssueModalProps) => {
                   dispatch={dispatchMiddleware}
                   actionType="assignee"
                   type="multiple"
+                  handleProgressBar={handleProgressBar}
                 />
               </WithLabel>
             )}
@@ -174,6 +179,7 @@ const IssueDetailModal = (props: IssueModalProps) => {
                   dispatch={dispatchMiddleware}
                   actionType="assignee"
                   type="multiple"
+                  handleProgressBar={handleProgressBar}
                 />
               </WithLabel>
             )}
@@ -185,6 +191,7 @@ const IssueDetailModal = (props: IssueModalProps) => {
                 dispatch={dispatchMiddleware}
                 actionType="type"
                 type="normal"
+                handleProgressBar={handleProgressBar}
               />
             </WithLabel>
             <WithLabel label="Priority">
@@ -195,6 +202,18 @@ const IssueDetailModal = (props: IssueModalProps) => {
                 dispatch={dispatchMiddleware}
                 actionType="priority"
                 type="normal"
+                handleProgressBar={handleProgressBar}
+              />
+            </WithLabel>
+            <WithLabel label="Progress">
+              <DropDown
+                variant="small"
+                list={progresses}
+                defaultValue={progress as number}
+                dispatch={dispatchMiddleware}
+                actionType="progress"
+                type="normal"
+                handleProgressBar={handleProgressBar}
               />
             </WithLabel>
             <hr className="border-t-[.5px] border-gray-400" />

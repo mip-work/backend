@@ -31,3 +31,10 @@ export const priorities = [
   { text: 'High', icon: '/assets/high.svg', value: 3 },
   { text: 'Highest', icon: '/assets/highest.svg', value: 4 },
 ];
+
+export const progresses = [
+  { text: 'Quarterway', icon: '/assets/lowest.svg', value: 25 },
+  { text: 'Halftime', icon: '/assets/low.svg', value: 50 },
+  { text: 'Threequarters', icon: '/assets/medium.svg', value: 75 },
+  { text: 'Completion ', icon: '/assets/high.svg', value: 100 },
+];

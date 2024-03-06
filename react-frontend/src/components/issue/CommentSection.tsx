@@ -3,21 +3,27 @@ import { selectAuthUser } from '../../api/endpoints/auth.endpoint';
 import { useCmtsQuery } from '../../api/endpoints/comment.endpoint';
 import AddComment from './AddComment';
 import Comment from './Comment';
-import SS from '../util/SpinningCircle';
 interface Props {
   projectId: number;
   issueId: number;
+  progressBar: string;
 }
 
 function CommentSection(props: Props) {
-  const { projectId } = props;
+  const { projectId, progressBar } = props;
   const { authUser: u } = selectAuthUser();
   const { data: cmts } = useCmtsQuery(props, { refetchOnMountOrArgChange: true });
 
   if (!u) return null;
 
+  console.log(progressBar)
   return (
     <div className='mt-4 max-w-[35rem] py-3 text-c-text sm:mx-3'>
+      <div>
+      <div id={`progressBar`} className={`bg-blue-600 w-[${progressBar}%] p-5 translate-x-[50%]}`}>
+      testsetseste
+      </div>
+      </div>
       <span className='font-medium tracking-wide'>Comments</span>
       <AddComment {...{ u, ...props }} />
       <ul className='mt-6'>

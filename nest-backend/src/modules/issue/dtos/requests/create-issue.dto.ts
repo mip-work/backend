@@ -28,6 +28,10 @@ export class CreateIssueDto {
   listId: string;
 
   @ApiProperty()
+  @IsInt()
+  position: number;
+
+  @ApiProperty()
   @IsUUID()
   parentId: string;
 

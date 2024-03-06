@@ -9,7 +9,7 @@ export class CreateSprintDto {
 
   @ApiProperty()
   @IsUUID()
-  projectId: string;
+  issueId: string;
 
   @ApiProperty()
   @IsDateString()

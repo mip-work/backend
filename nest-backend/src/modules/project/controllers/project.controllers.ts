@@ -40,7 +40,8 @@ export class ProjectControllers {
     });
   }
 
-  @Get('/:id')
+  @UseGuards(AuthGuard)
+  @Get('/projects/:id')
   async get(@Param('id') request: string, @Res() res: Response) {
     const project = await this.projectService.get(request);
     return res.status(HttpStatus.OK).json({
@@ -49,15 +50,17 @@ export class ProjectControllers {
     });
   }
 
-  @Get('/projects/:userId')
-  async getAll(@Param('userId') request: string, @Res() res: Response) {
-    const project = await this.projectService.getAll(request);
+  @UseGuards(AuthGuard)
+  @Get('/projects')
+  async getAll(@Req() req: Request, @Res() res: Response) {
+    const project = await this.projectService.getAll(req.user.id);
     return res.status(HttpStatus.OK).json({
       data: project,
       status: HttpStatus.OK,
     });
   }
 
+  @UseGuards(AuthGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -71,6 +74,7 @@ export class ProjectControllers {
     });
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
   async delete(@Param('id') id: string, @Res() res: Response) {
     await this.projectService.delete(id);

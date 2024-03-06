@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../db/prisma.service';
 import { CreateAssigneeDto } from '../dtos/requests/create-assignee.dto';
+import { UpdateAssigneeDto } from '../dtos/requests/update-assignee.dto';
 
 @Injectable()
 export class AssigneeRepository {

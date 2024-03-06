@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
-export class CreateIssueDto {
+export class CreateIssueReqDto {
   @ApiProperty()
   @IsInt()
   priority: number;
@@ -9,10 +9,6 @@ export class CreateIssueDto {
   @ApiProperty()
   @IsInt()
   type: number;
-
-  @ApiProperty()
-  @IsInt()
-  progress: number;
 
   @ApiProperty()
   @IsString()
@@ -28,12 +24,8 @@ export class CreateIssueDto {
   listId: string;
 
   @ApiProperty()
-  @IsInt()
-  position: number;
-
-  @ApiProperty()
   @IsUUID()
-  parentId: string;
+  parentId: string | null;
 
   @ApiProperty()
   @IsUUID()

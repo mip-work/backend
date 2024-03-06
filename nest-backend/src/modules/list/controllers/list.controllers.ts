@@ -9,52 +9,91 @@ import {
   Post,
   Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
-import { CreateListDto } from '../dtos/requests/create-list.dto';
 import { ListServices } from '../services/list.services';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
-import { UpdateListDTO } from '../dtos/requests/update-list-dto';
+import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
+import { CreateListDto } from '../dtos/requests/create-list.dto';
 
 @ApiTags('List')
 @Controller('list')
 export class ListControllers {
   constructor(private listService: ListServices) {}
+  @UseGuards(AuthGuard)
   @Post()
-  async create(@Body() @Req() request: CreateListDto, @Res() res: Response) {
-    const list = await this.listService.create(request);
+  async create(
+    @Body() body: CreateListDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const list = await this.listService.create(body, req.user.id);
     return res.status(HttpStatus.CREATED).json({
       data: list,
       status: HttpStatus.CREATED,
     });
   }
-  @Get('/:id')
-  async get(@Param('id') id: string, @Res() res: Response) {
-    const list = await this.listService.get(id);
+
+  @UseGuards(AuthGuard)
+  @Get('/:projectId/:id')
+  async get(
+    @Param('projectId') projectId: string,
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const list = await this.listService.get(id, projectId, req.user.id);
     return res.status(HttpStatus.OK).json({
       data: list,
       status: HttpStatus.OK,
     });
   }
-  @Delete('/:id')
-  async delete(@Param('id') id: string, @Res() res: Response) {
-    const list = await this.listService.delete(id);
+
+  @UseGuards(AuthGuard)
+  @Delete('/:projectId')
+  async delete(
+    @Param('projectId') projectId: string,
+    @Body('id') id: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    await this.listService.delete(id, projectId, req.user.id);
     return res.status(HttpStatus.OK).json();
   }
-  @Get('/all/:id')
-  async getAll(@Param('id') id: string, @Res() res: Response) {
-    const list = await this.listService.getAll(id);
+
+  @UseGuards(AuthGuard)
+  @Get('/:projectId')
+  async getAll(
+    @Param('projectId') projectId: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const list = await this.listService.getAll(projectId, req.user.id);
     return res.status(HttpStatus.OK).json({
       data: list,
       status: HttpStatus.OK,
     });
   }
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() request: UpdateListDTO, @Res() res: Response) {
-    const list = await this.listService.update(id, request);
+
+  @UseGuards(AuthGuard)
+  @Patch(':projectId/:listId')
+  async update(
+    @Param('projectId') projectId: string,
+    @Param('listId') listId: string,
+    @Body('parentId') parentId: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const list = await this.listService.changePosition(
+      listId,
+      projectId,
+      parentId,
+      req.user.id,
+    );
     return res.status(HttpStatus.OK).json({
       data: list,
       status: HttpStatus.OK,
     });
-  }  
+  }
 }

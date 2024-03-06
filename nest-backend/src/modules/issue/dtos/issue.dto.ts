@@ -1,34 +1,12 @@
-import { IsInt, IsNotEmpty, IsString, IsUUID } from 'class-validator';
-
 export class Issue {
   id: string;
-
-  @IsInt()
-  order: number;
-
-  @IsInt()
   priority: number;
-
-  @IsInt()
   type: number;
-
-  @IsInt()
   progress: number;
-
-  @IsNotEmpty({ message: 'This field cannot be empty' })
-  @IsString()
-  summary: string;
-
-  @IsNotEmpty({ message: 'This field cannot be empty' })
-  @IsString()
+  title: string;
   descr: string;
-
-  @IsUUID()
   listId: string | null;
-
-  @IsUUID()
   reporterId: string | null;
-
-  @IsUUID()
+  parentId: number;
   sprintId: string | null;
 }

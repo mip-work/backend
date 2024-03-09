@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   HttpStatus,
   Param,
   Post,
@@ -32,5 +33,18 @@ export class IssueControllers {
       data: issue,
       status: HttpStatus.CREATED,
     });
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete(':projectId')
+  async delete(
+    @Param('projectId') projectId: string,
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body('issueId') issueId: string,
+  ) {
+    console.log(issueId);
+    await this.issueService.delete(issueId, projectId, req.user.id);
+    return res.status(HttpStatus.OK).json();
   }
 }

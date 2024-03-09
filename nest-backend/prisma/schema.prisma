@@ -82,7 +82,7 @@ model Issue {
   updatedAt  DateTime   @updatedAt
   List       List?      @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId     String
-  sprintId   String
+  sprintId   String?
   Sprint     Sprint?    @relation(fields: [sprintId], references: [id], onDelete: Cascade)
   comments   Comment[]
   assignees  Assignee[]

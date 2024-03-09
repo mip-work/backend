@@ -15,6 +15,7 @@ import { CreateIssueReqDto } from '../dtos/requests/create-issue-req.dto';
 import { ProjectRepository } from 'src/modules/project/repositories/project.repository';
 import { Role } from 'src/modules/member/dtos/enums/role.enum';
 import { SprintRespository } from 'src/modules/sprint/repositories/sprint.repository';
+import { orderList } from 'src/modules/list/utils/order-list.utils';
 
 @Injectable()
 export class IssueServices {
@@ -74,11 +75,10 @@ export class IssueServices {
         throw new BadRequestException('Invalid parent id');
       }
     } else {
-      const issueEmpty = await this.issueRepository.checkEmptyIssue(dto.listId);
-
-      if (issueEmpty) {
-        throw new BadRequestException('List already have a first list');
-      }
+      const issues = await this.issueRepository.getAll(list.id);
+      const sortedList = orderList(issues);
+      dto.parentId = sortedList[sortedList.length - 1].id;
+      console.log(sortedList);
     }
 
     const issue = await this.issueRepository.create({ ...dto, progress: 0 });
@@ -88,5 +88,41 @@ export class IssueServices {
     }
 
     return issue;
+  }
+
+  async delete(issueId: string, projectId: string, userId: string) {
+    const member = await this.memberRepository.findInProject(userId, projectId);
+
+    if (!member) {
+      throw new ForbiddenException('Cannot access this project');
+    }
+
+    if (member.role == Role.COMMON) {
+      throw new UnauthorizedException('Only admins can delete an issue');
+    }
+
+    const issue = await this.issueRepository.get(issueId);
+
+    if (!issue) {
+      throw new NotFoundException('Issue does not exists');
+    }
+
+    const issues = await this.issueRepository.getAll(issue.listId);
+
+    const issueIndex = issues.findIndex((i) => i.id === issue.id);
+
+    const child = issues.find((i) => i.parentId === issue.id);
+    issues.splice(issueIndex, 1);
+
+    if (!child) {
+      await this.issueRepository.delete(issueId);
+      return;
+    }
+
+    child.parentId = issue.parentId;
+    await this.issueRepository.update(child.id, { parentId: child.parentId });
+
+    await this.issueRepository.delete(issueId);
+    return;
   }
 }

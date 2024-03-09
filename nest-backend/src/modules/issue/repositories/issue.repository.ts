@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../db/prisma.service';
 import { CreateIssueDto } from '../dtos/requests/create-issue.dto';
+import { UpdateIssueDTO } from '../dtos/requests/update-issue.dto';
 
 @Injectable()
 export class IssueRepository {
@@ -30,6 +31,14 @@ export class IssueRepository {
   async delete(id: string) {
     const issue = await this.prisma.issue.delete({
       where: { id },
+    });
+    return issue;
+  }
+
+  async update(id: string, dto: UpdateIssueDTO) {
+    const issue = await this.prisma.issue.update({
+      where: { id },
+      data: dto,
     });
     return issue;
   }

@@ -1,13 +1,16 @@
-import { List } from '../dtos/list.dto';
+type MyArray = {
+  parentId: string;
+  id: string;
+};
 
-export function orderList(lists: List[]): List[] {
+export function orderList<T extends MyArray>(lists: T[]): T[] {
   const firstList = lists.find((list) => !list.parentId);
 
-  const sortedList: List[] = [];
+  const sortedList: T[] = [];
   sortedList.push(firstList);
   lists.splice(lists.indexOf(firstList), 1);
   lists.forEach(() => {
-    const list: List = lists.find(
+    const list: T = lists.find(
       (l) => l.parentId == sortedList[sortedList.length - 1].id,
     );
     sortedList.push(list);

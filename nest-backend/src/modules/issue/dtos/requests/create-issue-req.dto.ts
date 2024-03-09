@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class CreateIssueReqDto {
   @ApiProperty()
@@ -24,10 +30,12 @@ export class CreateIssueReqDto {
   listId: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsUUID()
   parentId: string | null;
 
   @ApiProperty()
+  @IsOptional()
   @IsUUID()
   sprintId: string | null;
 }

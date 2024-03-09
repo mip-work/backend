@@ -7,7 +7,7 @@ export class AssigneeServices {
   constructor(private assigneeRepository: AssigneeRepository) {}
 
   async create(dto: CreateAssigneeDto) {
-    const sprint = await this.assigneeRepository.create(dto);
+    const sprint = await this.assigneeRepository.addInIssue(dto);
 
     return sprint;
   }

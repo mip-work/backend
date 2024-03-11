@@ -6,7 +6,6 @@ export class Issue {
   title: string;
   descr: string;
   listId: string | null;
-  reporterId: string | null;
-  parentId: number;
+  parentId: string;
   sprintId: string | null;
 }

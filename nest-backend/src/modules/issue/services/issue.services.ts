@@ -1,10 +1,8 @@
 import {
   BadRequestException,
-  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { IssueRepository } from '../repositories/issue.repository';
 import { MemberRepository } from 'src/modules/member/repositories/member.repository';
@@ -13,9 +11,9 @@ import { AssigneeRepository } from 'src/modules/assignee/repositories/assignee.r
 import { ListRepository } from 'src/modules/list/repositories/list.repository';
 import { CreateIssueReqDto } from '../dtos/requests/create-issue-req.dto';
 import { ProjectRepository } from 'src/modules/project/repositories/project.repository';
-import { Role } from 'src/modules/member/dtos/enums/role.enum';
 import { SprintRespository } from 'src/modules/sprint/repositories/sprint.repository';
 import { orderList } from 'src/modules/list/utils/order-list.utils';
+import { Issue } from '../dtos/issue.dto';
 
 @Injectable()
 export class IssueServices {
@@ -29,27 +27,11 @@ export class IssueServices {
     private projectRepository: ProjectRepository,
   ) {}
 
-  async create(dto: CreateIssueReqDto, userId: string, projectId: string) {
-    const project = await this.projectRepository.get(projectId);
-
-    if (!project) {
-      throw new NotFoundException('Project does not exists');
-    }
-
+  async create(dto: CreateIssueReqDto) {
     const list = await this.listRepository.get(dto.listId);
 
     if (!list) {
       throw new NotFoundException('List not found');
-    }
-
-    const member = await this.memberRepository.findInProject(userId, projectId);
-
-    if (!member) {
-      throw new ForbiddenException('Cannot access this project');
-    }
-
-    if (member.role == Role.COMMON) {
-      throw new UnauthorizedException('Only admins can create an issue');
     }
 
     if (dto.sprintId) {
@@ -78,7 +60,6 @@ export class IssueServices {
       const issues = await this.issueRepository.getAll(list.id);
       const sortedList = orderList(issues);
       dto.parentId = sortedList[sortedList.length - 1].id;
-      console.log(sortedList);
     }
 
     const issue = await this.issueRepository.create({ ...dto, progress: 0 });
@@ -90,17 +71,7 @@ export class IssueServices {
     return issue;
   }
 
-  async delete(issueId: string, projectId: string, userId: string) {
-    const member = await this.memberRepository.findInProject(userId, projectId);
-
-    if (!member) {
-      throw new ForbiddenException('Cannot access this project');
-    }
-
-    if (member.role == Role.COMMON) {
-      throw new UnauthorizedException('Only admins can delete an issue');
-    }
-
+  async delete(issueId: string) {
     const issue = await this.issueRepository.get(issueId);
 
     if (!issue) {
@@ -124,5 +95,17 @@ export class IssueServices {
 
     await this.issueRepository.delete(issueId);
     return;
+  }
+
+  async getAll(listId: string) {
+    const issues: Issue[] = await this.issueRepository.getAll(listId);
+
+    if (issues.length < 1) {
+      return;
+    }
+
+    const sortedList = orderList(issues);
+
+    return sortedList;
   }
 }

@@ -4,9 +4,9 @@ import {
   Delete,
   Get,
   HttpStatus,
-  Param,
+  Patch,
   Post,
-  Req,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -14,9 +14,10 @@ import { IssueServices } from '../services/issue.services';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateIssueReqDto } from '../dtos/requests/create-issue-req.dto';
 import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { PermissionGuard } from 'src/guards/permission.guard';
 import { MemberGuard } from 'src/guards/member.guard';
+import { UpdateIssueDTO } from '../dtos/requests/update-issue.dto';
 
 @ApiTags('Issue')
 @UseGuards(AuthGuard)
@@ -26,11 +27,7 @@ export class IssueControllers {
 
   @UseGuards(PermissionGuard)
   @Post(':projectId')
-  async create(
-    @Body() body: CreateIssueReqDto,
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
+  async create(@Body() body: CreateIssueReqDto, @Res() res: Response) {
     const issue = await this.issueService.create(body);
     return res.status(HttpStatus.CREATED).json({
       data: issue,
@@ -40,27 +37,34 @@ export class IssueControllers {
 
   @UseGuards(PermissionGuard)
   @Delete(':projectId')
-  async delete(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Body('issueId') issueId: string,
-  ) {
+  async delete(@Res() res: Response, @Body('issueId') issueId: string) {
     await this.issueService.delete(issueId);
     return res.status(HttpStatus.OK).json();
   }
 
   @UseGuards(MemberGuard)
   @Get(':projectId')
-  async getAll(
-    @Param('projectId') projectId: string,
-    @Req() req: Request,
-    @Res() res: Response,
-    @Body('listId') listId: string,
-  ) {
+  async getAll(@Res() res: Response, @Body('listId') listId: string) {
     const issues = await this.issueService.getAll(listId);
 
     return res.status(HttpStatus.OK).json({
       data: issues,
+      status: HttpStatus.OK,
+    });
+  }
+
+  @UseGuards(MemberGuard)
+  @Patch(':projectId')
+  async update(
+    @Body() dto: UpdateIssueDTO,
+    @Res() res: Response,
+    @Query('issueId') issueId: string,
+    @Query('listId') listId: string,
+  ) {
+    const issue = await this.issueService.update(listId, issueId, dto);
+
+    return res.status(HttpStatus.OK).json({
+      data: issue,
       status: HttpStatus.OK,
     });
   }

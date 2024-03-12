@@ -14,6 +14,7 @@ import { ProjectRepository } from 'src/modules/project/repositories/project.repo
 import { SprintRespository } from 'src/modules/sprint/repositories/sprint.repository';
 import { orderList } from 'src/modules/list/utils/order-list.utils';
 import { Issue } from '../dtos/issue.dto';
+import { UpdateIssueDTO } from '../dtos/requests/update-issue.dto';
 
 @Injectable()
 export class IssueServices {
@@ -58,8 +59,12 @@ export class IssueServices {
       }
     } else {
       const issues = await this.issueRepository.getAll(list.id);
-      const sortedList = orderList(issues);
-      dto.parentId = sortedList[sortedList.length - 1].id;
+
+      dto.parentId = null;
+      if (issues.length > 0) {
+        const sortedList = orderList(issues);
+        dto.parentId = sortedList[sortedList.length - 1].id;
+      }
     }
 
     const issue = await this.issueRepository.create({ ...dto, progress: 0 });
@@ -107,5 +112,151 @@ export class IssueServices {
     const sortedList = orderList(issues);
 
     return sortedList;
+  }
+
+  async get(issueId: string) {
+    const issue = await this.issueRepository.get(issueId);
+
+    if (!issue) {
+      throw new NotFoundException('Issue not found');
+    }
+
+    return issue;
+  }
+
+  async update(listId: string, issueId: string, dto: UpdateIssueDTO) {
+    const issue = await this.issueRepository.get(issueId);
+
+    if (!issue) {
+      throw new NotFoundException('Issue not found');
+    }
+
+    if (dto.parentId == undefined) dto.parentId = null;
+
+    const issues = await this.issueRepository.getAll(listId);
+
+    if (issues.length < 2 && issue.parentId === dto.parentId) {
+      throw new BadRequestException('Cannot change position with itself');
+    }
+
+    const sortedList = orderList(issues);
+    if (dto.parentId) {
+      const parent = sortedList.find((i) => i.id === dto.parentId);
+
+      const issueIndex = sortedList.findIndex((i) => issue.id === i.id);
+      const parentIndex = sortedList.findIndex((i) => parent.id === i.id);
+
+      if (!parent) {
+        throw new BadRequestException('Invalid parent id');
+      }
+
+      const childIndex = sortedList.findIndex((i) => i.parentId === issue.id);
+
+      const lastIssue = sortedList[sortedList.length - 1];
+
+      if (lastIssue.id === dto.parentId) {
+        const child = sortedList[childIndex];
+        if (issue.parentId === null) {
+          child.parentId = null;
+        } else {
+          child.parentId = issue.parentId;
+        }
+        sortedList[childIndex] = child;
+        await this.issueRepository.update(child.id, {
+          parentId: child.parentId,
+        });
+
+        await this.issueRepository.update(issue.id, {
+          ...dto,
+          parentId: lastIssue.id,
+        });
+
+        issue.parentId = lastIssue.id;
+        sortedList.splice(issueIndex, 1);
+        sortedList.push(issue);
+        return sortedList;
+      }
+
+      if (childIndex != -1) {
+        const child = sortedList[childIndex];
+        child.parentId = issue.parentId;
+        await this.issueRepository.update(child.id, {
+          parentId: child.parentId,
+        });
+
+        sortedList[childIndex] = child;
+
+        const rightIssueIndex = sortedList.findIndex(
+          (i) => i.parentId === parent.id,
+        );
+
+        const rightIssue = sortedList[rightIssueIndex];
+        rightIssue.parentId = issue.id;
+        await this.issueRepository.update(rightIssue.id, {
+          parentId: rightIssue.parentId,
+        });
+
+        sortedList[rightIssueIndex] = rightIssue;
+
+        issue.parentId = parent.id;
+        await this.issueRepository.update(issue.id, {
+          ...dto,
+          parentId: issue.parentId,
+        });
+        sortedList.splice(issueIndex, 1);
+        sortedList.splice(parentIndex, 0, issue);
+
+        return sortedList;
+      } else {
+        const rightListIndex = sortedList.findIndex(
+          (i) => i.parentId === dto.parentId,
+        );
+
+        const rightList = sortedList[rightListIndex];
+        rightList.parentId = issue.id;
+        await this.issueRepository.update(rightList.id, {
+          parentId: rightList.parentId,
+        });
+
+        sortedList[rightListIndex] = rightList;
+
+        issue.parentId = parent.id;
+
+        await this.issueRepository.update(issue.id, {
+          ...dto,
+          parentId: issue.parentId,
+        });
+        sortedList.splice(issueIndex, 1);
+        sortedList.splice(parentIndex, 0, issue);
+
+        return sortedList;
+      }
+    } else {
+      const childIndex = sortedList.findIndex((i) => i.parentId === issue.id);
+      if (childIndex != -1) {
+        const child = sortedList[childIndex];
+        child.parentId = issue.parentId;
+        await this.issueRepository.update(child.id, {
+          parentId: child.parentId,
+        });
+      }
+
+      issue.parentId = null;
+      sortedList[0].parentId = issue.id;
+
+      const issueIndex = sortedList.findIndex((i) => i.id === issue.id);
+      await this.issueRepository.update(issue.id, {
+        ...dto,
+        parentId: issue.parentId,
+      });
+      await this.issueRepository.update(sortedList[0].id, {
+        parentId: issue.id,
+      });
+
+      sortedList.splice(issueIndex, 1);
+      sortedList.unshift(issue);
+
+      return sortedList;
+    }
   }
 }

@@ -20,6 +20,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         .status(exception.getStatus())
         .json({ response: error, timestamp: new Date().toISOString() });
     } else {
+      console.log(exception);
       return response
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .json({ message: 'Error Internal Server' });

@@ -134,6 +134,7 @@ function DropDown(props: Prop) {
   );
 }
 
+//FIX
 export default DropDown;
 
 export type Category = { text: string; icon?: string; value: number };

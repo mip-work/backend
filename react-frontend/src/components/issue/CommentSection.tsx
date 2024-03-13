@@ -7,6 +7,7 @@ import SS from '../util/SpinningCircle';
 interface Props {
   projectId: number;
   issueId: number;
+  progress: number;
 }
 
 function CommentSection(props: Props) {

@@ -19,6 +19,8 @@ import { selectAuthUser } from "../../api/endpoints/auth.endpoint";
 import toast from "react-hot-toast";
 const ConfirmModel = lazy(() => import("../util/ConfirmModel"));
 
+//FIX
+
 const IssueDetailModal = (props: IssueModalProps) => {
   const {
     issue: Issue,

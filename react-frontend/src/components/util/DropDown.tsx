@@ -156,6 +156,8 @@ export default DropDown;
 
 export type Category = { text: string; icon?: string; value: number };
 
+
+//FIX
 // helpers
 const modifyItems = (value: number, list: Category[], resultList: Category[]) => {
   const idx = list.findIndex(el => el.value == value)

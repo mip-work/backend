@@ -2,6 +2,8 @@ type ProgressBarProps = {
   progress: number;
 };
 
+//FIX
+
 const ProgressBar = (props: ProgressBarProps) => {
   return (
     <div

@@ -32,6 +32,7 @@ export const priorities = [
   { text: "Highest", icon: "/assets/highest.svg", value: 4 },
 ];
 
+//FIX
 export const progresses = [
   { text: "0%", value: 0 },
   { text: "25%", value: 25 },

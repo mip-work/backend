@@ -27,7 +27,7 @@ const CreateIssueModal = (props: IssueModalProps) => {
   const handleCreateIssue = async () => {
     if (!form.summary) return setErr("summary must not be empty");
     if (!u || form.summary.length > 100 || form.descr.length > 500) return;
-    await createIssue({ ...form, reporterId: u.id, projectId }); //for now
+    await createIssue({ ...form, reporterId: u.id, projectId }); //FIX
     toast("Created an issue!");
     onClose();
   };

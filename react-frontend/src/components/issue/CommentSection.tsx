@@ -7,7 +7,7 @@ import ProgressBar from "./ProgressBar";
 interface Props {
   projectId: number;
   issueId: number;
-  progress: number;
+  progress: number; // FIX 
 }
 
 function CommentSection(props: Props) {

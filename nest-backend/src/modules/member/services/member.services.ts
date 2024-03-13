@@ -40,7 +40,7 @@ export class MemberServices {
 
     const user = await this.userRepository.findById(dto.userId);
     if (!user) {
-      throw new NotFoundException(`This user doesn't exist`);
+      throw new NotFoundException('This user does not exist');
     }
 
     const checkMember = await this.memberRepository.findInProject(
@@ -72,7 +72,7 @@ export class MemberServices {
     );
 
     if (!currentUser) {
-      throw new ForbiddenException(`You don't have access to this project`);
+      throw new ForbiddenException('No access to this project');
     }
     const project = await this.projectRepository.get(projectId);
 
@@ -125,7 +125,7 @@ export class MemberServices {
     );
 
     if (!currentMember) {
-      throw new ForbiddenException(`You don't have access to this project`);
+      throw new ForbiddenException('No access to this project');
     }
 
     if (currentMember.role == Role.COMMON) {
@@ -142,7 +142,7 @@ export class MemberServices {
     }
 
     if (findMember.role == Role.OWNER) {
-      throw new ForbiddenException(`The owner's role cannot be changed`);
+      throw new ForbiddenException('The role of the owner cannot be changed');
     }
 
     const member = await this.memberRepository.changeRole({

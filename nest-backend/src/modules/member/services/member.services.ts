@@ -22,22 +22,7 @@ export class MemberServices {
     private projectRepository: ProjectRepository,
   ) {}
 
-  async addMember(dto: CreateMemberDto, userId: string) {
-    const currentMember = await this.memberRepository.findInProject(
-      userId,
-      dto.projectId,
-    );
-
-    if (!currentMember) {
-      throw new NotFoundException(
-        `User not found in the project: ${dto.projectId}`,
-      );
-    }
-
-    if (currentMember.role == Role.COMMON) {
-      throw new ForbiddenException('Not authorized');
-    }
-
+  async addMember(dto: CreateMemberDto) {
     const user = await this.userRepository.findById(dto.userId);
     if (!user) {
       throw new NotFoundException('This user does not exist');
@@ -85,20 +70,7 @@ export class MemberServices {
     return members;
   }
 
-  async delete(dto: DeleteMemberDto, userId: string) {
-    const currentUser = await this.memberRepository.findInProject(
-      userId,
-      dto.projectId,
-    );
-
-    if (!currentUser) {
-      throw new ForbiddenException('This project cannot be accessed');
-    }
-
-    if (currentUser.role == Role.COMMON) {
-      throw new ForbiddenException('Not authorized');
-    }
-
+  async delete(dto: DeleteMemberDto) {
     const member = await this.memberRepository.findInProject(
       dto.id,
       dto.projectId,
@@ -118,20 +90,7 @@ export class MemberServices {
     return;
   }
 
-  async changeRole(dto: UpdateMemberDto, userId: string) {
-    const currentMember = await this.memberRepository.findInProject(
-      userId,
-      dto.projectId,
-    );
-
-    if (!currentMember) {
-      throw new ForbiddenException('No access to this project');
-    }
-
-    if (currentMember.role == Role.COMMON) {
-      throw new UnauthorizedException('Not authorized');
-    }
-
+  async changeRole(dto: UpdateMemberDto) {
     const findMember = await this.memberRepository.findInProject(
       dto.userId,
       dto.projectId,

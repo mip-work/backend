@@ -73,7 +73,7 @@ export class MemberControllers {
     });
   }
 
-  @UseGuards(MemberGuard)
+  @UseGuards(PermissionGuard)
   @Patch()
   async changeRole(
     @Body() dto: UpdateMemberDto,

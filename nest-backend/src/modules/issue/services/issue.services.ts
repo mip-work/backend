@@ -88,6 +88,7 @@ export class IssueServices {
     }
 
     child.parentId = issue.parentId;
+
     await this.issueRepository.changeRole(child.id, child.parentId);
 
     await this.issueRepository.delete(issueId);
@@ -115,6 +116,7 @@ export class IssueServices {
 
     return issue;
   }
+
 
   async changeRole(listId: string, issueId: string, parentId: string) {
     const issue = await this.issueRepository.get(issueId);
@@ -154,6 +156,7 @@ export class IssueServices {
           child.parentId = issue.parentId;
         }
         sortedList[childIndex] = child;
+        
         await this.issueRepository.changeRole(child.id, child.parentId);
 
         await this.issueRepository.changeRole(issue.id, lastIssue.id);
@@ -167,6 +170,7 @@ export class IssueServices {
       if (childIndex != -1) {
         const child = sortedList[childIndex];
         child.parentId = issue.parentId;
+
         await this.issueRepository.changeRole(child.id, child.parentId);
 
         sortedList[childIndex] = child;
@@ -177,6 +181,7 @@ export class IssueServices {
 
         const rightIssue = sortedList[rightIssueIndex];
         rightIssue.parentId = issue.id;
+
         await this.issueRepository.changeRole(
           rightIssue.id,
           rightIssue.parentId,
@@ -185,7 +190,9 @@ export class IssueServices {
         sortedList[rightIssueIndex] = rightIssue;
 
         issue.parentId = parent.id;
+
         await this.issueRepository.changeRole(issue.id, issue.parentId);
+        
         sortedList.splice(issueIndex, 1);
         sortedList.splice(parentIndex, 0, issue);
 
@@ -197,6 +204,7 @@ export class IssueServices {
 
         const rightList = sortedList[rightListIndex];
         rightList.parentId = issue.id;
+
         await this.issueRepository.changeRole(rightList.id, rightList.parentId);
 
         sortedList[rightListIndex] = rightList;
@@ -204,6 +212,7 @@ export class IssueServices {
         issue.parentId = parent.id;
 
         await this.issueRepository.changeRole(issue.id, issue.parentId);
+
         sortedList.splice(issueIndex, 1);
         sortedList.splice(parentIndex, 0, issue);
 
@@ -214,6 +223,7 @@ export class IssueServices {
       if (childIndex != -1) {
         const child = sortedList[childIndex];
         child.parentId = issue.parentId;
+
         await this.issueRepository.changeRole(child.id, child.parentId);
       }
 

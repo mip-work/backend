@@ -43,6 +43,14 @@ export class IssueRepository {
     return issue;
   }
 
+  async changeRole(id: string, parentId: string) {
+    const issue = await this.prisma.issue.update({
+      where: { id },
+      data: { parentId },
+    });
+    return issue;
+  }
+
   async getByParentId(parentId: string, listId: string) {
     const issue = await this.prisma.issue.findFirst({
       where: { parentId, listId },

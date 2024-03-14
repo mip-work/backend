@@ -53,6 +53,22 @@ export class IssueControllers {
     });
   }
 
+  @UseGuards(PermissionGuard)
+  @Patch('/role/:projectId')
+  async changeRole(
+    @Body('parentId') parentId: string,
+    @Res() res: Response,
+    @Query('issueId') issueId: string,
+    @Query('listId') listId: string,
+  ) {
+    const issue = await this.issueService.changeRole(listId, issueId, parentId);
+
+    return res.status(HttpStatus.OK).json({
+      data: issue,
+      status: HttpStatus.OK,
+    });
+  }
+
   @UseGuards(MemberGuard)
   @Patch(':projectId')
   async update(

@@ -1,15 +1,15 @@
-import { useReducer, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
-import { APIERROR, CreateIssue } from '../../api/apiTypes';
-import { selectAuthUser } from '../../api/endpoints/auth.endpoint';
-import { useCreateIssueMutation } from '../../api/endpoints/issues.endpoint';
-import DropDown from '../util/DropDown';
-import WithLabel from '../util/WithLabel';
-import Item from '../util/Item';
-import Model from '../util/Model';
-import type { IssueModalProps } from './IssueModelHOC';
-import TextInput from './TextInput';
-import toast from 'react-hot-toast';
+import { useReducer, useState } from "react";
+import { Navigate, useParams } from "react-router-dom";
+import { APIERROR, CreateIssue } from "../../api/apiTypes";
+import { selectAuthUser } from "../../api/endpoints/auth.endpoint";
+import { useCreateIssueMutation } from "../../api/endpoints/issues.endpoint";
+import DropDown from "../util/DropDown";
+import WithLabel from "../util/WithLabel";
+import Item from "../util/Item";
+import Model from "../util/Model";
+import type { IssueModalProps } from "./IssueModelHOC";
+import TextInput from "./TextInput";
+import toast from "react-hot-toast";
 
 const CreateIssueModel = (props: IssueModalProps) => {
   const { lists, members, types, priorities, onClose } = props;

@@ -69,14 +69,15 @@ export class IssueControllers {
     });
   }
 
-  @UseGuards(PermissionGuard)
+  @UseGuards(MemberGuard)
   @Patch(':projectId')
   async update(
-    @Body() body: UpdateIssueDTO,
+    @Body() dto: UpdateIssueDTO,
     @Res() res: Response,
     @Query('issueId') issueId: string,
+    @Query('listId') listId: string,
   ) {
-    const issue = await this.issueService.update(issueId, body);
+    const issue = await this.issueService.update(listId, issueId, dto);
 
     return res.status(HttpStatus.OK).json({
       data: issue,

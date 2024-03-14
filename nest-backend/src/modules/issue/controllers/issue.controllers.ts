@@ -53,15 +53,30 @@ export class IssueControllers {
     });
   }
 
-  @UseGuards(MemberGuard)
-  @Patch(':projectId')
-  async update(
-    @Body() dto: UpdateIssueDTO,
+  @UseGuards(PermissionGuard)
+  @Patch('/role/:projectId')
+  async changeRole(
+    @Body('parentId') parentId: string,
     @Res() res: Response,
     @Query('issueId') issueId: string,
     @Query('listId') listId: string,
   ) {
-    const issue = await this.issueService.update(listId, issueId, dto);
+    const issue = await this.issueService.changeRole(listId, issueId, parentId);
+
+    return res.status(HttpStatus.OK).json({
+      data: issue,
+      status: HttpStatus.OK,
+    });
+  }
+
+  @UseGuards(PermissionGuard)
+  @Patch(':projectId')
+  async update(
+    @Body() body: UpdateIssueDTO,
+    @Res() res: Response,
+    @Query('issueId') issueId: string,
+  ) {
+    const issue = await this.issueService.update(issueId, body);
 
     return res.status(HttpStatus.OK).json({
       data: issue,

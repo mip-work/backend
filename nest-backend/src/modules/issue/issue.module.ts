@@ -5,7 +5,6 @@ import { IssueServices } from './services/issue.services';
 import { PrismaService } from 'src/db/prisma.service';
 import { MemberRepository } from '../member/repositories/member.repository';
 import { UserRepository } from '../User/repositories/user.repository';
-import { AssigneeRepository } from '../assignee/repositories/assignee.repository';
 import { ListRepository } from '../list/repositories/list.repository';
 import { ProjectRepository } from '../project/repositories/project.repository';
 import { SprintRespository } from '../sprint/repositories/sprint.repository';
@@ -18,7 +17,6 @@ import { SprintRespository } from '../sprint/repositories/sprint.repository';
     MemberRepository,
     UserRepository,
     SprintRespository,
-    AssigneeRepository,
     ListRepository,
     ProjectRepository,
     PrismaService,

@@ -50,15 +50,7 @@ export class MemberServices {
     return member;
   }
 
-  async listMembers(projectId: string, userId: string) {
-    const currentUser = await this.memberRepository.findInProject(
-      userId,
-      projectId,
-    );
-
-    if (!currentUser) {
-      throw new ForbiddenException('No access to this project');
-    }
+  async listMembers(projectId: string) {
     const project = await this.projectRepository.get(projectId);
 
     if (!project) {

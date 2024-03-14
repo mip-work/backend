@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { ProjectRepository } from '../repositories/project.repository';
 import { CreateProjectDto } from '../dtos/requests/create-project.dto';
-import { UserRepository } from 'src/modules/User/repositories/user.repository';
 import { ProjectBuilder } from '../builders/project.builder';
 import { Project } from '../dtos/project.dto';
 import { UpdateProjectDto } from '../dtos/requests/update-project.dto';
@@ -17,7 +16,6 @@ import { MemberRepository } from 'src/modules/member/repositories/member.reposit
 export class ProjectServices {
   constructor(
     private projectRepository: ProjectRepository,
-    private userRepository: UserRepository,
     private memberRepository: MemberRepository,
   ) {}
 

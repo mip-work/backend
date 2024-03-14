@@ -25,7 +25,6 @@ model User {
   assignees    Assignee[]
   projects     Project[]
   comments     Comment[]
-  issues       Issue[]
 }
 
 model Project {
@@ -40,6 +39,7 @@ model Project {
   lists     List[]
   members   Member[]
   assignees Assignee[]
+  sprints   Sprint[]
 
   @@index([userId])
 }
@@ -60,11 +60,12 @@ model Member {
 model List {
   id        String   @id @default(uuid())
   name      String   @default("unnamed list")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  parentId  String?   
+  projectId String
   issues    Issue[]
   Project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([projectId])
 }
@@ -72,23 +73,21 @@ model List {
 model Issue {
   id         String     @id @default(uuid())
   priority   Int
+  parentId   String?
   type       Int
   progress   Int
-  summary    String     @db.VarChar(100)
+  title      String     @db.VarChar(100)
   descr      String?    @db.VarChar(500)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   List       List?      @relation(fields: [listId], references: [id], onDelete: Cascade)
   listId     String
-  User       User?      @relation(fields: [reporterId], references: [id], onDelete: Cascade)
-  reporterId String
+  sprintId   String?
   Sprint     Sprint?    @relation(fields: [sprintId], references: [id], onDelete: Cascade)
-  sprintId   String
   comments   Comment[]
   assignees  Assignee[]
 
   @@index([listId])
-  @@index([reporterId])
   @@index([sprintId])
 }
 
@@ -121,13 +120,14 @@ model Comment {
 }
 
 model Sprint {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   name        String
-  createdAt   DateTime @default(now())
-  issueId     String
+  createdAt   DateTime  @default(now())
   initialDate DateTime
   finalDate   DateTime
+  projectId   String
+  Project     Project?  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   issues      Issue[]
 
-  @@index([issueId])
+  @@index([projectId])
 }

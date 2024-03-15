@@ -2,14 +2,14 @@ import { lazy, Suspense as S, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import DraggableWrapper from '../dnd/DraggableWrapper';
 import { Issue as JiraIssue } from '../../api/apiTypes';
-import { types, priorities } from '../../utils';
+import { types, priorities} from '../../utils';
 import { selectMembers } from '../../api/endpoints/member.endpoint';
 import AssignedMembers from './AssignedMembers';
 const IssueModelHOC = lazy(() => import('./IssueModelHOC'));
 const IssueDetailModal = lazy(() => import('./IssueDetailModal'));
 
 const Issue = (props: Props) => {
-  const { listId, listIdx, idx, summary, id, type, priority, assignees, comments, isDragDisabled } =
+  const { listId, listIdx, idx, summary, id, type, priority, progress, assignees, comments, isDragDisabled} =
     props;
   const [isOpen, setIsOpen] = useState(false);
   const projectId = Number(useParams().projectId);

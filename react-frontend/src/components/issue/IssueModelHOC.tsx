@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { useParams } from 'react-router-dom';
 import { selectLists } from '../../api/endpoints/lists.endpoint';
 import { selectMembers } from '../../api/endpoints/member.endpoint';
-import { types, priorities } from '../../utils';
+import { types, priorities, progresses } from '../../utils';
 import { Category } from '../util/DropDown';
 
 export type IssueMetaData = { listIdx: number; listId: number; idx: number };
@@ -41,6 +41,7 @@ const IssueModelHOC = (props: Props) => {
         members,
         types,
         priorities,
+        progresses
       }}
       {...PROPS}
     />
@@ -56,5 +57,6 @@ export interface IssueModalProps {
   lists: Category[];
   types: Category[];
   priorities: Category[];
+  progresses: Category[];
   onClose: () => void;
 }

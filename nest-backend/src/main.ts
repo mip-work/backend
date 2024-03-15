@@ -21,8 +21,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-
-  await app.listen(process.env.PORT, () => {
+  await app.listen(process.env.PORT, '0.0.0.0', () => {
     console.log('Server running correctly');
   });
 }
@@ -31,7 +30,7 @@ bootstrap();
 export const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: process.env.DATABASE_URL_PLANET_SCALE,
+      url: process.env.DATABASE_URL,
     },
   },
 });

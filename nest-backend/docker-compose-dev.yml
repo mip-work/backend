@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  postgres-dev:
+    image: postgres
+    container_name: postgres-dev
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - my-db1-dev:/var/lib/postgres
+    restart: always
+
+  app-dev:
+    container_name: nest-backend-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3008:${PORT}
+    tty: true
+    depends_on:
+      - postgres-dev
+    restart: always
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+
+volumes:
+  my-db1-dev:
+  

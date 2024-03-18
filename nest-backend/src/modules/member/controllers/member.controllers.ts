@@ -34,7 +34,7 @@ export class MemberControllers {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const member = await this.memberService.addMember(body, req.user.id);
+    const member = await this.memberService.addMember(body);
     return res.status(HttpStatus.CREATED).json({
       data: member,
       status: HttpStatus.CREATED,
@@ -48,7 +48,7 @@ export class MemberControllers {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    await this.memberService.delete(dto, req.user.id);
+    await this.memberService.delete(dto);
     return res.status(HttpStatus.OK).json({
       message: 'Member removed',
       status: HttpStatus.OK,
@@ -62,10 +62,7 @@ export class MemberControllers {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const members = await this.memberService.listMembers(
-      projectId,
-      req.user.id,
-    );
+    const members = await this.memberService.listMembers(projectId);
 
     return res.status(HttpStatus.OK).json({
       data: members,
@@ -80,7 +77,7 @@ export class MemberControllers {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const member = await this.memberService.changeRole(dto, req.user.id);
+    const member = await this.memberService.changeRole(dto);
     return res.status(HttpStatus.OK).json({
       data: member,
       status: HttpStatus.OK,

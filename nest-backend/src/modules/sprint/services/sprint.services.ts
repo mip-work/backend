@@ -16,7 +16,7 @@ export class SprintServices {
   async create(dto: CreateSprintRecDto) {
     if (isDateLessThanCurrent(dto.finalDate)) {
       throw new InternalServerErrorException(
-        'The sprint date cant be less than today!',
+        'The sprint final date cannot be earlier than today!',
       );
     }
 
@@ -27,7 +27,7 @@ export class SprintServices {
 
     if (!sprint) {
       throw new InternalServerErrorException(
-        'Error on creating this new sprint!',
+        'There was an error creating this new sprint!',
       );
     }
 
@@ -35,7 +35,20 @@ export class SprintServices {
   }
 
   async update(id: string, dto: UpdateSprintDto) {
-    const sprint = await this.sprintRepository.update(id, dto);
+    
+    if (isDateLessThanCurrent(dto.finalDate)) {
+      throw new InternalServerErrorException(
+        'The sprint final date cannot be earlier than today!',
+      );
+    }
+
+    if (isDateLessThanCurrent(dto.initialDate)) {
+      throw new InternalServerErrorException(
+        'The sprint initial date cannot be earlier than today!',
+      );
+    }
+    
+    const sprint = await this.sprintRepository.update(id, dto);    
 
     if (!sprint) {
       throw new BadRequestException('Could not update this sprint');
@@ -43,6 +56,13 @@ export class SprintServices {
   }
 
   async delete(id: string) {
+
+    const sprint = await this.sprintRepository.delete(id);
+
+    if (!sprint) {
+      throw new NotFoundException('Sprint not Found');
+    }
+
     await this.sprintRepository.delete(id);
     return;
   }
@@ -51,7 +71,7 @@ export class SprintServices {
     const sprint = await this.sprintRepository.get(id);
 
     if (!sprint) {
-      throw new NotFoundException('Sprint Not Found');
+      throw new NotFoundException('Sprint not Found');
     }
     return;
   }

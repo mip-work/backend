@@ -14,10 +14,10 @@ export class UpdateSprintDto {
   @ApiProperty()
   @IsOptional()
   @IsDateString()
-  initialDate?: Date;
+  initialDate?: string;
 
   @ApiProperty()
   @IsOptional()
   @IsDateString()
-  finalDate?: Date;
+  finalDate?: string;
 }

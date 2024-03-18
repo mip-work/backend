@@ -7,7 +7,6 @@ import {
   Param,
   Patch,
   Post,
-  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -16,17 +15,23 @@ import { ApiTags } from '@nestjs/swagger';
 import { CreateSprintRecDto } from '../dtos/requests/create-sprint-req.dto';
 import { UpdateSprintDto } from '../dtos/requests/update-sprint-dto';
 import { Response } from 'express';
+import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
+import { PermissionGuard } from 'src/guards/permission.guard';
+import { MemberGuard } from 'src/guards/member.guard';
 
 @ApiTags('Sprint')
+@UseGuards(AuthGuard)
 @Controller('sprint')
 export class SprintControllers {
   constructor(private sprintService: SprintServices) {}
+  @UseGuards(PermissionGuard)
   @Post()
   async create(@Body() request: CreateSprintRecDto) {
     const sprint = await this.sprintService.create(request);
     return sprint;
   }
 
+  @UseGuards(PermissionGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -40,6 +45,7 @@ export class SprintControllers {
     });
   }
 
+  @UseGuards(PermissionGuard)
   @Delete(':id')
   async delete(@Param('id') id: string, @Res() res: Response) {
     await this.sprintService.delete(id);
@@ -48,6 +54,7 @@ export class SprintControllers {
     });
   }
 
+  @UseGuards(MemberGuard)
   @Get(':id')
   async get(@Param('id') request: string, @Res() res: Response) {
     const sprint = await this.sprintService.get(request);

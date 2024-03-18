@@ -18,13 +18,16 @@ import { DeleteMemberDto } from '../dtos/requests/delete-member.dto';
 import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
 import { CreateMemberDto } from '../dtos/requests/create-member.dto';
 import { UpdateMemberDto } from '../dtos/requests/updateMember.dto';
+import { PermissionGuard } from 'src/guards/permission.guard';
+import { MemberGuard } from 'src/guards/member.guard';
 
 @ApiTags('Member')
+@UseGuards(AuthGuard)
 @Controller('member')
 export class MemberControllers {
   constructor(private memberService: MemberServices) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(PermissionGuard)
   @Post()
   async create(
     @Body() body: CreateMemberDto,
@@ -38,7 +41,7 @@ export class MemberControllers {
     });
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(PermissionGuard)
   @Delete()
   async remove(
     @Body() dto: DeleteMemberDto,
@@ -52,7 +55,7 @@ export class MemberControllers {
     });
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(MemberGuard)
   @Get('/list/:projectId')
   async listMembers(
     @Param('projectId') projectId: string,
@@ -70,7 +73,7 @@ export class MemberControllers {
     });
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(PermissionGuard)
   @Patch()
   async changeRole(
     @Body() dto: UpdateMemberDto,
@@ -84,7 +87,7 @@ export class MemberControllers {
     });
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(MemberGuard)
   @Get(':projectId')
   async getMember(
     @Param('projectId') projectId: string,

@@ -10,6 +10,8 @@ import Model from "../util/Model";
 import type { IssueModalProps } from "./IssueModelHOC";
 import TextInput from "./TextInput";
 import toast from "react-hot-toast";
+import RichText from "./RichText";
+
 
 const CreateIssueModal = (props: IssueModalProps) => {
   const { lists, members, types, priorities, onClose } = props;
@@ -19,6 +21,8 @@ const CreateIssueModal = (props: IssueModalProps) => {
   const [err, setErr] = useState("");
   const projectId = Number(useParams().projectId);
 
+  console.log(form);
+
   if (!u) return null;
 
   if (error && (error as APIERROR).status === 401)
@@ -26,7 +30,9 @@ const CreateIssueModal = (props: IssueModalProps) => {
 
   const handleCreateIssue = async () => {
     if (!form.summary) return setErr("summary must not be empty");
-    if (!u || form.summary.length > 100 || form.descr.length > 500) return;
+
+    if (!u || form.summary.length > 100 || form.descr.length > 16000) return;
+
     await createIssue({ ...form, reporterId: u.id, projectId }); //for now
     toast("Created an issue!");
     onClose();
@@ -36,6 +42,7 @@ const CreateIssueModal = (props: IssueModalProps) => {
     <Model
       onSubmit={handleCreateIssue}
       {...{ onClose, isLoading }}
+
       className="max-w-[35rem]"
     >
       <>
@@ -58,13 +65,25 @@ const CreateIssueModal = (props: IssueModalProps) => {
           max={100}
         />
         {err && <span className="-mb-3 block text-sm text-red-400">{err}</span>}
+        {/* <TextInput
+
         <TextInput
+
           type="descr"
           label="Description"
           dispatch={dispatch}
           value={form.descr}
           max={500}
+        /> */}
+
+        <RichText
+          type="descr"
+          label="Description"
+          dispatch={dispatch}
+          value={form.descr}
+          max={16000}
         />
+
         {members && (
           <>
             <WithLabel label="Reporter">
@@ -76,6 +95,7 @@ const CreateIssueModal = (props: IssueModalProps) => {
                 />
               </div>
             </WithLabel>
+
             <WithLabel label="Assignee">
               <DropDown
                 list={members}
@@ -120,8 +140,9 @@ export type T =
   | "descr"
   | "assignee"
   | "priority"
-  | "listId"
+  | "listId";
   | "progress";
+
 
 export type A = { type: T; value: number | number[] | string };
 

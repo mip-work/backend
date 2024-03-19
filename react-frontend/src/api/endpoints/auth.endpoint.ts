@@ -4,7 +4,7 @@ import { AuthUser, PublicUser, updateAuthUser } from '../apiTypes';
 export const extendedApi = api.injectEndpoints({
   endpoints: (builder) => ({
     authUser: builder.query<AuthUser, void>({
-      query: () => ({ url: 'user/authUser' }),
+      query: () => ({ url: 'auth/register' }),
       providesTags: ['AuthUser'],
     }),
     publicUser: builder.query<PublicUser, number>({

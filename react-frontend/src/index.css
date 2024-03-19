@@ -38,19 +38,31 @@
   .btn {
     @apply whitespace-nowrap rounded-[3px] bg-blue-600 px-3 py-1 text-white hover:bg-blue-700 active:bg-blue-800;
   }
+
   .btn-crystal {
     @apply rounded-[3px] px-3 py-1 hover:bg-c-6 active:bg-c-7;
   }
+
   .btn-alert {
     @apply whitespace-nowrap rounded-[3px] bg-red-500 px-3 py-1 text-white hover:bg-red-600 active:bg-red-700;
   }
+
   .btn-icon {
     @apply rounded-[3px] p-1 hover:bg-c-2;
   }
+
   .bg-jira-gradient {
     @apply bg-gradient-to-r from-[#151642] to-[#321898];
   }
+
   .btn-toggle {
     @apply relative h-[19px] cursor-pointer appearance-none rounded-full bg-slate-300 after:absolute after:top-[1.5px] after:left-[2px] after:h-4 after:w-4 after:rounded-full after:bg-white after:duration-150 after:content-[""] checked:bg-blue-500 checked:after:translate-x-[12px];
   }
 }
+
+/* .ql-editor {
+  min-height: 5rem;
+  max-height: 5rem;
+  overflow: hidden;
+  overflow-y: scroll;
+} */

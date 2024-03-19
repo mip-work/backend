@@ -18,7 +18,7 @@ function TextInput(props: Props) {
       <div className='relative'>
         <input
           placeholder='a short summary of your project'
-          onChange={(e) => dispatch({ type, value: e.target.value })}
+          onChange={(e) => dispatch({ type, value: e.target.value})}
           className='mt-2 block w-full rounded-sm border-2 px-3 py-1 text-sm outline-none duration-200 focus:border-chakra-blue'
         />
         {value && (

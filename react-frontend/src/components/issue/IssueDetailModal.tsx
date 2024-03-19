@@ -17,6 +17,8 @@ import CommentSection from "./CommentSection";
 import { parseDate } from "../../utils";
 import { selectAuthUser } from "../../api/endpoints/auth.endpoint";
 import toast from "react-hot-toast";
+
+import RichTextEditable from "./RichTextEditable";
 const ConfirmModel = lazy(() => import("../util/ConfirmModel"));
 
 const IssueDetailModal = (props: IssueModalProps) => {
@@ -114,14 +116,22 @@ const IssueDetailModal = (props: IssueModalProps) => {
               max={100}
               isRequired
             />
-            <TextareaInput
+            <RichTextEditable
               label="Description"
               type="descr"
               defaultValue={descr}
               placeholder="add a description"
-              max={500}
+              max={16000}
               apiFunc={dispatchMiddleware}
             />
+          {/* <TextareaInput
+            label="Description"
+            type="descr"
+            defaultValue={descr}
+            placeholder="add a description"
+            max={500}
+            apiFunc={dispatchMiddleware}
+          /> */}
             <hr className="mx-3" />
             <CommentSection issueId={id} projectId={projectId} />
           </div>

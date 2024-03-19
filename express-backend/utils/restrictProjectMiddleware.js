@@ -9,7 +9,7 @@ exports.restrictProjectMiddleware = async (req, res, next) => {
   if (!projectId) return reject(res);
 
   const project = await client.member.findFirst({
-    where: { AND: { userId: req.user.uid, projectId } },
+    where: { AND: { userId: req.userId, projectId } },
   });
   
   if (!project) return reject(res);

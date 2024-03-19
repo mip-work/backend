@@ -17,6 +17,47 @@ export default function RichText(props: Props) {
   const { dispatch, type, value, label, max } = props;
   const quillRef = useRef<HTMLInputElement | any>(null);
 
+  const imageHandler = () => {
+    const editor = quillRef.current.getEditor();
+    console.log(editor);
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "*/*");
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files ? input.files[0] : null;
+    
+
+      if (file) {
+        if (/^image\//.test(file.type)) {
+          console.log(file);
+          const formData = new FormData();
+          formData.append("logo", file);
+          const responseUpload: any = await axios.post(
+            "http://159.65.33.34:3000/api/web/upload-image/651cc8f38c213bdfd5a11027",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c2VyIjoiNjA4NWE1Y2VhMDRmNDBmNzBmYTJjMmJkIiwiaWF0IjoxNjk5NDYzODQ3fQ.CBme93Jq6TYlUEVeMPaIRSBi5jTX0juSAf93JbQijek`,
+              },
+            }
+          );
+          console.log(responseUpload)
+          const url =
+            "https://www.redgtech-dev.com/api/web/upload-image?imageName=logo&companyId=651cc8f38c213bdfd5a11027&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c2VyIjoiNjA4NWE1Y2VhMDRmNDBmNzBmYTJjMmJkIiwiaWF0IjoxNzEwMjAyOTA0fQ.Wri9Ooj2VF0q34OfRbIiVS8AqfnvtfAynMois50B12Q";
+  
+        
+
+          editor.insertEmbed(editor.getSelection(), "image", url);
+        } else {
+          console.log("You could only upload images.");
+        }
+      }
+    };
+  }
+
  
   const modules = useMemo(
     () => ({
@@ -30,9 +71,9 @@ export default function RichText(props: Props) {
           [{ list: "ordered" }, { list: "bullet" }],
           ["link", "image"],
         ],
-        // handlers: {
-        //   image: imageHandler,
-        // },
+        handlers: {
+          image: imageHandler,
+        },
       },
     }),
     []

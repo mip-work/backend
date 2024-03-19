@@ -29,6 +29,7 @@ const IssueDetailModal = (props: IssueModalProps) => {
     lists,
     types,
     priorities,
+    progresses,
     onClose,
   } = props;
   const issue = Issue as IssueMetaData;
@@ -46,6 +47,7 @@ const IssueDetailModal = (props: IssueModalProps) => {
     listId,
     reporterId,
     priority,
+    progress,
     assignees,
     summary,
     descr,
@@ -62,7 +64,6 @@ const IssueDetailModal = (props: IssueModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const isMine = reporterId === u?.id;
   const reporter = members.filter(({ value }) => value === reporterId)[0];
-
   const dispatchMiddleware = async (data: DispatchMiddleware) => {
     const assigneeIds = assignees.map(({ userId }) => userId);
     const body =
@@ -133,13 +134,17 @@ const IssueDetailModal = (props: IssueModalProps) => {
             apiFunc={dispatchMiddleware}
           /> */}
             <hr className="mx-3" />
-            <CommentSection issueId={id} projectId={projectId} />
+            <CommentSection
+              issueId={id}
+              projectId={projectId}
+              progress={progress}
+            />
           </div>
           <div className="mt-3 shrink-0 sm:w-[15rem]">
             <WithLabel label="Status">
               <DropDown
                 list={lists}
-                defaultValue={lists.findIndex(({ value: v }) => v === listId)}
+                defaultValue={listId}
                 dispatch={dispatchMiddleware}
                 actionType="listId"
                 type="normal"
@@ -204,6 +209,16 @@ const IssueDetailModal = (props: IssueModalProps) => {
                 defaultValue={priority as number}
                 dispatch={dispatchMiddleware}
                 actionType="priority"
+                type="normal"
+              />
+            </WithLabel>
+            <WithLabel label="Progress">
+              <DropDown
+                variant="small"
+                list={progresses}
+                defaultValue={progress as number}
+                dispatch={dispatchMiddleware}
+                actionType="progress"
                 type="normal"
               />
             </WithLabel>

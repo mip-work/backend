@@ -12,7 +12,8 @@ import TextInput from "./TextInput";
 import toast from "react-hot-toast";
 import RichText from "./RichText";
 
-const CreateIssueModel = (props: IssueModalProps) => {
+
+const CreateIssueModal = (props: IssueModalProps) => {
   const { lists, members, types, priorities, onClose } = props;
   const { authUser: u } = selectAuthUser();
   const [createIssue, { error, isLoading }] = useCreateIssueMutation();
@@ -29,7 +30,9 @@ const CreateIssueModel = (props: IssueModalProps) => {
 
   const handleCreateIssue = async () => {
     if (!form.summary) return setErr("summary must not be empty");
+
     if (!u || form.summary.length > 100 || form.descr.length > 16000) return;
+
     await createIssue({ ...form, reporterId: u.id, projectId }); //for now
     toast("Created an issue!");
     onClose();
@@ -39,7 +42,8 @@ const CreateIssueModel = (props: IssueModalProps) => {
     <Model
       onSubmit={handleCreateIssue}
       {...{ onClose, isLoading }}
-      className="max-w-[42rem]"
+
+      className="max-w-[35rem]"
     >
       <>
         <span className="text-[22px] font-[600] text-c-1">Create Issue</span>
@@ -62,6 +66,9 @@ const CreateIssueModel = (props: IssueModalProps) => {
         />
         {err && <span className="-mb-3 block text-sm text-red-400">{err}</span>}
         {/* <TextInput
+
+        <TextInput
+
           type="descr"
           label="Description"
           dispatch={dispatch}
@@ -125,7 +132,7 @@ const CreateIssueModel = (props: IssueModalProps) => {
   );
 };
 
-export default CreateIssueModel;
+export default CreateIssueModal;
 
 export type T =
   | "type"
@@ -134,6 +141,8 @@ export type T =
   | "assignee"
   | "priority"
   | "listId";
+  | "progress";
+
 
 export type A = { type: T; value: number | number[] | string };
 
@@ -142,6 +151,7 @@ const initial: State = {
   summary: "",
   priority: 0,
   type: 0,
+  progress: 0,
   reporterId: null,
   assignees: [],
   listId: null,
@@ -161,6 +171,8 @@ const reducer = (state: State, { type, value }: A): State => {
       return { ...state, assignees: value as number[] };
     case "priority":
       return { ...state, priority: value as number };
+    case "progress":
+      return { ...state, progress: value as number };
     case "listId":
       return { ...state, listId: value as number };
     default:

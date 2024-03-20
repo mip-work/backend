@@ -22,25 +22,10 @@ export class MemberServices {
     private projectRepository: ProjectRepository,
   ) {}
 
-  async addMember(dto: CreateMemberDto, userId: string) {
-    const currentMember = await this.memberRepository.findInProject(
-      userId,
-      dto.projectId,
-    );
-
-    if (!currentMember) {
-      throw new NotFoundException(
-        `User not found in the project: ${dto.projectId}`,
-      );
-    }
-
-    if (currentMember.role == Role.COMMON) {
-      throw new ForbiddenException('Not authorized');
-    }
-
+  async addMember(dto: CreateMemberDto) {
     const user = await this.userRepository.findById(dto.userId);
     if (!user) {
-      throw new NotFoundException(`This user doesn't exist`);
+      throw new NotFoundException('This user does not exist');
     }
 
     const checkMember = await this.memberRepository.findInProject(
@@ -65,15 +50,7 @@ export class MemberServices {
     return member;
   }
 
-  async listMembers(projectId: string, userId: string) {
-    const currentUser = await this.memberRepository.findInProject(
-      userId,
-      projectId,
-    );
-
-    if (!currentUser) {
-      throw new ForbiddenException(`You don't have access to this project`);
-    }
+  async listMembers(projectId: string) {
     const project = await this.projectRepository.get(projectId);
 
     if (!project) {
@@ -85,20 +62,7 @@ export class MemberServices {
     return members;
   }
 
-  async delete(dto: DeleteMemberDto, userId: string) {
-    const currentUser = await this.memberRepository.findInProject(
-      userId,
-      dto.projectId,
-    );
-
-    if (!currentUser) {
-      throw new ForbiddenException('This project cannot be accessed');
-    }
-
-    if (currentUser.role == Role.COMMON) {
-      throw new ForbiddenException('Not authorized');
-    }
-
+  async delete(dto: DeleteMemberDto) {
     const member = await this.memberRepository.findInProject(
       dto.id,
       dto.projectId,
@@ -118,20 +82,7 @@ export class MemberServices {
     return;
   }
 
-  async changeRole(dto: UpdateMemberDto, userId: string) {
-    const currentMember = await this.memberRepository.findInProject(
-      userId,
-      dto.projectId,
-    );
-
-    if (!currentMember) {
-      throw new ForbiddenException(`You don't have access to this project`);
-    }
-
-    if (currentMember.role == Role.COMMON) {
-      throw new UnauthorizedException('Not authorized');
-    }
-
+  async changeRole(dto: UpdateMemberDto) {
     const findMember = await this.memberRepository.findInProject(
       dto.userId,
       dto.projectId,
@@ -142,7 +93,7 @@ export class MemberServices {
     }
 
     if (findMember.role == Role.OWNER) {
-      throw new ForbiddenException(`The owner's role cannot be changed`);
+      throw new ForbiddenException('The role of the owner cannot be changed');
     }
 
     const member = await this.memberRepository.changeRole({

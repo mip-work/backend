@@ -18,51 +18,51 @@ import { DeleteMemberDto } from '../dtos/requests/delete-member.dto';
 import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
 import { CreateMemberDto } from '../dtos/requests/create-member.dto';
 import { UpdateMemberDto } from '../dtos/requests/updateMember.dto';
+import { PermissionGuard } from 'src/guards/permission.guard';
+import { MemberGuard } from 'src/guards/member.guard';
 
 @ApiTags('Member')
+@UseGuards(AuthGuard)
 @Controller('member')
 export class MemberControllers {
   constructor(private memberService: MemberServices) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(PermissionGuard)
   @Post()
   async create(
     @Body() body: CreateMemberDto,
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const member = await this.memberService.addMember(body, req.user.id);
+    const member = await this.memberService.addMember(body);
     return res.status(HttpStatus.CREATED).json({
       data: member,
       status: HttpStatus.CREATED,
     });
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(PermissionGuard)
   @Delete()
   async remove(
     @Body() dto: DeleteMemberDto,
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    await this.memberService.delete(dto, req.user.id);
+    await this.memberService.delete(dto);
     return res.status(HttpStatus.OK).json({
       message: 'Member removed',
       status: HttpStatus.OK,
     });
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(MemberGuard)
   @Get('/list/:projectId')
   async listMembers(
     @Param('projectId') projectId: string,
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const members = await this.memberService.listMembers(
-      projectId,
-      req.user.id,
-    );
+    const members = await this.memberService.listMembers(projectId);
 
     return res.status(HttpStatus.OK).json({
       data: members,
@@ -70,21 +70,21 @@ export class MemberControllers {
     });
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(PermissionGuard)
   @Patch()
   async changeRole(
     @Body() dto: UpdateMemberDto,
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const member = await this.memberService.changeRole(dto, req.user.id);
+    const member = await this.memberService.changeRole(dto);
     return res.status(HttpStatus.OK).json({
       data: member,
       status: HttpStatus.OK,
     });
   }
 
-  @UseGuards(AuthGuard)
+  @UseGuards(MemberGuard)
   @Get(':projectId')
   async getMember(
     @Param('projectId') projectId: string,

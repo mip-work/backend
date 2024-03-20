@@ -8,7 +8,7 @@ import {
 import toast from "react-hot-toast";
 // import { APIERROR } from '../../api/apiTypes';
 import InputWithValidation from "../util/InputWithValidation";
-import { useUser } from "../../hooks/useGetUser";
+import { useUser } from "../../hooks/useUser";
 import { DataUser } from "./Welcome";
 import { useNavigate } from "react-router-dom";
 

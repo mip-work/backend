@@ -7,13 +7,18 @@ import toast from 'react-hot-toast';
 
 type APIERROR = { message: string };
 
+interface IPropsFormPwd {
+  oldPwd: string;
+  newPwd: string;
+}
+
 function ChangePwd() {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting: loading, isSubmitSuccessful: success },
-  } = useForm();
-  const [error, setError] = useState('');
+  } = useForm<IPropsFormPwd>();
+  const [error, setError] = useState<string>('');
 
   const handleChangePwd = async (form: FieldValues) => {
     try {
@@ -83,6 +88,6 @@ function ChangePwd() {
 export default ChangePwd;
 
 async function changePwd(body: FieldValues) {
-  const result = await axiosDf.put('auth/changePwd', body);
-  return result.data;
+  const { data } = await axiosDf.put('auth/changePwd', body);
+  return data;
 }

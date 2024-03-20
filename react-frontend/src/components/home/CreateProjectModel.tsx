@@ -12,14 +12,12 @@ interface Props {
   onClose: () => void;
 }
 
-const CreateProjectModel = (props: Props) => {
-  const { onClose } = props;
+const CreateProjectModel = ({ onClose }: Props) => {
   const { data: authUser } = useAuthUserQuery();
   const [createProject] = useCreateProjectMutation();
   const {
     register,
     handleSubmit,
-
     formState: { errors, isSubmitting: isLoading },
   } = useForm();
 

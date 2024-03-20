@@ -3,23 +3,23 @@ import type { CreateProject, EditProject, LeaveProject, Project } from '../apiTy
 
 export const extendedApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    projects: builder.query<Project[], number>({
-      query: (userId) => ({ url: `user/${userId}/projects` }),
+    projects: builder.query<any, number>({
+      query: () => ({ url: `project/projects` }),
       providesTags: ['Project'],
     }),
     project: builder.query<Project, number>({
       query: (projectId) => ({
-        url: 'project/' + projectId,
+        url: 'project/projects/' + projectId,
       }),
       providesTags: ['Project'],
     }),
     createProject: builder.mutation<Project, CreateProject>({
-      query: (body) => ({ url: 'project/create', method: 'POST', body }),
+      query: (body) => ({ url: 'project', method: 'POST', body }),
       invalidatesTags: ['Project'],
     }),
     deleteProject: builder.mutation<void, number>({
       query: (projectId) => ({
-        url: `project/${projectId}/delete`,
+        url: `project/${projectId}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Project'],

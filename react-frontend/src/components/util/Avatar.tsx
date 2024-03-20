@@ -11,6 +11,7 @@ interface Props {
 
 const Avatar = (props: Props) => {
   const { src, name, title, className, onClick, style } = props;
+  // console.log(name, "teste3")
   const { data: User } = useAuthUserQuery();
 
   return (
@@ -23,12 +24,12 @@ const Avatar = (props: Props) => {
           title={title ?? name}
           {...{ style, onClick }}
         >
-          <div>{name.at(0)?.slice(0, 1).toUpperCase()}</div>
+          <div>{name}</div>
           {src && <img src={src} alt={name} className='absolute block h-full w-full object-cover' />}
         </div>
       }
     </>
   );
 }
-
+// .at(0)?.slice(0, 1).toUpperCase()
 export default Avatar;

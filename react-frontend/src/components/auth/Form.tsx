@@ -8,8 +8,9 @@ import {
 import toast from "react-hot-toast";
 // import { APIERROR } from '../../api/apiTypes';
 import InputWithValidation from "../util/InputWithValidation";
-import { useUser } from "../../hooks/useUser";
+import { useUser } from "../../hooks/useGetUser";
 import { DataUser } from "./Welcome";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   register: UseFormRegister<DataUser>;
@@ -24,18 +25,20 @@ function Form({ register, handleSubmit, errors, loading, type }: Props) {
 
   const { useRegisterUser, useLoginUser } = useUser();
 
+  const navigate = useNavigate();
+
   const funSubmit = (formData: DataUser) => {
     type === "SIGNUP"
       ? useRegisterUser(formData)
           .then((res) => {
             toast("Your account is created!");
-            window.location.replace('/project')
+            navigate("/project");
           })
           .catch((error) => setError("deu errado"))
       : useLoginUser(formData)
           .then((res) => {
             toast("You have logged in!");
-            window.location.replace('/project')
+            navigate("/project");
           })
           .catch((error) => setError("deu errado"));
   };

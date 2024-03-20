@@ -17,6 +17,8 @@ const ProjectCatalog = () => {
   } = useProjectsQuery(authUser?.id as number, { skip: !authUser });
   const [isOpen, setIsOpen] = useState(false);
 
+  console.log(projects, "teste aqui")
+
   if (error && (error as APIERROR).status === 401) return <Navigate to='/login' />;
 
   if (!authUser || isLoading)
@@ -65,8 +67,8 @@ const ProjectCatalog = () => {
           {projects ? (
             projects.length !== 0 ? (
               <div className='mt-1 border-t-2 border-c-3'>
-                {projects.map((data, i) => (
-                  <ProjectRow key={data.id} idx={i} authUserId={authUser.id} {...data} />
+                {projects.data.map((item: any, i: number) => (
+                  <ProjectRow key={item.id} idx={i} authUserId={authUser.id} {...item} />
                 ))}
               </div>
             ) : (

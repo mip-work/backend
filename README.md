@@ -1,5 +1,5 @@
 # jira-clone
-usar contextAPI com axios
+
 ![jira-clone webapp demo](./jira-hq.gif)
 
 <br/>

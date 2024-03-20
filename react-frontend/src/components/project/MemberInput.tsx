@@ -2,7 +2,7 @@ import { ChangeEvent, lazy, memo, Suspense as S, useState } from 'react';
 import { useRemoveMemberMutation } from '../../api/endpoints/member.endpoint';
 import { Member, PublicUser } from '../../api/apiTypes';
 import UserMember from './UserMember';
-import axiosDf from '../../api/axios';
+import { mipAPI } from '../../api/axios';
 const ConfirmModel = lazy(() => import('../util/ConfirmModel'));
 
 interface Props {
@@ -133,6 +133,6 @@ const MemberInput = (props: Props) => {
 export default memo(MemberInput);
 
 const searchUsers = async (q: string) => {
-  const result = await axiosDf.get('api/user/search?q=' + q);
+  const result = await mipAPI.get('api/user/search?q=' + q);
   return result.data;
 };

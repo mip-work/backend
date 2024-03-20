@@ -2,8 +2,8 @@ import { Icon } from '@iconify/react';
 import { lazy, Suspense as S, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Project } from '../../api/apiTypes';
-import { usePublicUserQuery } from '../../api/endpoints/auth.endpoint';
 import { selectMembers } from '../../api/endpoints/member.endpoint';
+import { useAuthUserQuery } from '../../api/endpoints/auth.endpoint';
 const DeleteProject = lazy(() => import('./DeleteProject'));
 
 interface Props extends Project {
@@ -14,13 +14,15 @@ interface Props extends Project {
 const ProjectRow = (props: Props) => {
   const { idx, id, name, descr, repo, userId, authUserId } = props;
   const { members } = selectMembers(id);
-  const { data: publicUser } = usePublicUserQuery(userId);
+  const { data: publicUser } = useAuthUserQuery();
   const [on, setOn] = useState(false);
   const navigate = useNavigate();
 
+  console.log(members, "members")
+
   if (!members) return null;
 
-  const { isAdmin, id: memberId } = members.filter(({ userId: u }) => u === authUserId)[0];
+  const { role, id: memberId } = members.data;
 
   const handleDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
@@ -39,7 +41,7 @@ const ProjectRow = (props: Props) => {
         <div className='min-w-[18rem] grow px-2'>{descr}</div>
         <div className='w-52 shrink-0 px-2'>
           {publicUser?.username}
-          {isAdmin ? <span className='ml-1 text-sm font-bold'>(you)</span> : ''}
+          {role ? <span className='ml-1 text-sm font-bold'>(you)</span> : ''}
         </div>
         <button
           title='Delete or Leave'
@@ -53,7 +55,7 @@ const ProjectRow = (props: Props) => {
         <S>
           <DeleteProject
             projectId={id}
-            {...{ name, authUserId, memberId, isAdmin }}
+            {...{ name, authUserId, memberId, role }}
             onClose={() => setOn(false)}
           />
         </S>

@@ -14,6 +14,7 @@ const AssignedMembers = (props: Props) => {
     {}
   ) as Record<number, Member>;
   const len = ass.length;
+  console.log(membersObj, "teste4")
 
   return (
     <div className='ml-7 flex'>

@@ -10,12 +10,12 @@ interface Props {
   projectId: number;
   authUserId: number;
   memberId: number;
-  isAdmin: boolean;
+  role: boolean;
   onClose: () => void;
 }
 
 function DeleteProject(props: Props) {
-  const { name, projectId, authUserId, memberId, isAdmin, onClose } = props;
+  const { name, projectId, authUserId, memberId, role, onClose } = props;
   const [deleteProject, { isLoading: dl }] = useDeleteProjectMutation();
   const [leaveProject, { isLoading: ll }] = useLeaveProjectMutation();
   const ref = useRef<HTMLInputElement | null>(null);
@@ -33,7 +33,7 @@ function DeleteProject(props: Props) {
 
   return (
     <div className='top-full flex items-center justify-end border-b-[1px] p-2'>
-      {isAdmin ? (
+      {role ? (
         <>
           <span>
             Please type "<span className='text-chakra-blue'>{name}</span>" to delete
@@ -46,10 +46,10 @@ function DeleteProject(props: Props) {
         </>
       ) : null}
       <button
-        onClick={isAdmin ? handleDelete : handleLeave}
+        onClick={role ? handleDelete : handleLeave}
         className='btn-alert ml-5 py-[3px] text-sm'
       >
-        {isAdmin ? (dl ? 'deleting ...' : 'Delete') : ll ? 'leaving ...' : 'Leave'}
+        {role ? (dl ? 'deleting ...' : 'Delete') : ll ? 'leaving ...' : 'Leave'}
       </button>
       <button onClick={onClose} className='btn-icon ml-2 px-3 py-[3px] text-sm'>
         cancel

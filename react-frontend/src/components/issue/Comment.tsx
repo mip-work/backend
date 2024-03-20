@@ -15,6 +15,8 @@ function Comment(props: Props) {
   const [on, setOn] = useState(false);
   const [deleteCmt] = useDeleteCmtMutation();
   const isMine = u.id === userId;
+  console.log(u, "teste5")
+
 
   return (
     <>

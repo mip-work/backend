@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FieldError, FieldValues, useForm } from 'react-hook-form';
 import type { AxiosError } from 'axios';
 import InputWithValidation from '../util/InputWithValidation';
-import axiosDf from '../../api/axios';
+import { mipAPI } from '../../api/axios';
 import toast from 'react-hot-toast';
 
 type APIERROR = { message: string };
@@ -88,6 +88,6 @@ function ChangePwd() {
 export default ChangePwd;
 
 async function changePwd(body: FieldValues) {
-  const { data } = await axiosDf.put('auth/changePwd', body);
+  const { data } = await mipAPI.put('auth/changePwd', body);
   return data;
 }

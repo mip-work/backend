@@ -7,9 +7,6 @@ export const extendedApi = api.injectEndpoints({
       query: () => ({ url: '/user' }),
       providesTags: ['AuthUser'],
     }),
-    publicUser: builder.query<PublicUser, number>({
-      query: (id) => ({ url: `user/${id}` }),
-    }),
     updateAuthUser: builder.mutation<AuthUser, updateAuthUser>({
       query: (body) => ({
         url: 'user/authUser/update',
@@ -22,7 +19,7 @@ export const extendedApi = api.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useAuthUserQuery, useUpdateAuthUserMutation, usePublicUserQuery } = extendedApi;
+export const { useAuthUserQuery, useUpdateAuthUserMutation } = extendedApi;
 
 // selectors
 export const selectAuthUser = () =>

@@ -1,5 +1,8 @@
-import axiosDf from "../../api/axios";
-import { IDataLoginUser, IDataRegisterUser } from "../../components/auth/Welcome";
+import { mipAPI } from "../../api/axios";
+import {
+  IDataLoginUser,
+  IDataRegisterUser,
+} from "../../components/auth/Welcome";
 
 interface IMethodsUseUser {
   useRegisterUser: (dataForm: IDataRegisterUser) => Promise<any>;
@@ -7,12 +10,12 @@ interface IMethodsUseUser {
 }
 
 const useRegisterUser = async (dataForm: IDataRegisterUser) => {
-  const { data } = await axiosDf.post("auth/register", dataForm);
+  const { data } = await mipAPI.post("auth/register", dataForm);
   return data;
 };
 
 const useLoginUser = async (dataForm: IDataLoginUser) => {
-  const { data } = await axiosDf.post("auth/login", dataForm);
+  const { data } = await mipAPI.post("auth/login", dataForm);
   return data;
 };
 

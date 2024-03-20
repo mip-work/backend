@@ -6,7 +6,7 @@ import IconBtn from '../util/IconBtn';
 import Avatar from '../util/Avatar';
 import { setTheme, Theme } from '../../utils';
 import { APIERROR } from '../../api/apiTypes';
-import axiosDf from '../../api/axios';
+import { mipAPI } from '../../api/axios';
 import toast from 'react-hot-toast';
 const Profile = lazy(() => import('./Profile'));
 
@@ -23,6 +23,7 @@ function Sidebar(props: Props) {
   const { data: u, error } = useAuthUserQuery();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  console.log(u, "teste2")
 
   if (error && (error as APIERROR).status === 401) return <Navigate to='/login' />;
 
@@ -84,6 +85,6 @@ function Sidebar(props: Props) {
 export default Sidebar;
 
 async function logOut() {
-  const result = await axiosDf.post('auth/logout');
+  const result = await mipAPI.post('auth/logout');
   return result.data;
 }

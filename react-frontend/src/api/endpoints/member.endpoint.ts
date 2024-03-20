@@ -3,9 +3,9 @@ import type { AddMember, Member, RemoveMember } from '../apiTypes';
 
 export const extendedApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    members: builder.query<Member[], number>({
+    members: builder.query<any, number>({
       query: (projectId) => ({
-        url: `project/${projectId}/members`,
+        url: `member/${projectId}`,
       }),
       providesTags: ['Members'],
     }),

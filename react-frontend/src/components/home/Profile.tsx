@@ -13,6 +13,7 @@ interface Props {
 const Profile = (props: Props) => {
   const { authUser: u } = props;
   const [isNormal, setIsNormal] = useState(true);
+  // console.log(u.username, "teste1")
 
   return (
     <div className='flex h-screen w-[320px] flex-col items-center gap-8 overflow-y-auto overflow-x-hidden border-r-2 border-c-3 bg-c-1 p-6'>

@@ -12,6 +12,7 @@ function classNames(...classes: string[]) {
 export default function MembersDropdown() {
   const projectId = Number(useParams().projectId);
   const { members } = selectMembers(projectId);
+  console.log(u, "teste7")
 
   return (
     <Menu as="div" className="relative inline-block text-left">

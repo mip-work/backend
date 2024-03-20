@@ -6,6 +6,7 @@ import Avatar from "../util/Avatar";
 const Members = () => {
   const projectId = Number(useParams().projectId);
   const { members } = selectMembers(projectId);
+  console.log(u, "teste8")
 
   function admin(admin: any) {
     if (admin) {

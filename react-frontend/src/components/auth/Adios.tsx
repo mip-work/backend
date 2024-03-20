@@ -5,7 +5,7 @@ import InputWithValidation from '../util/InputWithValidation';
 import { useAuthUserQuery } from '../../api/endpoints/auth.endpoint';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { APIERROR } from '../../api/apiTypes';
-import axiosDf from '../../api/axios';
+import { mipAPI } from '../../api/axios';
 import toast from 'react-hot-toast';
 
 function Adios() {
@@ -17,7 +17,7 @@ function Adios() {
   const { data: authUser, error } = useAuthUserQuery();
   const [submitError, setSubmitError] = useState('');
   const navigate = useNavigate();
-
+  
   if (error && (error as APIERROR).status === 401) return <Navigate to='/login' />;
 
   if (!authUser) return null;
@@ -32,6 +32,7 @@ function Adios() {
       toast('Your account is deleted!');
       navigate('/login');
     } catch (error) {
+      window.alert(error)
       setSubmitError(((error as AxiosError).response?.data as APIERROR).message);
     }
   };
@@ -92,7 +93,7 @@ function Adios() {
 export default Adios;
 
 const deleteACC = async (body: FieldValues) => {
-  const result = await axiosDf.post('api/user/authUser/delete', body, {
+  const result = await mipAPI.post('/user/delete', body, {
     withCredentials: true,
   });
   return result.data;

@@ -10,6 +10,7 @@ interface Props {
 
 const Item = (props: Props) => {
   const { className, text, icon, size, variant = 'SQUARE' } = props;
+  console.log(text, "teste10")
 
   return (
     <div className='flex items-center truncate font-normal text-c-1'>

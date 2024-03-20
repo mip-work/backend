@@ -31,6 +31,7 @@ function Filter(props: Props) {
   const len = m?.length;
   const [searchIssue, setSearchIssue] = useState<string | any>()
   const [isActive, setIsActive] = useState<boolean>(false)
+  console.log(u, "teste6")
 
   if (error && (error as APIERROR).status === 401) return <Navigate to='/login' />;
 

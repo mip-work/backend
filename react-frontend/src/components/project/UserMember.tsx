@@ -13,6 +13,7 @@ interface Props extends PublicUser {
 const UserMember = (props: Props) => {
   const { id, username, email, profileUrl, added, projectId, setInput } = props;
   const [addMember] = useAddMemberMutation();
+  console.log(username, "teste9")
 
   const handleAddMember = async () => {
     if (added) return;

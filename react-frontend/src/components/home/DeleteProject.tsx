@@ -19,11 +19,12 @@ function DeleteProject(props: Props) {
 
   const { useDeleteProject } = useProject();
 
-  const handleDelete = () => {
+  const deleteProject = useDeleteProject()
+  
+  const handleDelete = async () => {
     if (ref.current?.value.trim() !== name) return;
-    useDeleteProject(projectId)
-      .then((res) => toast("Deleted the project!"))
-      .catch((err) => toast("Error!"));
+    await deleteProject.mutateAsync(projectId)
+    toast("Project deleted!")
   };
 
   const handleLeave = async () => {

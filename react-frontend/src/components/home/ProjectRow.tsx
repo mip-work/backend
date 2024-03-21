@@ -18,7 +18,7 @@ const ProjectRow = (props: Props) => {
   const [on, setOn] = useState(false);
   const navigate = useNavigate();
 
-  console.log(members, "members")
+  // console.log(members, "members")
 
   if (!members) return null;
 

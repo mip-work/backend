@@ -14,10 +14,6 @@ export const extendedApi = api.injectEndpoints({
       }),
       providesTags: ["Project"],
     }),
-    createProject: builder.mutation<Project, CreateProject>({
-      query: (body) => ({ url: "project", method: "POST", body }),
-      invalidatesTags: ["Project"],
-    }),
     leaveProject: builder.mutation<void, LeaveProject>({
       query: ({ projectId, ...body }) => ({
         url: `project/${projectId}/leave`,
@@ -44,7 +40,6 @@ export const extendedApi = api.injectEndpoints({
 
 export const {
   useProjectQuery,
-  useCreateProjectMutation,
   useUpdateProjectMutation,
   useLeaveProjectMutation,
 } = extendedApi;

@@ -1,5 +1,4 @@
 import { FieldError, FieldValues, useForm } from 'react-hook-form';
-import { useCreateProjectMutation } from '../../api/endpoints/project.endpoint';
 import { useAuthUserQuery } from '../../api/endpoints/auth.endpoint';
 import type { CreateProject } from '../../api/apiTypes';
 import InputWithValidation from '../util/InputWithValidation';
@@ -7,6 +6,7 @@ import WithLabel from '../util/WithLabel';
 import Model from '../util/Model';
 import Item from '../util/Item';
 import toast from 'react-hot-toast';
+import { useProject } from '../../hooks/useProject';
 
 interface Props {
   onClose: () => void;
@@ -14,16 +14,19 @@ interface Props {
 
 const CreateProjectModel = ({ onClose }: Props) => {
   const { data: authUser } = useAuthUserQuery();
-  const [createProject] = useCreateProjectMutation();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting: isLoading },
   } = useForm();
 
+  const { useCreateProject } = useProject()
+
+  const createProject = useCreateProject()
+
   const handleCreateProject = async (form: FieldValues) => {
     if (!authUser) return;
-    await createProject({ ...form, userId: authUser.id } as CreateProject);
+    await createProject.mutateAsync({...form})
     toast('Created a new project!');
     onClose();
   };

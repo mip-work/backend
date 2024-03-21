@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { APIERROR } from "../../api/apiTypes";
 import { selectAuthUser } from "../../api/endpoints/auth.endpoint";
@@ -14,11 +14,10 @@ const ProjectCatalog = () => {
 
   const { useGetProjects } = useProject();
 
-  const { projects } = useGetProjects();
+  const { data } = useGetProjects();
 
-  console.log(projects, "teste projetos")
 
-  if (projects.status === 401) return <Navigate to="/login" />;
+  if (data?.status === 401) return <Navigate to="/login" />;
 
   if (!authUser)
     return (
@@ -59,10 +58,10 @@ const ProjectCatalog = () => {
             <div className="min-w-[18rem] grow px-2">Description</div>
             <div className="w-52 shrink-0 px-2">Lead</div>
           </div>
-          {projects ? (
-            projects.data.data.length !== 0 ? (
+          {data ? (
+            data.data.data.length !== 0 ? (
               <div className="mt-1 border-t-2 border-c-3">
-                {projects.data.data.map((item: any, i: number) => (
+                {data.data.data.map((item: any, i: number) => (
                   <ProjectRow
                     key={item.id}
                     idx={i}

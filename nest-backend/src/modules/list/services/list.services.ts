@@ -97,6 +97,7 @@ export class ListServices {
     lists.splice(listIndex, 1);
 
     if (!child) {
+      await this.listRepository.delete(id)
       return;
     }
     child.parentId = list.parentId;
@@ -132,7 +133,7 @@ export class ListServices {
     const lists: List[] = await this.listRepository.getAll(projectId);
 
     if (lists.length < 1) {
-      throw new NotFoundException('No list were found');
+      return lists;
     }
 
     const sortedList = orderList(lists);

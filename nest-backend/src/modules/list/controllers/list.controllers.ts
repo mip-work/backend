@@ -16,6 +16,7 @@ import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
 import { CreateListDto } from '../dtos/requests/create-list.dto';
+import { UpdateListDTO } from '../dtos/requests/update-list-dto';
 
 @ApiTags('List')
 @Controller('list')
@@ -51,14 +52,14 @@ export class ListControllers {
   }
 
   @UseGuards(AuthGuard)
-  @Delete('/:projectId')
+  @Delete('/:projectId/:listId')
   async delete(
     @Param('projectId') projectId: string,
-    @Body('id') id: string,
+    @Param('listId') listId: string,
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    await this.listService.delete(id, projectId, req.user.id);
+    await this.listService.delete(listId, projectId, req.user.id);
     return res.status(HttpStatus.OK).json();
   }
 
@@ -77,8 +78,8 @@ export class ListControllers {
   }
 
   @UseGuards(AuthGuard)
-  @Patch(':projectId/:listId')
-  async update(
+  @Patch(':projectId/position/:listId')
+  async changePosition(
     @Param('projectId') projectId: string,
     @Param('listId') listId: string,
     @Body('parentId') parentId: string,
@@ -90,6 +91,28 @@ export class ListControllers {
       projectId,
       parentId,
       req.user.id,
+    );
+    return res.status(HttpStatus.OK).json({
+      data: list,
+      status: HttpStatus.OK,
+    });
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch(':projectId/:listId')
+  async update(
+    @Param('projectId') projectId: string,
+    @Param('listId') listId: string,
+    @Body() body: UpdateListDTO,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    console.log(body)
+    const list = await this.listService.update(
+      listId,
+      projectId,
+      req.user.id,
+      body
     );
     return res.status(HttpStatus.OK).json({
       data: list,

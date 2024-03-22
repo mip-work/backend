@@ -28,13 +28,16 @@ export class MemberControllers {
   constructor(private memberService: MemberServices) {}
 
   @UseGuards(PermissionGuard)
-  @Post()
+  @Post(':projectId')
   async create(
     @Body() body: CreateMemberDto,
-    @Req() req: Request,
     @Res() res: Response,
+    @Param('projectId') projectId: string,
   ) {
-    const member = await this.memberService.addMember(body);
+    const member = await this.memberService.addMember({
+      ...body,
+      projectId: projectId,
+    });
     return res.status(HttpStatus.CREATED).json({
       data: member,
       status: HttpStatus.CREATED,

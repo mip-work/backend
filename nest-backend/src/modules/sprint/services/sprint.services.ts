@@ -47,8 +47,8 @@ export class SprintServices {
         'The sprint initial date cannot be earlier than today!',
       );
     }
-    
-    const sprint = await this.sprintRepository.update(id, dto);    
+
+    const sprint = await this.sprintRepository.update(id, dto);
 
     if (!sprint) {
       throw new BadRequestException('Could not update this sprint');

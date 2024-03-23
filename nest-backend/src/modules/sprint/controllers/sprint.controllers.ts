@@ -26,13 +26,16 @@ export class SprintControllers {
   constructor(private sprintService: SprintServices) {}
   @UseGuards(PermissionGuard)
   @Post()
-  async create(@Body() request: CreateSprintRecDto) {
+  async create(@Body() request: CreateSprintRecDto, @Res() res: Response) {
     const sprint = await this.sprintService.create(request);
-    return sprint;
+    return res.status(HttpStatus.CREATED).json({
+      data: sprint,
+      status: HttpStatus.CREATED,
+    });
   }
 
   @UseGuards(PermissionGuard)
-  @Patch(':id')
+  @Patch(':projectId')
   async update(
     @Param('id') id: string,
     @Body() request: UpdateSprintDto,
@@ -46,21 +49,19 @@ export class SprintControllers {
   }
 
   @UseGuards(PermissionGuard)
-  @Delete(':id')
-  async delete(@Param('id') id: string, @Res() res: Response) {
+  @Delete(':projectId')
+  async delete(@Body('id') id: string, @Res() res: Response) {
     await this.sprintService.delete(id);
-    return res.status(HttpStatus.OK).json({
-      status: HttpStatus.OK,
-    });
+    return res.status(HttpStatus.OK).json();
   }
 
   @UseGuards(MemberGuard)
-  @Get(':id')
-  async get(@Param('id') request: string, @Res() res: Response) {
+  @Get(':projectId')
+  async get(@Body('id') request: string, @Res() res: Response) {
     const sprint = await this.sprintService.get(request);
     return res.status(HttpStatus.OK).json({
       data: sprint,
       status: HttpStatus.OK,
-    })
+    });
   }
 }

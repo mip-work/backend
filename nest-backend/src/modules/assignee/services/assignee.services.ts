@@ -63,4 +63,16 @@ export class AssigneeServices {
 
     return { userName, assignee };
   }
+
+  async delete(assigneeId: string) {
+    const assignee = await this.assigneeRepository.get(assigneeId);
+
+    if (!assignee) {
+      throw new ForbiddenException('Assignee not found');
+    }
+
+    await this.assigneeRepository.delete(assigneeId);
+
+    return;
+  }
 }

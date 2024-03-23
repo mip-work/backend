@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -57,5 +58,12 @@ export class AssigneeControllers {
       data: assignee,
       status: HttpStatus.OK,
     });
+  }
+
+  @UseGuards(PermissionGuard)
+  @Delete(':projectId/:assigneeId')
+  async remove(@Param('assigneeId') assigneeId: string, @Res() res: Response) {
+    await this.assigneeService.delete(assigneeId);
+    return res.status(HttpStatus.OK).json();
   }
 }

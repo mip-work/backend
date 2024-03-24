@@ -2,8 +2,8 @@ import { Icon } from "@iconify/react";
 import { lazy, Suspense as S, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Project } from "../../api/apiTypes";
-import { useAuthUserQuery } from "../../api/endpoints/auth.endpoint";
 import { useMember } from "../../hooks/useMember";
+import { useUser } from "../../hooks/useUser";
 const DeleteProject = lazy(() => import("./DeleteProject"));
 
 interface Props extends Project {
@@ -22,7 +22,8 @@ const ProjectRow = ({
 }: Props) => {
   const { useGetMember } = useMember();
   const { data } = useGetMember(id);
-  const { data: publicUser } = useAuthUserQuery();
+  const { useGetUser } = useUser();
+  const { data: publicUser } = useGetUser();
   const [on, setOn] = useState(false);
   const navigate = useNavigate();
 
@@ -46,7 +47,7 @@ const ProjectRow = ({
         <div className="min-w-[10rem] grow px-2">{name}</div>
         <div className="min-w-[18rem] grow px-2">{descr}</div>
         <div className="w-52 shrink-0 px-2">
-          {publicUser?.username}
+          {publicUser?.data.username}
           {role ? <span className="ml-1 text-sm font-bold">(you)</span> : ""}
         </div>
         <button

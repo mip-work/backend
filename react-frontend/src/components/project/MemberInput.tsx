@@ -25,6 +25,7 @@ const MemberInput = ({ projectId, members, readOnly }: Props) => {
   const uname = members && members[selectedIdx as number]?.username;
   console.log(users, "users")
   const { useGetUser } = useUser()
+  const { data: user } = useGetUser()
 
   const handleRemoveMember = async () => {
     if (!selectedIdx || !members) return;
@@ -41,7 +42,7 @@ const MemberInput = ({ projectId, members, readOnly }: Props) => {
     if (!q) return setUsers([]);
     setLoading(true);
     unsubscribe = setTimeout(async () => {
-      setUsers(await useGetUser());
+      setUsers(user?.data);
       setLoading(false);
     }, 1000);
   };

@@ -1,15 +1,15 @@
 import { Icon } from "@iconify/react";
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { APIERROR } from "../../api/apiTypes";
-import { selectAuthUser } from "../../api/endpoints/auth.endpoint";
 import SS from "../util/SpinningCircle";
 import CreateProjectModel from "./CreateProjectModel";
 import ProjectRow from "./ProjectRow";
 import { useProject } from "../../hooks/useProject";
+import { useUser } from "../../hooks/useUser";
 
 const ProjectCatalog = () => {
-  const { authUser } = selectAuthUser();
+  const { useGetUser } = useUser()
+  const { data: authUser } = useGetUser()
   const [isOpen, setIsOpen] = useState(false);
 
   const { useGetAllProjects } = useProject();
@@ -18,7 +18,7 @@ const ProjectCatalog = () => {
 
   if (data?.status === 401) return <Navigate to="/login" />;
 
-  if (!authUser)
+  if (!authUser?.data)
     return (
       <div className="z-10 grid w-full place-items-center bg-c-1 text-xl text-c-text">
         <div className="flex items-center gap-6">
@@ -64,7 +64,7 @@ const ProjectCatalog = () => {
                   <ProjectRow
                     key={item.id}
                     idx={i}
-                    authUserId={authUser.id}
+                    authUserId={authUser.data.id}
                     {...item}
                   />
                 ))}

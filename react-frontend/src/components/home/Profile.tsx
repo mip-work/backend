@@ -25,7 +25,8 @@ const Profile = (props: Props) => {
           />
           <div className='mb-2'>
             {isNormal ? (
-              <UpdateProfile user={u} />
+              // <UpdateProfile user={u} />
+              <></>
             ) : (
               <S>
                 <ChangePwd />

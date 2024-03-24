@@ -1,15 +1,9 @@
 import { FieldError, FieldValues, useForm } from "react-hook-form";
 import InputWithValidation from "../util/InputWithValidation";
 import MemberInput from "./MemberInput";
-import {
-  selectCurrentProject,
-  useUpdateProjectMutation,
-} from "../../api/endpoints/project.endpoint";
 import { useParams } from "react-router-dom";
-import { selectAuthUser } from "../../api/endpoints/auth.endpoint";
 import toast from "react-hot-toast";
 import MembersDropdown from "./MemberDropdown";
-import { selectMembers } from "../../api/endpoints/member.endpoint";
 import { useProject } from "../../hooks/useProject";
 import { useMember } from "../../hooks/useMember";
 import { useUser } from "../../hooks/useUser";
@@ -21,15 +15,15 @@ const Setting = () => {
   const { useGetAllMembers } = useMember();
   const { data: members } = useGetAllMembers(projectId);
   const { useGetUser } = useUser();
+  const { data: dataUser } = useGetUser()
   const updateProject = useUpdateProject();
-  const { authUser: u } = selectAuthUser();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  if (!project || !members || !u) return null;
+  if (!project || !members || !dataUser) return null;
 
   const { id, name, descr, repo } = project.data;
 
@@ -41,14 +35,9 @@ const Setting = () => {
         formData.repo === repo
       )
         return;
-      const {
-        data: {
-          data: { id: userId },
-        },
-      } = await useGetUser();
       await updateProject.mutateAsync({
         projectId,
-        body: { ...formData, userId },
+        body: { ...formData, userId: dataUser?.data.id },
       });
       toast("Project setting updated!");
     } catch (error) {

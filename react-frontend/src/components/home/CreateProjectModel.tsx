@@ -1,5 +1,4 @@
 import { FieldError, FieldValues, useForm } from "react-hook-form";
-import { useAuthUserQuery } from "../../api/endpoints/auth.endpoint";
 import type { CreateProject } from "../../api/apiTypes";
 import InputWithValidation from "../util/InputWithValidation";
 import WithLabel from "../util/WithLabel";
@@ -7,13 +6,15 @@ import Model from "../util/Model";
 import Item from "../util/Item";
 import toast from "react-hot-toast";
 import { useProject } from "../../hooks/useProject";
+import { useUser } from "../../hooks/useUser";
 
 interface Props {
   onClose: () => void;
 }
 
 const CreateProjectModel = ({ onClose }: Props) => {
-  const { data: authUser } = useAuthUserQuery();
+  const { useGetUser } = useUser()
+  const { data: authUser } = useGetUser()
   const {
     register,
     handleSubmit,
@@ -25,7 +26,7 @@ const CreateProjectModel = ({ onClose }: Props) => {
   const createProject = useCreateProject();
 
   const handleCreateProject = async (form: FieldValues) => {
-    if (!authUser) return;
+    if (!authUser?.data) return;
     try {
       await createProject.mutateAsync(form);
       toast("Created a new project!");
@@ -72,13 +73,13 @@ const CreateProjectModel = ({ onClose }: Props) => {
             error={errors.repo as FieldError}
           />
         </div>
-        {authUser && (
+        {authUser?.data && (
           <WithLabel label="Members">
             <>
               <div className="mb-2 rounded-sm border-[1px] border-gray-300 bg-slate-100 px-3 py-1 text-sm text-c-text">
                 <Item
-                  text={authUser.username}
-                  icon={authUser.profileUrl}
+                  text={authUser?.data.username}
+                  icon={authUser?.data.profileUrl}
                   size="h-6 w-6"
                   variant="ROUND"
                 />

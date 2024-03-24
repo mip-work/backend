@@ -2,40 +2,41 @@ import { Dispatch, lazy, SetStateAction, Suspense as S, useState } from 'react';
 import { APIERROR, Issue, Issues } from '../../api/apiTypes';
 import { Navigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
-import { useMembersQuery } from '../../api/endpoints/member.endpoint';
 import { useAuthUserQuery } from '../../api/endpoints/auth.endpoint';
-import { useProjectQuery } from '../../api/endpoints/project.endpoint';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { setIssueQuery } from '../../store/slices/querySlice';
 import Avatar from '../util/Avatar';
 import toast from 'react-hot-toast';
+import { useMember } from '../../hooks/useMember';
+import { useProject } from '../../hooks/useProject';
 const IssueModelHOC = lazy(() => import('../issue/IssueModelHOC'));
 const CreateIssueModal = lazy(() => import('../issue/CreateIssueModal'));
 
 interface Props {
   setIsDragDisabled: Dispatch<SetStateAction<boolean>>;
-  projectId: number;
+  projectId: string | undefined;
   isEmpty: boolean;
   issues?: Issues;
 }
 
-function Filter(props: Props) {
-  const { projectId, isEmpty, setIsDragDisabled, issues } = props;
-  const { data: m, error } = useMembersQuery(projectId);
-  const { data: pj } = useProjectQuery(projectId);
+function Filter({ projectId, isEmpty, setIsDragDisabled, issues }: Props) {
+  const { useGetAllMembers } = useMember()
+  const { useGetAllProjects } = useProject()
+  const { data: dataMember } = useGetAllMembers(projectId)
+  const { data: dataProject } = useGetAllProjects()
+  
   const { data: u } = useAuthUserQuery();
   const { userId: uid } = useAppSelector((s) => s.query.issue);
   const [on, setOn] = useState(false);
   const dispatch = useAppDispatch();
   const [fold, setFold] = useState(true);
-  const len = m?.length;
+  const len = dataMember?.data.data.length;
   const [searchIssue, setSearchIssue] = useState<string | any>()
   const [isActive, setIsActive] = useState<boolean>(false)
-  console.log(u, "teste6")
 
-  if (error && (error as APIERROR).status === 401) return <Navigate to='/login' />;
+  if (dataMember?.status === 401) return <Navigate to='/login' />;
 
-  function handleClick() {
+  const handleClick = () => {
     if (isEmpty) return toast.error('Please create a list first!');
     setOn(true);
   }
@@ -113,9 +114,9 @@ function Filter(props: Props) {
           className='absolute top-[6px] left-2 w-[19px]'
         />
       </div>
-      {m && len && (
+      {dataMember && len && (
         <div className='ml-7 mr-1 flex'>
-          {(len > 4 && fold ? m.slice(0, 4) : m).map(({ profileUrl, username, userId }, i) => (
+          {(len > 4 && fold ? dataMember.data.data.slice(0, 4) : dataMember.data.data).map(({ profileUrl, username, userId }: any, i: number) => (
             <Avatar
               key={userId}
               src={profileUrl}
@@ -152,10 +153,10 @@ function Filter(props: Props) {
       <button onClick={handleClick} className='btn peer relative mx-5 shrink-0'>
         Create an issue
       </button>
-      {pj && pj.repo && (
+      {dataProject && dataProject.data.repo && (
         <button
           title='go to github'
-          onClick={() => window.open(pj.repo as string, '_blank')}
+          onClick={() => window.open(dataProject.data.repo as string, '_blank')}
           className='ml-auto flex shrink-0 items-center gap-2 rounded-[3px] bg-c-2 py-1 px-3 hover:bg-c-6'
         >
           <Icon icon='bxl:github' />

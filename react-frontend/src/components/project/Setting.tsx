@@ -6,17 +6,23 @@ import {
   useUpdateProjectMutation,
 } from "../../api/endpoints/project.endpoint";
 import { useParams } from "react-router-dom";
-import { selectMembers } from "../../api/endpoints/member.endpoint";
 import { selectAuthUser } from "../../api/endpoints/auth.endpoint";
 import toast from "react-hot-toast";
 import MembersDropdown from "./MemberDropdown";
+import { selectMembers } from "../../api/endpoints/member.endpoint";
+import { useProject } from "../../hooks/useProject";
+import { useMember } from "../../hooks/useMember";
+import { useUser } from "../../hooks/useUser";
 
 const Setting = () => {
-  const [updateProject, { isLoading }] = useUpdateProjectMutation();
-  const projectId = Number(useParams().projectId);
-  const { members } = selectMembers(projectId);
+  const projectId = useParams().projectId;
+  const { useGetProjects, useUpdateProject } = useProject();
+  const { data: project } = useGetProjects(projectId);
+  const { useGetAllMembers } = useMember();
+  const { data: members } = useGetAllMembers(projectId);
+  const { useGetUser } = useUser();
+  const updateProject = useUpdateProject();
   const { authUser: u } = selectAuthUser();
-  const { project } = selectCurrentProject(projectId);
   const {
     register,
     handleSubmit,
@@ -25,18 +31,29 @@ const Setting = () => {
 
   if (!project || !members || !u) return null;
 
-  const { id, name, descr, repo } = project;
-  const isAdmin = members.filter(({ userId: uid }) => uid === u.id)[0].isAdmin;
+  const { id, name, descr, repo } = project.data;
 
   const onSubmit = async (formData: FieldValues) => {
-    if (
-      formData.name === name &&
-      formData.descr === descr &&
-      formData.repo === repo
-    )
-      return;
-    await updateProject({ id, ...formData });
-    toast("Project setting updated");
+    try {
+      if (
+        formData.name === name &&
+        formData.descr === descr &&
+        formData.repo === repo
+      )
+        return;
+      const {
+        data: {
+          data: { id: userId },
+        },
+      } = await useGetUser();
+      await updateProject.mutateAsync({
+        projectId,
+        body: { ...formData, userId },
+      });
+      toast("Project setting updated!");
+    } catch (error) {
+      toast("Error!");
+    }
   };
 
   return (
@@ -57,7 +74,7 @@ const Setting = () => {
           })}
           error={errors.name as FieldError}
           darkEnabled
-          readOnly={!isAdmin}
+          /*readOnly={!isAdmin}*/
         />
         <InputWithValidation
           defaultValue={descr}
@@ -66,7 +83,7 @@ const Setting = () => {
           register={register("descr")}
           error={errors.descr as FieldError}
           darkEnabled
-          readOnly={!isAdmin}
+          /*readOnly={!isAdmin}*/
         />
         <InputWithValidation
           defaultValue={repo}
@@ -75,23 +92,20 @@ const Setting = () => {
           register={register("repo")}
           error={errors.repo as FieldError}
           darkEnabled
-          readOnly={!isAdmin}
+          /*readOnly={!isAdmin}*/
         />
-        <MemberInput members={members} projectId={id} readOnly={!isAdmin} />
+        {/* Débito técnico <MemberInput members={members.data.data} projectId={id} readOnly={!isAdmin} /> */}
         {/* <MembersDropdown /> */}
         <div className="mt-2">
-          {!isAdmin && (
+          {/* {!isAdmin && (
             <span className="block text-sm text-red-400">
               * Only Admin can edit the project setting *
             </span>
-          )}
+          )} */}
           <button
-            disabled={!isAdmin}
-            className={`btn mt-3 ${
-              !isAdmin ? "pointer-event-none cursor-not-allowed" : ""
-            }`}
+            className={`btn mt-3 ${"pointer-event-none cursor-not-allowed"}`}
           >
-            {isLoading ? "saving changes..." : "Save Changes"}
+            {"Save Changes"}
           </button>
         </div>
       </form>

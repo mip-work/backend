@@ -8,6 +8,7 @@ import { setTheme, Theme } from '../../utils';
 import { APIERROR } from '../../api/apiTypes';
 import { mipAPI } from '../../api/axios';
 import toast from 'react-hot-toast';
+// import { useClearQueryClient } from '../../main';
 const Profile = lazy(() => import('./Profile'));
 
 interface Props {
@@ -31,9 +32,10 @@ function Sidebar(props: Props) {
     setTheme(mode);
   };
 
-  const handleLogOut = async () => {
   
-    await logOut();
+
+  const handleLogOut = async () => {
+    // useClearQueryClient() débito técnico
     toast('Logged out!');
     navigate('/login');
   };

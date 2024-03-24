@@ -3,25 +3,28 @@ import { useRemoveMemberMutation } from '../../api/endpoints/member.endpoint';
 import { Member, PublicUser } from '../../api/apiTypes';
 import UserMember from './UserMember';
 import { mipAPI } from '../../api/axios';
+import { useUser } from '../../hooks/useUser';
 const ConfirmModel = lazy(() => import('../util/ConfirmModel'));
 
 interface Props {
-  members: Member[];
+  members: any;
   projectId: number;
   readOnly?: boolean;
 }
 
 let unsubscribe: ReturnType<typeof setTimeout>;
 
-const MemberInput = (props: Props) => {
-  const { projectId, members, readOnly } = props;
+const MemberInput = ({ projectId, members, readOnly }: Props) => {
+
   const [removeMember] = useRemoveMemberMutation();
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
-  const [users, setUsers] = useState<PublicUser[]>([]);
+  const [users, setUsers] = useState<any>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const uname = members && members[selectedIdx as number]?.username;
+  console.log(users, "users")
+  const { useGetUser } = useUser()
 
   const handleRemoveMember = async () => {
     if (!selectedIdx || !members) return;
@@ -38,7 +41,7 @@ const MemberInput = (props: Props) => {
     if (!q) return setUsers([]);
     setLoading(true);
     unsubscribe = setTimeout(async () => {
-      setUsers(await searchUsers(q));
+      setUsers(await useGetUser());
       setLoading(false);
     }, 1000);
   };
@@ -59,7 +62,7 @@ const MemberInput = (props: Props) => {
         <div>
           <div className='mt-3 flex flex-wrap gap-x-1 gap-y-2'>
             {members
-              ? members.map(({ username, id, isAdmin }, idx) => (
+              ? members.map(({ username, id, isAdmin }: any, idx: any) => (
                   <div
                     key={id}
                     onClick={() => setSelectedIdx(isAdmin ? null : idx)}
@@ -102,12 +105,12 @@ const MemberInput = (props: Props) => {
             ) : (
               <>
                 <span className='mb-2 block text-sm'>Is this the one?</span>
-                {users.map((info) => (
+                {users.map((info: any) => (
                   <UserMember
                     key={info.id}
                     projectId={projectId}
                     setInput={setInput}
-                    added={members?.some(({ userId }) => userId === info.id) ?? false}
+                    added={members?.some(({ userId }: any) => userId === info.id) ?? false}
                     {...info}
                   />
                 ))}
@@ -132,7 +135,3 @@ const MemberInput = (props: Props) => {
 
 export default memo(MemberInput);
 
-const searchUsers = async (q: string) => {
-  const result = await mipAPI.get('api/user/search?q=' + q);
-  return result.data;
-};

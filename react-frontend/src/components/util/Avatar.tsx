@@ -11,7 +11,6 @@ interface Props {
 
 const Avatar = (props: Props) => {
   const { src, name, title, className, onClick, style } = props;
-  // console.log(name, "teste3")
   const { data: User } = useAuthUserQuery();
 
   return (

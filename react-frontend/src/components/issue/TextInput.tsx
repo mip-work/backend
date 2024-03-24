@@ -4,9 +4,9 @@ import { A, T } from './CreateIssueModal';
 
 interface Props {
   dispatch: Dispatch<A>;
-  value: string;
+  value?: string;
   type: T;
-  max: number;
+  max: number | string;
   label: string;
 }
 
@@ -24,10 +24,10 @@ function TextInput(props: Props) {
         {value && (
           <span
             className={`absolute right-0 text-sm italic ${
-              value.length > max ? 'text-red-400' : 'text-gray-800'
+              Number(value.length) > Number(max) ? 'text-red-400' : 'text-gray-800'
             }`}
           >
-            {value.length > max ? 'max length exceeded' : <>{max - value.length} characters left</>}
+            {Number(value.length) > Number(max) ? 'max length exceeded' : <>{Number(max) - value.length} characters left</>}
           </span>
         )}
       </div>

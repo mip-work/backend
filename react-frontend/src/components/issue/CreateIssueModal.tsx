@@ -10,24 +10,60 @@ import Model from "../util/Model";
 import type { IssueModalProps } from "./IssueModelHOC";
 import TextInput from "./TextInput";
 import toast from "react-hot-toast";
+import { useIssue } from "../../hooks/useIssue";
 
-const CreateIssueModal = (props: IssueModalProps) => {
-  const { lists, members, types, priorities, onClose } = props;
+const reducer = (state: State, { type, value }: A): State => {
+  switch (type) {
+    case "type":
+      return { ...state, type: value as number };
+    case "summary":
+      return { ...state, summary: value as string };
+    case "descr":
+      return { ...state, descr: value as string };
+    case "assignee":
+      return { ...state, assignees: value as number[] };
+    case "priority":
+      return { ...state, priority: value as number };
+    case "progress":
+      return { ...state, progress: value as number };
+    case "listId":
+      return { ...state, listId: value as number };
+    default:
+      return state;
+  }
+};
+
+const CreateIssueModal = ({
+  lists,
+  members,
+  types,
+  priorities,
+  onClose,
+}: IssueModalProps) => {
+  const projectId = useParams().projectId;
   const { authUser: u } = selectAuthUser();
-  const [createIssue, { error, isLoading }] = useCreateIssueMutation();
   const [form, dispatch] = useReducer(reducer, initial);
+  const { priority, type, summary, descr, listId } = form;
+  const { useGetIssue, useCreateIssue } = useIssue();
+  const createIssue = useCreateIssue();
+  const { data: dataIssue } = useGetIssue({projectId, body: { listId: lists[0].id }});
   const [err, setErr] = useState("");
-  const projectId = Number(useParams().projectId);
-
+  // const parentId =
+  //   dataIssue?.data.data.length === 0
+  //     ? null
+  //     : dataIssue?.data.data[dataIssue.data.data.length - 1].id;
+  console.log(dataIssue, "id")
+  console.log(lists, "aqui");
   if (!u) return null;
-
-  if (error && (error as APIERROR).status === 401)
-    return <Navigate to="/login" />;
 
   const handleCreateIssue = async () => {
     if (!form.summary) return setErr("summary must not be empty");
     if (!u || form.summary.length > 100 || form.descr.length > 500) return;
-    await createIssue({ ...form, reporterId: u.id, projectId }); //for now
+    const { status } = await createIssue.mutateAsync({
+      projectId,
+      body: { priority, type, title: summary, descr, listId, parentId },
+    });
+    if (status === 401) return <Navigate to="/login" />;
     toast("Created an issue!");
     onClose();
   };
@@ -35,7 +71,7 @@ const CreateIssueModal = (props: IssueModalProps) => {
   return (
     <Model
       onSubmit={handleCreateIssue}
-      {...{ onClose, isLoading }}
+      {...{ onClose }}
       className="max-w-[35rem]"
     >
       <>
@@ -52,7 +88,7 @@ const CreateIssueModal = (props: IssueModalProps) => {
 
         <TextInput
           type="summary"
-          label="Summary"
+          label="Title"
           dispatch={dispatch}
           value={form.summary}
           max={100}
@@ -137,24 +173,3 @@ const initial: State = {
 };
 
 type State = Omit<CreateIssue, "projectId">;
-
-const reducer = (state: State, { type, value }: A): State => {
-  switch (type) {
-    case "type":
-      return { ...state, type: value as number };
-    case "summary":
-      return { ...state, summary: value as string };
-    case "descr":
-      return { ...state, descr: value as string };
-    case "assignee":
-      return { ...state, assignees: value as number[] };
-    case "priority":
-      return { ...state, priority: value as number };
-    case "progress":
-      return { ...state, progress: value as number };
-    case "listId":
-      return { ...state, listId: value as number };
-    default:
-      return state;
-  }
-};

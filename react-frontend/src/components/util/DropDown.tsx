@@ -13,16 +13,15 @@ type Prop = {
   className?: string;
 };
 
-function DropDown(props: Prop) {
-  const {
-    list,
-    defaultValue: dv,
-    type,
-    variant = "normal",
-    dispatch,
-    actionType,
-    className,
-  } = props;
+function DropDown({
+  list,
+  defaultValue: dv,
+  type,
+  variant = "normal",
+  dispatch,
+  actionType,
+  className,
+}: Prop) {
   const isMulti = type === "multiple";
   const [localList, setLocalList] = useState<Category[]>(
     isMulti ? (dv ? multiDefault(list, dv as Category[]) : list.slice(1)) : list
@@ -64,7 +63,10 @@ function DropDown(props: Prop) {
     setOn(false);
   };
 
-  const handleDelete = (e: React.MouseEvent<HTMLSpanElement>, value: number) => {
+  const handleDelete = (
+    e: React.MouseEvent<HTMLSpanElement>,
+    value: number
+  ) => {
     e.stopPropagation();
     const [clone, resultList] = modifyItems(
       value,
@@ -116,7 +118,12 @@ function DropDown(props: Prop) {
               )
             ) : (
               <>
-              <Item size="h-4 w-4" {...list[list.findIndex(el => el.value == (current as number))]} />
+                <Item
+                  size="h-4 w-4"
+                  {...list[
+                    list.findIndex((el) => el.value == (current as number))
+                  ]}
+                />
               </>
             )}
           </div>
@@ -154,11 +161,20 @@ function DropDown(props: Prop) {
 
 export default DropDown;
 
-export type Category = { text: string; icon?: string; value: number };
+export type Category = {
+  text: string;
+  icon?: string;
+  value: number;
+  id: string;
+};
 
 // helpers
-const modifyItems = (value: number, list: Category[], resultList: Category[]) => {
-  const idx = list.findIndex(el => el.value == value)
+const modifyItems = (
+  value: number,
+  list: Category[],
+  resultList: Category[]
+) => {
+  const idx = list.findIndex((el) => el.value == value);
   const clone = list.slice(0);
   const deleted = clone.splice(idx, 1)[0];
   const result = [...resultList, deleted];

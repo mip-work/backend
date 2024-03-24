@@ -1,33 +1,44 @@
-import { api } from "../api";
-import type {
-  CreateProject,
-  EditProject,
-  LeaveProject,
-  Project,
-} from "../apiTypes";
+// quase finalizado
+import { api } from '../api';
+import type { CreateProject, EditProject, LeaveProject, Project } from '../apiTypes';
 
 export const extendedApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    project: builder.query<Project, number>({
-      query: (projectId) => ({
-        url: "project/projects/" + projectId,
-      }),
-      providesTags: ["Project"],
+    projects: builder.query<any, any>({
+      query: (userId) => ({ url: `user/${userId}/projects` }),
+      providesTags: ['Project'],
     }),
-    leaveProject: builder.mutation<void, LeaveProject>({
+    project: builder.query<any, any>({
+      query: (projectId) => ({
+        url: 'project/' + projectId,
+      }),
+      providesTags: ['Project'],
+    }),
+    createProject: builder.mutation<any, any>({
+      query: (body) => ({ url: 'project/create', method: 'POST', body }),
+      invalidatesTags: ['Project'],
+    }),
+    deleteProject: builder.mutation<any, any>({
+      query: (projectId) => ({
+        url: `project/${projectId}/delete`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Project'],
+    }),
+    leaveProject: builder.mutation<any, any>({
       query: ({ projectId, ...body }) => ({
         url: `project/${projectId}/leave`,
-        method: "DELETE",
+        method: 'DELETE',
         body,
       }),
-      invalidatesTags: ["Project"],
+      invalidatesTags: ['Project'],
     }),
-    updateProject: builder.mutation<void, EditProject>({
-      query: (body) => ({ url: `project/${body.id}`, method: "PUT", body }),
-      invalidatesTags: ["Project"],
+    updateProject: builder.mutation<any, any>({
+      query: (body) => ({ url: `project/${body.id}`, method: 'PUT', body }),
+      invalidatesTags: ['Project'],
       async onQueryStarted({ id, ...newData }, { dispatch }) {
         dispatch(
-          extendedApi.util.updateQueryData("project", id, (oldData) => ({
+          extendedApi.util.updateQueryData('project', id, (oldData) => ({
             ...oldData,
             ...newData,
           }))
@@ -39,13 +50,16 @@ export const extendedApi = api.injectEndpoints({
 });
 
 export const {
+  useProjectsQuery,
   useProjectQuery,
+  useCreateProjectMutation,
   useUpdateProjectMutation,
   useLeaveProjectMutation,
+  useDeleteProjectMutation,
 } = extendedApi;
 
 // selectors
-export const selectCurrentProject = (projectId: number) =>
+export const selectCurrentProject = (projectId: string | undefined) =>
   extendedApi.useProjectQuery(projectId, {
     selectFromResult: ({ data }) => ({ project: data }),
   });

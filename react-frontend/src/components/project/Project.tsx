@@ -1,43 +1,53 @@
-import { useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
-import { useIssuesQuery } from '../../api/endpoints/issues.endpoint';
-import { useListsQuery } from '../../api/endpoints/lists.endpoint';
-import type { APIERROR } from '../../api/apiTypes';
-import Board from './Board';
-import Filter from './Filter';
-import SS from '../util/SpinningCircle';
-import { useAppSelector } from '../../store/hooks';
+import { useState } from "react";
+import { Navigate, useParams } from "react-router-dom";
+import { useIssuesQuery } from "../../api/endpoints/issues.endpoint";
+import type { APIERROR } from "../../api/apiTypes";
+import Board from "./Board";
+import Filter from "./Filter";
+import SS from "../util/SpinningCircle";
+import { useAppSelector } from "../../store/hooks";
+import { useList } from "../../hooks/useList";
 
 const Project = () => {
-  const projectId = Number(useParams().projectId);
+  const projectId = useParams().projectId;
   const issueQuery = useAppSelector((state) => state.query.issue);
-  const { data: lists, error: listError } = useListsQuery(projectId);
   const [isDragDisabled, setIsDragDisabled] = useState(false);
+  const { useGetList } = useList();
+  
+  const { data } = useGetList(projectId);
+
 
   const { data: issues, error: issueError } = useIssuesQuery(
     { projectId, ...issueQuery },
     { refetchOnMountOrArgChange: true }
   );
 
-  if (listError && issueError) {
-    if ((listError as APIERROR).status === 401 || (issueError as APIERROR).status === 401)
-      return <Navigate to='/login' />;
+  if (data?.status && issueError) {
+    if (data?.status === 401 || (issueError as APIERROR).status === 401)
+      return <Navigate to="/login" />;
     return (
-      <div className='grid h-full grow place-items-center text-xl'>
+      <div className="grid h-full grow place-items-center text-xl">
         You are not part of this project ☝
       </div>
     );
   }
 
   return (
-    <div className='mt-6 flex grow flex-col px-8 sm:px-10'>
-      <h1 className='mb-4 text-xl font-semibold text-c-text'>Kanban Board</h1>
-      <Filter isEmpty={lists?.length === 0} {...{ projectId, setIsDragDisabled, issues }} />
+    <div className="mt-6 flex grow flex-col px-8 sm:px-10">
+      <h1 className="mb-4 text-xl font-semibold text-c-text">Kanban Board</h1>
+      <Filter
+        isEmpty={data?.data.data.length === 0}
+        {...{ projectId, setIsDragDisabled, issues }}
+      />
 
-      {lists ? (
-        <Board {...{ lists, issues, isDragDisabled }} />
+      {data?.data ? (
+        <Board
+          data={data?.data.data}
+          issues={issues}
+          isDragDisabled={isDragDisabled}
+        />
       ) : (
-        <div className='grid h-[40vh] w-full place-items-center'>
+        <div className="grid h-[40vh] w-full place-items-center">
           <SS />
         </div>
       )}

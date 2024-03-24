@@ -4,17 +4,15 @@ import { memo } from 'react';
 
 interface Props {
   assignees: Assignee[];
-  members: Member[];
+  members: any;
 }
 
-const AssignedMembers = (props: Props) => {
-  const { members, assignees: ass } = props;
-  const membersObj = members.reduce(
+const AssignedMembers = ({ members, assignees: ass }: Props) => {
+  const membersObj = members.data.data.reduce(
     (p, { id, userId, ...data }) => ({ ...p, [userId]: data }),
     {}
   ) as Record<number, Member>;
   const len = ass.length;
-  console.log(membersObj, "teste4")
 
   return (
     <div className='ml-7 flex'>

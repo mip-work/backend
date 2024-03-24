@@ -1,25 +1,8 @@
 import { mipAPI } from "../../api/axios";
-import {
-  IDataLoginUser,
-  IDataRegisterUser,
-} from "../../components/auth/Welcome";
 
-interface IMethodsUseUser {
-  useRegisterUser: (dataForm: IDataRegisterUser) => Promise<any>;
-  useLoginUser: (dataForm: IDataLoginUser) => Promise<any>;
-}
-
-const useRegisterUser = async (dataForm: IDataRegisterUser) => {
-  const { data } = await mipAPI.post("auth/register", dataForm);
-  return data;
+const useGetUser = async () => {
+  const { data, status } = await mipAPI.get("/user");
+  return { data, status };
 };
 
-const useLoginUser = async (dataForm: IDataLoginUser) => {
-  const { data } = await mipAPI.post("auth/login", dataForm);
-  return data;
-};
-
-export const useUser = (): IMethodsUseUser => ({
-  useRegisterUser,
-  useLoginUser,
-});
+export const useUser = () => ({ useGetUser });

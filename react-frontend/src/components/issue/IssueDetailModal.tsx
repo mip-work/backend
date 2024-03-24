@@ -69,7 +69,7 @@ const IssueDetailModal = (props: IssueModalProps) => {
         ? constructApiAssignee(assigneeIds, data.value as number[])
         : data;
     if (!body) return;
-    await updateIssue({ id, body: { ...body, projectId: Number(projectId) } });
+    await updateIssue({ id, body: { ...body, projectId } });
     toast(
       `Updated issue ${cipher[data.type as keyof typeof cipher] ?? data.type}!`
     );

@@ -1,28 +1,34 @@
-import { Icon } from '@iconify/react';
-import { lazy, Suspense as S, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Project } from '../../api/apiTypes';
-import { selectMembers } from '../../api/endpoints/member.endpoint';
-import { useAuthUserQuery } from '../../api/endpoints/auth.endpoint';
-const DeleteProject = lazy(() => import('./DeleteProject'));
+import { Icon } from "@iconify/react";
+import { lazy, Suspense as S, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Project } from "../../api/apiTypes";
+import { useAuthUserQuery } from "../../api/endpoints/auth.endpoint";
+import { useMember } from "../../hooks/useMember";
+const DeleteProject = lazy(() => import("./DeleteProject"));
 
 interface Props extends Project {
   idx: number;
   authUserId: number;
 }
 
-const ProjectRow = (props: Props) => {
-  const { idx, id, name, descr, repo, userId, authUserId } = props;
-  const { members } = selectMembers(id);
+const ProjectRow = ({
+  idx,
+  id,
+  name,
+  descr,
+  repo,
+  userId,
+  authUserId,
+}: Props) => {
+  const { useGetMember } = useMember();
+  const { data } = useGetMember(id);
   const { data: publicUser } = useAuthUserQuery();
   const [on, setOn] = useState(false);
   const navigate = useNavigate();
 
-  // console.log(members, "members")
+  if (!data) return null;
 
-  if (!members) return null;
-
-  const { role, id: memberId } = members.data;
+  const { role, id: memberId } = data?.data.data;
 
   const handleDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
@@ -33,22 +39,22 @@ const ProjectRow = (props: Props) => {
     <div>
       <div
         key={id}
-        className='group relative flex cursor-pointer border-y-2 border-c-3 border-t-transparent py-1 hover:border-t-2 hover:border-blue-400'
-        onClick={() => navigate(id + '/board')}
+        className="group relative flex cursor-pointer border-y-2 border-c-3 border-t-transparent py-1 hover:border-t-2 hover:border-blue-400"
+        onClick={() => navigate(id + "/board")}
       >
-        <div className='w-8 shrink-0 text-center'>{idx + 1}</div>
-        <div className='min-w-[10rem] grow px-2'>{name}</div>
-        <div className='min-w-[18rem] grow px-2'>{descr}</div>
-        <div className='w-52 shrink-0 px-2'>
+        <div className="w-8 shrink-0 text-center">{idx + 1}</div>
+        <div className="min-w-[10rem] grow px-2">{name}</div>
+        <div className="min-w-[18rem] grow px-2">{descr}</div>
+        <div className="w-52 shrink-0 px-2">
           {publicUser?.username}
-          {role ? <span className='ml-1 text-sm font-bold'>(you)</span> : ''}
+          {role ? <span className="ml-1 text-sm font-bold">(you)</span> : ""}
         </div>
         <button
-          title='Delete or Leave'
+          title="Delete or Leave"
           onClick={handleDelete}
-          className='btn-icon absolute right-0 ml-5 bg-c-1 group-hover:block sm:hidden'
+          className="btn-icon absolute right-0 ml-5 bg-c-1 group-hover:block sm:hidden"
         >
-          <Icon icon='bx:trash' className='text-red-500' />
+          <Icon icon="bx:trash" className="text-red-500" />
         </button>
       </div>
       {on && publicUser && (

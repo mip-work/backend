@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import toast from "react-hot-toast";
-import { useLeaveProjectMutation } from "../../api/endpoints/project.endpoint";
 import { useProject } from "../../hooks/useProject";
 
 interface Props {
@@ -12,24 +11,28 @@ interface Props {
   onClose: () => void;
 }
 
-function DeleteProject(props: Props) {
-  const { name, projectId, authUserId, memberId, role, onClose } = props;
-  const [leaveProject, { isLoading: ll }] = useLeaveProjectMutation();
+function DeleteProject({
+  name,
+  projectId,
+  authUserId,
+  memberId,
+  role,
+  onClose,
+}: Props) {
   const ref = useRef<HTMLInputElement | null>(null);
 
   const { useDeleteProject } = useProject();
 
-  const deleteProject = useDeleteProject()
-  
-  const handleDelete = async () => {
-    if (ref.current?.value.trim() !== name) return;
-    await deleteProject.mutateAsync(projectId)
-    toast("Project deleted!")
-  };
+  const deleteProject = useDeleteProject();
 
-  const handleLeave = async () => {
-    await leaveProject({ memberId, projectId, userId: authUserId });
-    toast("Leaved the project!");
+  const handleDelete = async () => {
+    try {
+      if (ref.current?.value.trim() !== name) return;
+      await deleteProject.mutateAsync(projectId);
+      toast("Project deleted!");
+    } catch (error) {
+      toast("Error!");
+    }
   };
 
   return (
@@ -48,10 +51,10 @@ function DeleteProject(props: Props) {
         </>
       ) : null}
       <button
-        onClick={role ? handleDelete : handleLeave}
+        onClick={handleDelete}
         className="btn-alert ml-5 py-[3px] text-sm"
       >
-        {role ? "delete" : ll ? "leaving ..." : "Leave"}
+        {"delete"}
       </button>
       <button onClick={onClose} className="btn-icon ml-2 px-3 py-[3px] text-sm">
         cancel

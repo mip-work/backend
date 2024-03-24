@@ -8,7 +8,7 @@ import {
 import toast from "react-hot-toast";
 // import { APIERROR } from '../../api/apiTypes';
 import InputWithValidation from "../util/InputWithValidation";
-import { useUser } from "../../hooks/useUser";
+import { useAuth } from "../../hooks/useAuth";
 import { DataUser } from "./Welcome";
 import { useNavigate } from "react-router-dom";
 
@@ -23,24 +23,24 @@ interface Props {
 function Form({ register, handleSubmit, errors, loading, type }: Props) {
   const [error, setError] = useState<string>("");
 
-  const { useRegisterUser, useLoginUser } = useUser();
+  const { useRegisterUser, useLoginUser } = useAuth();
 
   const navigate = useNavigate();
 
-  const funSubmit = (formData: DataUser) => {
-    type === "SIGNUP"
-      ? useRegisterUser(formData)
-          .then((res) => {
-            toast("Your account is created!");
-            navigate("/project");
-          })
-          .catch((error) => setError("deu errado"))
-      : useLoginUser(formData)
-          .then((res) => {
-            toast("You have logged in!");
-            navigate("/project");
-          })
-          .catch((error) => setError("deu errado"));
+  const funSubmit = async (formData: DataUser) => {
+    try {
+      if (type === "SIGNUP") {
+        await useRegisterUser(formData);
+        toast("Your account is created!");
+        navigate("/project");
+      } else {
+        await useLoginUser(formData);
+        toast("You have logged in!");
+        navigate("/project");
+      }
+    } catch (error) {
+      toast("Error!");
+    }
   };
 
   return (

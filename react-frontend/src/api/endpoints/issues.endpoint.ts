@@ -1,67 +1,45 @@
-import { api } from '../api';
-import type {
-  CreateIssue,
-  DeleteIssue,
-  dndOrderData,
-  IssueQuery,
-  Issues,
-  reorderIssues,
-  UpdateIssue,
-} from '../apiTypes';
+import { api } from "../api";
+import type { dndOrderData, IssueQuery, Issues } from "../apiTypes";
 
 export const extendedApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    issues: builder.query<Issues, IssueQuery>({
+    issues: builder.query<any, any>({
       query: ({ projectId, userId: uid, issueSearched }) => {
         let queryParams = [];
-    
+
         if (uid) {
           queryParams.push(`?userId=${uid}`);
         }
-    
+
         if (issueSearched) {
           queryParams.push(`?summary=${issueSearched}`);
         }
-    
+
         return {
-          url: `project/${projectId}/issues${queryParams}`,
+          url: `issue/${projectId}`,
         };
       },
-      providesTags: ['Issues'],
+      providesTags: ["Issues"],
     }),
-    createIssue: builder.mutation<void, CreateIssue>({
-      query: (body) => ({ url: 'issue/create', method: 'POST', body }),
-      invalidatesTags: ['Issues'],
+    createIssue: builder.mutation<void, any>({
+      query: (body) => ({ url: "issue/create", method: "POST", body }),
+      invalidatesTags: ["Issues"],
     }),
-    updateIssue: builder.mutation<void, UpdateIssue>({
+    updateIssue: builder.mutation<void, any>({
       query: ({ id, body }) => ({
         url: `issue/${id}/update`,
-        method: 'PATCH',
+        method: "PATCH",
         body,
       }),
-      invalidatesTags: ['Issues'],
+      invalidatesTags: ["Issues"],
     }),
-    deleteIssue: builder.mutation<void, DeleteIssue>({
+    deleteIssue: builder.mutation<void, any>({
       query: ({ issueId, projectId }) => ({
         url: `issue/${issueId}/delete`,
-        method: 'DELETE',
+        method: "DELETE",
         body: { projectId },
       }),
-      invalidatesTags: ['Issues'],
-    }),
-    reorderIssues: builder.mutation<void, reorderIssues>({
-      query: (body) => ({ url: 'issue/reorder', method: 'PUT', body }),
-      invalidatesTags: ['Issues'],
-      async onQueryStarted({ s, d, projectId }, { dispatch }) {
-        dispatch(
-          extendedApi.util.updateQueryData('issues', { projectId }, (oldIssues) =>
-            updateIssueOrderLocally(oldIssues, {
-              s: { sId: s.sId, index: s.order - 1 },
-              d: { dId: d.dId, index: d.newOrder - 1 },
-            })
-          )
-        );
-      },
+      invalidatesTags: ["Issues"],
     }),
   }),
   overrideExisting: false,
@@ -73,7 +51,6 @@ export const {
   useCreateIssueMutation,
   useUpdateIssueMutation,
   useDeleteIssueMutation,
-  useReorderIssuesMutation,
 } = extendedApi;
 
 // selectors

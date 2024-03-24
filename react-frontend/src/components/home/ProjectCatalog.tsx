@@ -12,10 +12,9 @@ const ProjectCatalog = () => {
   const { authUser } = selectAuthUser();
   const [isOpen, setIsOpen] = useState(false);
 
-  const { useGetProjects } = useProject();
+  const { useGetAllProjects } = useProject();
 
-  const { data } = useGetProjects();
-
+  const { data } = useGetAllProjects();
 
   if (data?.status === 401) return <Navigate to="/login" />;
 

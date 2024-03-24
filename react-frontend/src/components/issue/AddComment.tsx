@@ -16,7 +16,6 @@ function AddComment(props: Props) {
   const [descr, setDescr] = useState('');
   const [createCmt, { isLoading }] = useCreateCmtMutation();
   if (!u) return null;
-  console.log(u, "teste3")
 
   const len = descr.length;
 

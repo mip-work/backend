@@ -15,6 +15,8 @@ export interface List {
   name: string;
   order: number;
   projectId: number;
+  parentId: string;
+  data?: any
 }
 
 export interface CreateList {

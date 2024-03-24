@@ -46,7 +46,6 @@ export class IssueControllers {
   @Get(':projectId')
   async getAll(@Res() res: Response, @Body('listId') listId: string) {
     const issues = await this.issueService.getAll(listId);
-
     return res.status(HttpStatus.OK).json({
       data: issues,
       status: HttpStatus.OK,

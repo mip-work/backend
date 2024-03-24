@@ -23,7 +23,6 @@ function Sidebar(props: Props) {
   const { data: u, error } = useAuthUserQuery();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  console.log(u, "teste2")
 
   if (error && (error as APIERROR).status === 401) return <Navigate to='/login' />;
 
@@ -33,10 +32,12 @@ function Sidebar(props: Props) {
   };
 
   const handleLogOut = async () => {
+  
     await logOut();
     toast('Logged out!');
     navigate('/login');
   };
+  
   return (
     <div className='flex min-h-screen shrink-0'>
       <div className='flex w-14 flex-col items-center justify-between bg-primary py-6'>

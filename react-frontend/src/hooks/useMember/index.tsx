@@ -3,7 +3,7 @@ import { mipAPI } from "../../api/axios";
 
 const useGetAllMembers = (projectId: string | number | undefined) => {
   const { data, isLoading } = useQuery({
-    queryKey: ["getMember"],
+    queryKey: ["getAllMembers"],
     queryFn: async () => {
       const { data, status } = await mipAPI.get(`/member/list/${projectId}`);
       return { data, status };

@@ -7,7 +7,6 @@ export class CreateMemberDto {
   userId: string;
 
   @ApiProperty()
-  @IsUUID()
   projectId: string;
 
   @ApiProperty()

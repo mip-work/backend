@@ -97,13 +97,12 @@ export class IssueServices {
   async getAll(listId: string) {
     const issues: Issue[] = await this.issueRepository.getAll(listId);
 
-    if (issues.length < 1) {
-      return;
+    if (issues.length != 0) {
+      const sortedList = orderList(issues);
+      return sortedList;
     }
 
-    const sortedList = orderList(issues);
-
-    return sortedList;
+    return issues;
   }
 
   async get(issueId: string) {

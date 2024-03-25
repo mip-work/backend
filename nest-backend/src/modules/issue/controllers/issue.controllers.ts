@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpStatus,
+  Param,
   Patch,
   Post,
   Query,
@@ -43,8 +44,8 @@ export class IssueControllers {
   }
 
   @UseGuards(MemberGuard)
-  @Get(':projectId')
-  async getAll(@Res() res: Response, @Body('listId') listId: string) {
+  @Get(':projectId/:listId')
+  async getAll(@Res() res: Response, @Param('listId') listId: string) {
     const issues = await this.issueService.getAll(listId);
 
     return res.status(HttpStatus.OK).json({

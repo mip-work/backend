@@ -16,6 +16,7 @@ const Setting = () => {
   const { data: members } = useGetAllMembers(projectId);
   const { useGetUser } = useUser();
   const { data: dataUser } = useGetUser()
+  console.log(dataUser)
   const updateProject = useUpdateProject();
   const {
     register,
@@ -37,11 +38,12 @@ const Setting = () => {
         return;
       await updateProject.mutateAsync({
         projectId,
-        body: { ...formData, userId: dataUser?.data.id },
+        body: { ...formData, userId: dataUser?.data.data.id },
       });
       toast("Project setting updated!");
     } catch (error) {
       toast("Error!");
+      console.log(error)
     }
   };
 

@@ -54,15 +54,30 @@ export class IssueControllers {
     });
   }
 
+  @UseGuards(MemberGuard)
+  @Get(':projectId')
+  async getIssue(@Res() res: Response, @Query('issueId') issueId: string) {
+    const issue = await this.issueService.get(issueId);
+
+    return res.status(HttpStatus.OK).json({
+      data: issue,
+      status: HttpStatus.OK,
+    });
+  }
+
   @UseGuards(PermissionGuard)
   @Patch('/role/:projectId')
-  async changeRole(
+  async changePosition(
     @Body('parentId') parentId: string,
     @Res() res: Response,
     @Query('issueId') issueId: string,
     @Query('listId') listId: string,
   ) {
-    const issue = await this.issueService.changeRole(listId, issueId, parentId);
+    const issue = await this.issueService.changePosition(
+      listId,
+      issueId,
+      parentId,
+    );
 
     return res.status(HttpStatus.OK).json({
       data: issue,

@@ -115,7 +115,7 @@ export class IssueServices {
     return issue;
   }
 
-  async changeRole(listId: string, issueId: string, parentId: string) {
+  async changePosition(listId: string, issueId: string, parentId: string) {
     const issue = await this.issueRepository.get(issueId);
 
     if (!issue) {

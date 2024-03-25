@@ -1,5 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { mipAPI } from "../../api/axios";
+import { FieldValues } from "react-hook-form";
 
 const useGetUser = () => {
   const { data, isLoading } = useQuery({
@@ -13,4 +14,20 @@ const useGetUser = () => {
   return { data, isLoading }
 };
 
-export const useUser = () => ({ useGetUser });
+const useUpdateUser = () => {
+  const queryClient = useQueryClient()
+
+  const { mutateAsync } = useMutation({
+    mutationFn: async (body: FieldValues) => {
+      const { data, status } = await mipAPI.patch("/user/update", body)
+      return { data, status }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getUser"] })
+    }
+  })
+
+  return { mutateAsync }
+}
+
+export const useUser = () => ({ useGetUser, useUpdateUser });

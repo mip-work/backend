@@ -39,3 +39,8 @@ export interface IParamsRequestUpdateProject {
   projectId: string | undefined;
   body: any;
 }
+
+export interface IParamsRequestUpdateUser {
+  email: string | undefined;
+  username: any | undefined;
+}

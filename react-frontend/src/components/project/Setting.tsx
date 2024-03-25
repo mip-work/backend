@@ -16,7 +16,6 @@ const Setting = () => {
   const { data: members } = useGetAllMembers(projectId);
   const { useGetUser } = useUser();
   const { data: dataUser } = useGetUser()
-  console.log(dataUser)
   const updateProject = useUpdateProject();
   const {
     register,

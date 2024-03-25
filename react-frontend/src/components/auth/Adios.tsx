@@ -2,11 +2,11 @@ import { FieldError, FieldValues, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
 import InputWithValidation from '../util/InputWithValidation';
-import { useAuthUserQuery } from '../../api/endpoints/auth.endpoint';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { APIERROR } from '../../api/apiTypes';
 import { mipAPI } from '../../api/axios';
 import toast from 'react-hot-toast';
+import { useUser } from '../../hooks/useUser';
 
 function Adios() {
   const {
@@ -14,15 +14,16 @@ function Adios() {
     formState: { errors, isSubmitting: loading },
     handleSubmit,
   } = useForm();
-  const { data: authUser, error } = useAuthUserQuery();
+  const { useGetUser } = useUser()
+  const { data: authUser } = useGetUser()
   const [submitError, setSubmitError] = useState('');
   const navigate = useNavigate();
   
-  if (error && (error as APIERROR).status === 401) return <Navigate to='/login' />;
+  if (authUser?.status === 401) return <Navigate to='/login' />;
 
-  if (!authUser) return null;
+  if (!authUser?.data) return null;
 
-  const name = authUser.username;
+  const name = authUser.data.data.username;
 
   const onSubmit = async (form: FieldValues) => {
     setSubmitError('');

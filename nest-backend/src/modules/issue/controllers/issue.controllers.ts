@@ -66,7 +66,7 @@ export class IssueControllers {
   }
 
   @UseGuards(PermissionGuard)
-  @Patch('/role/:projectId')
+  @Patch('/position/:projectId')
   async changePosition(
     @Body('parentId') parentId: string,
     @Res() res: Response,

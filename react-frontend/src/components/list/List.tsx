@@ -18,7 +18,7 @@ const List = ({ idx, name, id, projectId, parentId, issues, isDragDisabled }: Pr
   const [nameInput, setNameInput] = useState(name);
   const [isEditing, setIsEditing] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const body = { name: nameInput };
+  const body = { name: nameInput, parentId };
 
   const { useUpdateList, useDeleteList } = useList();
 

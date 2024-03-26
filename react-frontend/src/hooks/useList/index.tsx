@@ -3,14 +3,29 @@ import { mipAPI } from "../../api/axios";
 import {
   IParamsRequestCreateList,
   IParamsRequestDeleteList,
+  IParamsRequestGetList,
   IParamsRequestUpdateList,
 } from "../interfaces";
 
-const useGetList = (projectId: string | number | undefined) => {
+// Confirmado
+
+const useGetAllList = (projectId: string | number | undefined) => {
+  const { data, isLoading } = useQuery({
+    queryKey: ["getAllList"],
+    queryFn: async () => {
+      const { data, status } = await mipAPI.get(`list/${projectId}`);
+      return { data, status };
+    },
+  });
+
+  return { data, isLoading };
+};
+
+const useGetList = ({ projectId, id }: IParamsRequestGetList) => {
   const { data, isLoading } = useQuery({
     queryKey: ["getList"],
     queryFn: async () => {
-      const { data, status } = await mipAPI.get(`list/${projectId}`);
+      const { data, status } = await mipAPI.get(`list/${projectId}/${id}`);
       return { data, status };
     },
   });
@@ -27,7 +42,7 @@ const useCreateList = () => {
       return { data, status };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getList"] });
+      queryClient.invalidateQueries({ queryKey: ["getAllList"] });
     },
   });
 
@@ -50,7 +65,7 @@ const useUpdateList = () => {
       return { data, status };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getList"] });
+      queryClient.invalidateQueries({ queryKey: ["getAllList"] });
     },
   });
 
@@ -68,7 +83,7 @@ const useDeleteList = () => {
       return { data, status };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getList"] });
+      queryClient.invalidateQueries({ queryKey: ["getAllList"] });
     },
   });
 
@@ -76,6 +91,7 @@ const useDeleteList = () => {
 };
 
 export const useList = () => ({
+  useGetAllList,
   useGetList,
   useCreateList,
   useUpdateList,

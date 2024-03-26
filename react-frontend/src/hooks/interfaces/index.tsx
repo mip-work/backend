@@ -1,5 +1,10 @@
 import { AxiosRequestConfig } from "axios";
 
+export interface IParamsRequestGetList {
+  projectId: string | number | undefined;
+  id: string;
+}
+
 export interface IParamsRequestUpdateList {
   projectId: number;
   listId: number;

@@ -12,9 +12,9 @@ const Project = () => {
   const projectId = useParams().projectId;
   const issueQuery = useAppSelector((state) => state.query.issue);
   const [isDragDisabled, setIsDragDisabled] = useState(false);
-  const { useGetList } = useList();
+  const { useGetAllList } = useList();
   
-  const { data } = useGetList(projectId);
+  const { data } = useGetAllList(projectId);
 
 
   const { data: issues, error: issueError } = useIssuesQuery(

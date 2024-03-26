@@ -4,6 +4,8 @@ import {
   IDataRegisterUser,
 } from "../../components/auth/Welcome";
 
+// Confirmado
+
 const useRegisterUser = async (dataForm: IDataRegisterUser) => {
   const { data } = await mipAPI.post("auth/register", dataForm);
   return data;

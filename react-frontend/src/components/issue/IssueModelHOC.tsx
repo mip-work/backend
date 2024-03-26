@@ -17,8 +17,8 @@ const IssueModelHOC = ({ children: Component, ...PROPS }: Props) => {
   const projectId = useParams().projectId;
   const { useGetAllMembers } = useMember()
   const { data: apiMembers } = useGetAllMembers(projectId)
-  const { useGetList } = useList()
-  const { data } = useGetList(projectId)
+  const { useGetAllList } = useList()
+  const { data } = useGetAllList(projectId)
 
   const members = apiMembers
     ? (apiMembers.data.data.map(({ username: u, profileUrl: p, userId }: any) => ({

@@ -15,7 +15,7 @@ const Setting = () => {
   const { useGetAllMembers } = useMember();
   const { data: members } = useGetAllMembers(projectId);
   const { useGetUser } = useUser();
-  const { data: dataUser } = useGetUser()
+  const { data: dataUser } = useGetUser();
   const updateProject = useUpdateProject();
   const {
     register,
@@ -25,7 +25,7 @@ const Setting = () => {
 
   if (!project || !members || !dataUser) return null;
 
-  const { id, name, descr, repo } = project.data;
+  const { name, descr, repo } = project.data;
 
   const onSubmit = async (formData: FieldValues) => {
     try {
@@ -42,7 +42,7 @@ const Setting = () => {
       toast("Project setting updated!");
     } catch (error) {
       toast("Error!");
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -84,7 +84,11 @@ const Setting = () => {
           darkEnabled
           /*readOnly={!isAdmin}*/
         />
-        {/* Débito técnico <MemberInput members={members.data.data} projectId={id} readOnly={!isAdmin} /> */}
+        <MemberInput
+          members={members.data.data}
+          projectId={projectId}
+          // readOnly={!isAdmin}
+        />
         {/* <MembersDropdown /> */}
         <div className="mt-2">
           {/* {!isAdmin && (

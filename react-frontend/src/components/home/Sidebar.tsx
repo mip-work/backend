@@ -8,6 +8,7 @@ import { APIERROR } from "../../api/apiTypes";
 import { mipAPI } from "../../api/axios";
 import toast from "react-hot-toast";
 import { useUser } from "../../hooks/useUser";
+import { useAuth } from "../../hooks/useAuth";
 // import { useClearQueryClient } from '../../main';
 const Profile = lazy(() => import("./Profile"));
 
@@ -25,6 +26,7 @@ function Sidebar(props: Props) {
   const { data: user } = useGetUser();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const { logOut } = useAuth();
 
   if (user?.status === 401) return <Navigate to="/login" />;
 
@@ -35,8 +37,13 @@ function Sidebar(props: Props) {
 
   const handleLogOut = async () => {
     // useClearQueryClient() débito técnico
-    toast("Logged out!");
-    navigate("/login");
+    try {
+      await logOut();
+      toast("Logged out!");
+      navigate("/login");
+    } catch (error) {
+      toast("Error!");
+    }
   };
 
   return (

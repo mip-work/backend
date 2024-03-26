@@ -1,38 +1,41 @@
-import { ChangeEvent, lazy, memo, Suspense as S, useState } from 'react';
-import { useRemoveMemberMutation } from '../../api/endpoints/member.endpoint';
-import { Member, PublicUser } from '../../api/apiTypes';
-import UserMember from './UserMember';
-import { mipAPI } from '../../api/axios';
-import { useUser } from '../../hooks/useUser';
-const ConfirmModel = lazy(() => import('../util/ConfirmModel'));
+import { ChangeEvent, lazy, memo, Suspense as S, useState } from "react";
+import { Member, PublicUser } from "../../api/apiTypes";
+import UserMember from "./UserMember";
+import { useUser } from "../../hooks/useUser";
+import { useMember } from "../../hooks/useMember";
+const ConfirmModel = lazy(() => import("../util/ConfirmModel"));
 
 interface Props {
   members: any;
-  projectId: number;
+  projectId: string | undefined;
   readOnly?: boolean;
 }
 
 let unsubscribe: ReturnType<typeof setTimeout>;
 
 const MemberInput = ({ projectId, members, readOnly }: Props) => {
-
-  const [removeMember] = useRemoveMemberMutation();
+  const { useDeleteMember } = useMember();
+  const deleteMember = useDeleteMember();
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const [users, setUsers] = useState<any>([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const uname = members && members[selectedIdx as number]?.username;
-  console.log(users, "users")
-  const { useGetUser } = useUser()
-  const { data: user } = useGetUser()
+  console.log(users, "users");
+  const { useGetUser } = useUser();
+  const { data: user } = useGetUser();
 
   const handleRemoveMember = async () => {
-    if (!selectedIdx || !members) return;
-    const member = members[selectedIdx];
-    removeMember({ projectId, memberId: member.id, userId: member.userId });
-    setSelectedIdx(null);
-    setIsOpen(false);
+    try {
+      if (!selectedIdx || !members) return;
+      const member = members[selectedIdx];
+      await deleteMember.mutateAsync({ projectId, id: member.id });
+      setSelectedIdx(null);
+      setIsOpen(false);
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -49,19 +52,19 @@ const MemberInput = ({ projectId, members, readOnly }: Props) => {
 
   return (
     <div>
-      <label className='text-sm tracking-wide text-c-5'>Members</label>
+      <label className="text-sm tracking-wide text-c-5">Members</label>
       <input
         value={input}
         onChange={handleInputChange}
-        placeholder='username'
+        placeholder="username"
         className={`mt-2 block w-full rounded-sm border-2 border-transparent bg-c-6 px-3 py-[3px] text-sm text-c-text outline-none duration-200 hover:bg-c-7 focus:border-chakra-blue focus:bg-c-1 ${
-          readOnly ? 'pointer-events-none' : ''
+          readOnly ? "pointer-events-none" : ""
         }`}
         readOnly={readOnly}
       />
-      <div className='relative'>
+      <div className="relative">
         <div>
-          <div className='mt-3 flex flex-wrap gap-x-1 gap-y-2'>
+          <div className="mt-3 flex flex-wrap gap-x-1 gap-y-2">
             {members
               ? members.map(({ username, id, isAdmin }: any, idx: any) => (
                   <div
@@ -69,28 +72,30 @@ const MemberInput = ({ projectId, members, readOnly }: Props) => {
                     onClick={() => setSelectedIdx(isAdmin ? null : idx)}
                     className={`rounded-sm border-[1px] px-2 py-[1px] text-sm font-semibold tracking-wide  ${
                       isAdmin
-                        ? 'bg-blue-500 text-white'
-                        : 'cursor-pointer text-blue-400 hover:opacity-90'
+                        ? "bg-blue-500 text-white"
+                        : "cursor-pointer text-blue-400 hover:opacity-90"
                     } ${
-                      selectedIdx === idx ? 'border-green-400 text-green-400' : 'border-blue-400'
-                    } ${readOnly ? 'pointer-events-none' : ''}`}
+                      selectedIdx === idx
+                        ? "border-green-400 text-green-400"
+                        : "border-blue-400"
+                    } ${readOnly ? "pointer-events-none" : ""}`}
                   >
-                    {username + (isAdmin ? ' *' : '')}
+                    {username + (isAdmin ? " *" : "")}
                   </div>
                 ))
-              : 'loading ...'}
+              : "loading ..."}
           </div>
           {selectedIdx && !readOnly && (
-            <div className='mt-3 flex justify-end gap-x-3 border-t-[.5px] border-gray-400 pt-4'>
+            <div className="mt-3 flex justify-end gap-x-3 border-t-[.5px] border-gray-400 pt-4">
               <button
                 onClick={() => setSelectedIdx(null)}
-                className='btn bg-transparent text-[13px] tracking-wide text-c-text hover:bg-c-2'
+                className="btn bg-transparent text-[13px] tracking-wide text-c-text hover:bg-c-2"
               >
                 cancel
               </button>
               <button
                 onClick={() => setIsOpen(true)}
-                className='btn-alert text-[13px] tracking-wide'
+                className="btn-alert text-[13px] tracking-wide"
               >
                 Remove member
               </button>
@@ -98,20 +103,25 @@ const MemberInput = ({ projectId, members, readOnly }: Props) => {
           )}
         </div>
         {!input ? null : (
-          <div className='absolute top-0 z-10 w-full rounded-[3px] border-[1px] bg-c-1 bg-white p-[8px_12px_22px] text-c-text shadow-sm'>
+          <div className="absolute top-0 z-10 w-full rounded-[3px] border-[1px] bg-c-1 bg-white p-[8px_12px_22px] text-c-text shadow-sm">
             {loading ? (
-              <span className='mt-2 block text-center'>searching ...</span>
+              <span className="mt-2 block text-center">searching ...</span>
             ) : users.length === 0 ? (
-              <span className='mt-2 block text-center'>not user was found :(</span>
+              <span className="mt-2 block text-center">
+                not user was found :(
+              </span>
             ) : (
               <>
-                <span className='mb-2 block text-sm'>Is this the one?</span>
+                <span className="mb-2 block text-sm">Is this the one?</span>
                 {users.map((info: any) => (
                   <UserMember
                     key={info.id}
                     projectId={projectId}
                     setInput={setInput}
-                    added={members?.some(({ userId }: any) => userId === info.id) ?? false}
+                    added={
+                      members?.some(({ userId }: any) => userId === info.id) ??
+                      false
+                    }
                     {...info}
                   />
                 ))}
@@ -123,10 +133,10 @@ const MemberInput = ({ projectId, members, readOnly }: Props) => {
       {isOpen && (
         <S>
           <ConfirmModel
-            msg={'remove ' + uname}
+            msg={"remove " + uname}
             onClose={() => setIsOpen(false)}
             onSubmit={handleRemoveMember}
-            toastMsg={uname + ' is out from the project!'}
+            toastMsg={uname + " is out from the project!"}
           />
         </S>
       )}
@@ -135,4 +145,3 @@ const MemberInput = ({ projectId, members, readOnly }: Props) => {
 };
 
 export default memo(MemberInput);
-

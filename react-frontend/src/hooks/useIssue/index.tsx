@@ -5,13 +5,27 @@ import {
   IParamsRequestGetIssue,
 } from "../interfaces";
 
-// Falta o getIssue, delete e patch
+// Falta o patch
 
-const useGetAllIssue = ({ projectId }: IParamsRequestGetIssue) => {
+const useGetAllIssue = (projectId: string | undefined) => {
   const { data, isLoading } = useQuery({
     queryKey: ["getAllIssue"],
     queryFn: async () => {
       const { data, status } = await mipAPI.get(`/issue/${projectId}`);
+      return { data, status };
+    },
+  });
+
+  return { data, isLoading };
+};
+
+const useGetIssue = ({ projectId, listId }: IParamsRequestGetIssue) => {
+  const { data, isLoading } = useQuery({
+    queryKey: ["getIssue"],
+    queryFn: async () => {
+      const { data, status } = await mipAPI.get(
+        `/issue/${projectId}/${listId}`
+      );
       return { data, status };
     },
   });
@@ -28,11 +42,49 @@ const useCreateIssue = () => {
       return { data, status };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getIssue"] });
+      queryClient.invalidateQueries({ queryKey: ["getAllIssue"] });
     },
   });
 
   return { mutateAsync };
 };
 
-export const useIssue = () => ({ useGetAllIssue, useCreateIssue });
+const useDeleteIssue = () => {
+  const queryClient = useQueryClient();
+
+  const { mutateAsync } = useMutation({
+    mutationFn: async (projectId: string) => {
+      const { data, status } = await mipAPI.delete(`/issue/${projectId}`);
+      return { data, status };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAllIssue"] });
+    },
+  });
+
+  return { mutateAsync };
+};
+
+const useUpdateIssue = () => {
+  const queryClient = useQueryClient();
+
+  const { mutateAsync } = useMutation({
+    mutationFn: async (projectId: string) => {
+      const { data, status } = await mipAPI.patch(`/issue/${projectId}`);
+      return { data, status };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getAllIssue"] });
+    },
+  });
+
+  return { mutateAsync };
+};
+
+export const useIssue = () => ({
+  useGetAllIssue,
+  useCreateIssue,
+  useGetIssue,
+  useDeleteIssue,
+  useUpdateIssue
+});

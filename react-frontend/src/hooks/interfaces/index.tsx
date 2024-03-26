@@ -11,8 +11,11 @@ export interface IParamsRequestUpdateList {
   body: { name: string };
 }
 
-export interface IParamsRequestDeleteList {
+export interface IParamsRequestDeleteList extends AxiosRequestConfig<any> {
   projectId: number;
+  body: {
+    id: string;
+  }
 }
 
 export interface IParamsRequestCreateList {
@@ -35,6 +38,7 @@ export interface IParamsRequestCreateIssue {
 
 export interface IParamsRequestGetIssue extends AxiosRequestConfig<any> {
   projectId: string | undefined;
+  listId: string | undefined
 }
 
 export interface IParamsRequestUpdateProject {
@@ -46,3 +50,16 @@ export interface IParamsRequestUpdateUser {
   email: string | undefined;
   username: any | undefined;
 }
+
+export interface IParamsRequestDeleteMember extends AxiosRequestConfig<any> {
+  projectId: string | undefined;
+  id: string;
+}
+
+export interface IParamsRequestUdpateMember {
+  id?: string;
+  userId: string;
+  role: string | number | undefined;
+  projectId: string;
+}
+

@@ -76,9 +76,9 @@ const useDeleteList = () => {
   const queryClient = useQueryClient();
 
   const { mutateAsync } = useMutation({
-    mutationFn: async ({ projectId }: IParamsRequestDeleteList) => {
+    mutationFn: async ({ projectId, body }: IParamsRequestDeleteList) => {
       const { data, status } = await mipAPI.delete(
-        `/list/${projectId}`
+        `/list/${projectId}`, body
       );
       return { data, status };
     },

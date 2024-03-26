@@ -10,7 +10,7 @@ import { useList } from "../../hooks/useList";
 
 interface Props {
   data: any;
-  issues?: Issues;
+  issues?: any;
   isDragDisabled: boolean;
 }
 

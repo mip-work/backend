@@ -4,7 +4,7 @@ import { AuthUser } from "../../api/apiTypes";
 import InputWithValidation from "../util/InputWithValidation";
 import { useUser } from "../../hooks/useUser";
 
-function UpdateProfile({ user: u }: { user: AuthUser }) {
+function UpdateProfile({ user }: { user: AuthUser }) {
   const { useUpdateUser } = useUser();
   const updateUser = useUpdateUser();
   const {
@@ -16,10 +16,10 @@ function UpdateProfile({ user: u }: { user: AuthUser }) {
   const handleUpdate = async (form: FieldValues) => {
     try {
       if (
-        !u ||
-        (form.username === u.username &&
-          form.email === u.email &&
-          form.profileUrl === u.profileUrl)
+        !user ||
+        (form.username === user.username &&
+          form.email === user.email &&
+          form.profileUrl === user.profileUrl)
       )
         return;
       const { username, email } = form;
@@ -35,7 +35,7 @@ function UpdateProfile({ user: u }: { user: AuthUser }) {
         <InputWithValidation
           label="Username"
           placeholder="username"
-          defaultValue={u.username}
+          defaultValue={user.username}
           register={register("username", {
             required: { value: true, message: "username must not be empty" },
           })}
@@ -45,7 +45,7 @@ function UpdateProfile({ user: u }: { user: AuthUser }) {
         <InputWithValidation
           label="Email"
           placeholder="email"
-          defaultValue={u.email}
+          defaultValue={user.email}
           register={register("email", {
             required: { value: true, message: "username must not be empty" },
           })}
@@ -56,7 +56,7 @@ function UpdateProfile({ user: u }: { user: AuthUser }) {
         <InputWithValidation
           label="Photo Url"
           placeholder="profile picture"
-          defaultValue={u.profileUrl}
+          defaultValue={user.profileUrl}
           register={register("profileUrl")}
           error={errors.profileUrl as FieldError}
           darkEnabled

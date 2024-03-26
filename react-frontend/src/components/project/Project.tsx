@@ -7,19 +7,18 @@ import Filter from "./Filter";
 import SS from "../util/SpinningCircle";
 import { useAppSelector } from "../../store/hooks";
 import { useList } from "../../hooks/useList";
+import { useIssue } from "../../hooks/useIssue";
 
 const Project = () => {
   const projectId = useParams().projectId;
   const issueQuery = useAppSelector((state) => state.query.issue);
   const [isDragDisabled, setIsDragDisabled] = useState(false);
+  
   const { useGetAllList } = useList();
-
   const { data } = useGetAllList(projectId);
 
-  const { data: issues, error: issueError } = useIssuesQuery(
-    { projectId, ...issueQuery },
-    { refetchOnMountOrArgChange: true }
-  );
+  const { useGetAllIssue } = useIssue()
+  const { data: issues } = useGetAllIssue(projectId)
 
   if (data?.status === 401) return <Navigate to="/login" />;
 

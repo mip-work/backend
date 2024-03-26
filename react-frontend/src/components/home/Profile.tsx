@@ -11,21 +11,21 @@ interface Props {
 }
 
 const Profile = (props: Props) => {
-  const { authUser: u } = props;
+  const { authUser } = props;
   const [isNormal, setIsNormal] = useState(true);
 
   return (
     <div className='flex h-screen w-[320px] flex-col items-center gap-8 overflow-y-auto overflow-x-hidden border-r-2 border-c-3 bg-c-1 p-6'>
-      {u ? (
+      {authUser ? (
         <>
           <Avatar
-            src={u.profileUrl}
-            name={u.username}
+            src={authUser.profileUrl}
+            name={authUser.username}
             className='h-40 w-40 cursor-default text-6xl'
           />
           <div className='mb-2'>
             {isNormal ? (
-              // <UpdateProfile user={u} />
+              // <UpdateProfile user={authUser} />
               <></>
             ) : (
               <S>
@@ -40,8 +40,8 @@ const Profile = (props: Props) => {
             </button>
           </div>
           <div className='mt-auto w-full text-sm text-c-5'>
-            <span className='mb-1 block'>{'joined at ' + parseDate(u.createdAt)}</span>
-            <span>{'last logged in ' + parseDate(u.lastLoggedIn)}</span>
+            <span className='mb-1 block'>{'joined at ' + parseDate(authUser.createdAt)}</span>
+            <span>{'last logged in ' + parseDate(authUser.lastLoggedIn)}</span>
             <Link to='/adios' className='btn-alert mt-3 block w-full text-center text-base'>
               Delete account
             </Link>

@@ -16,7 +16,7 @@ interface Props {
   setIsDragDisabled: Dispatch<SetStateAction<boolean>>;
   projectId: string | undefined;
   isEmpty: boolean;
-  issues?: Issues;
+  issues?: any;
 }
 
 function Filter({ projectId, isEmpty, setIsDragDisabled, issues }: Props) {
@@ -58,7 +58,7 @@ function Filter({ projectId, isEmpty, setIsDragDisabled, issues }: Props) {
     let filteredTasks: Issue[] = [];
     if (issues) {
       for (const issue of Object.values(issues || {})) {
-        const filteredIssue = issue.filter((item: any) =>
+        const filteredIssue = issue?.filter((item: any) =>
           item?.summary.toLowerCase().includes(searchIssue)
         );
         filteredTasks = [...filteredTasks, ...filteredIssue];

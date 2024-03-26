@@ -3,7 +3,8 @@ import { mipAPI } from "../../api/axios";
 import { FieldValues } from "react-hook-form";
 import { IParamsRequestUpdateProject } from "../interfaces";
 
-//confirmado
+// Confirmado
+
 
 const useGetAllProjects = () => {
   const { data, isLoading } = useQuery({

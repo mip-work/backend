@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpStatus,
+  Param,
   Patch,
   Post,
   Query,
@@ -43,8 +44,8 @@ export class IssueControllers {
   }
 
   @UseGuards(MemberGuard)
-  @Get(':projectId')
-  async getAll(@Res() res: Response, @Body('listId') listId: string) {
+  @Get(':projectId/:listId')
+  async getAll(@Res() res: Response, @Param('listId') listId: string) {
     const issues = await this.issueService.getAll(listId);
     return res.status(HttpStatus.OK).json({
       data: issues,
@@ -52,15 +53,30 @@ export class IssueControllers {
     });
   }
 
+  @UseGuards(MemberGuard)
+  @Get(':projectId')
+  async getIssue(@Res() res: Response, @Query('issueId') issueId: string) {
+    const issue = await this.issueService.get(issueId);
+
+    return res.status(HttpStatus.OK).json({
+      data: issue,
+      status: HttpStatus.OK,
+    });
+  }
+
   @UseGuards(PermissionGuard)
-  @Patch('/role/:projectId')
-  async changeRole(
+  @Patch('/position/:projectId')
+  async changePosition(
     @Body('parentId') parentId: string,
     @Res() res: Response,
     @Query('issueId') issueId: string,
     @Query('listId') listId: string,
   ) {
-    const issue = await this.issueService.changeRole(listId, issueId, parentId);
+    const issue = await this.issueService.changePosition(
+      listId,
+      issueId,
+      parentId,
+    );
 
     return res.status(HttpStatus.OK).json({
       data: issue,

@@ -9,8 +9,4 @@ export class CreateAssigneeDto {
   @ApiProperty()
   @IsUUID()
   issueId: string;
-
-  @ApiProperty()
-  @IsUUID()
-  projectId: string;
 }

@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaService } from './db/prisma.service';
 import { AssigneeModule } from './modules/assignee/assignee.module';
@@ -10,7 +10,6 @@ import { ListModule } from './modules/list/list.module';
 import { MemberModule } from './modules/member/member.module';
 import { SprintModule } from './modules/sprint/sprint.module';
 import { AuthModule } from './modules/auth/auth.module';
-
 
 @Module({
   imports: [

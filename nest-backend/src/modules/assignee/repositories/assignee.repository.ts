@@ -7,7 +7,7 @@ import { UpdateAssigneeDto } from '../dtos/requests/update-assignee.dto';
 export class AssigneeRepository {
   constructor(private prisma: PrismaService) {}
 
-  async addInIssue(dto: CreateAssigneeDto) {
+  async attachToIssue(dto: CreateAssigneeDto) {
     const assignee = await this.prisma.assignee.create({
       data: dto,
     });
@@ -15,10 +15,18 @@ export class AssigneeRepository {
   }
 
   async get(id: string) {
-    const assignee = await this.prisma.assignee.findFirst({ 
-      where: { id } 
+    const assignee = await this.prisma.assignee.findFirst({
+      where: { id },
     });
     return assignee;
+  }
+
+  async getUserName(userId: string) {
+    const user = await this.prisma.user.findFirst({
+      where: { id: userId },
+    });
+
+    return user.username;
   }
 
   async getAllInIssue(issueId: string) {
@@ -28,16 +36,16 @@ export class AssigneeRepository {
     return assignee;
   }
 
-  async getInIssue(id: string, issueId: string) {
+  async getInIssue(userId: string, issueId: string) {
     const assignee = await this.prisma.assignee.findFirst({
-      where: { id, issueId },
+      where: { userId, issueId },
     });
     return assignee;
   }
 
   async delete(id: string) {
-    const assignee = await this.prisma.assignee.delete({ 
-      where: { id } 
+    const assignee = await this.prisma.assignee.delete({
+      where: { id },
     });
     return assignee;
   }

@@ -88,7 +88,7 @@ export class IssueServices {
     }
 
     child.parentId = issue.parentId;
-    await this.issueRepository.changeRole(child.id, child.parentId);
+    await this.issueRepository.changePosition(child.id, child.parentId);
 
     await this.issueRepository.delete(issueId);
     return;
@@ -97,13 +97,12 @@ export class IssueServices {
   async getAll(listId: string) {
     const issues: Issue[] = await this.issueRepository.getAll(listId);
 
-    if (issues.length < 1) {
-      return;
+    if (issues.length != 0) {
+      const sortedList = orderList(issues);
+      return sortedList;
     }
 
-    const sortedList = orderList(issues);
-
-    return sortedList;
+    return issues;
   }
 
   async get(issueId: string) {
@@ -116,7 +115,7 @@ export class IssueServices {
     return issue;
   }
 
-  async changeRole(listId: string, issueId: string, parentId: string) {
+  async changePosition(listId: string, issueId: string, parentId: string) {
     const issue = await this.issueRepository.get(issueId);
 
     if (!issue) {
@@ -154,9 +153,9 @@ export class IssueServices {
           child.parentId = issue.parentId;
         }
         sortedList[childIndex] = child;
-        await this.issueRepository.changeRole(child.id, child.parentId);
+        await this.issueRepository.changePosition(child.id, child.parentId);
 
-        await this.issueRepository.changeRole(issue.id, lastIssue.id);
+        await this.issueRepository.changePosition(issue.id, lastIssue.id);
 
         issue.parentId = lastIssue.id;
         sortedList.splice(issueIndex, 1);
@@ -167,7 +166,7 @@ export class IssueServices {
       if (childIndex != -1) {
         const child = sortedList[childIndex];
         child.parentId = issue.parentId;
-        await this.issueRepository.changeRole(child.id, child.parentId);
+        await this.issueRepository.changePosition(child.id, child.parentId);
 
         sortedList[childIndex] = child;
 
@@ -177,7 +176,7 @@ export class IssueServices {
 
         const rightIssue = sortedList[rightIssueIndex];
         rightIssue.parentId = issue.id;
-        await this.issueRepository.changeRole(
+        await this.issueRepository.changePosition(
           rightIssue.id,
           rightIssue.parentId,
         );
@@ -185,7 +184,7 @@ export class IssueServices {
         sortedList[rightIssueIndex] = rightIssue;
 
         issue.parentId = parent.id;
-        await this.issueRepository.changeRole(issue.id, issue.parentId);
+        await this.issueRepository.changePosition(issue.id, issue.parentId);
         sortedList.splice(issueIndex, 1);
         sortedList.splice(parentIndex, 0, issue);
 
@@ -197,13 +196,16 @@ export class IssueServices {
 
         const rightList = sortedList[rightListIndex];
         rightList.parentId = issue.id;
-        await this.issueRepository.changeRole(rightList.id, rightList.parentId);
+        await this.issueRepository.changePosition(
+          rightList.id,
+          rightList.parentId,
+        );
 
         sortedList[rightListIndex] = rightList;
 
         issue.parentId = parent.id;
 
-        await this.issueRepository.changeRole(issue.id, issue.parentId);
+        await this.issueRepository.changePosition(issue.id, issue.parentId);
         sortedList.splice(issueIndex, 1);
         sortedList.splice(parentIndex, 0, issue);
 
@@ -214,15 +216,15 @@ export class IssueServices {
       if (childIndex != -1) {
         const child = sortedList[childIndex];
         child.parentId = issue.parentId;
-        await this.issueRepository.changeRole(child.id, child.parentId);
+        await this.issueRepository.changePosition(child.id, child.parentId);
       }
 
       issue.parentId = parentId;
       sortedList[0].parentId = issue.id;
 
       const issueIndex = sortedList.findIndex((i) => i.id === issue.id);
-      await this.issueRepository.changeRole(issue.id, issue.parentId);
-      await this.issueRepository.changeRole(sortedList[0].id, issue.id);
+      await this.issueRepository.changePosition(issue.id, issue.parentId);
+      await this.issueRepository.changePosition(sortedList[0].id, issue.id);
 
       sortedList.splice(issueIndex, 1);
       sortedList.unshift(issue);

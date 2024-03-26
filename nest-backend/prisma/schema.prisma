@@ -37,7 +37,6 @@ model Project {
   userId    String
   lists     List[]
   members   Member[]
-  assignees Assignee[]
   sprints   Sprint[]
 
   @@index([userId])
@@ -97,12 +96,9 @@ model Assignee {
   userId    String
   Issue     Issue?   @relation(fields: [issueId], references: [id], onDelete: Cascade)
   issueId   String
-  Project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId String
 
   @@index([userId])
   @@index([issueId])
-  @@index([projectId])
 }
 
 model Comment {

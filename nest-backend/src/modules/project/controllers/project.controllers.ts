@@ -17,13 +17,15 @@ import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateProjectDto } from '../dtos/requests/update-project.dto';
 import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
+import { PermissionGuard } from 'src/guards/permission.guard';
+import { MemberGuard } from 'src/guards/member.guard';
 
 @ApiTags('Project')
 @Controller('project')
+@UseGuards(AuthGuard)
 export class ProjectControllers {
   constructor(private projectService: ProjectServices) {}
 
-  @UseGuards(AuthGuard)
   @Post()
   async create(
     @Body() dto: CreateProjectDto,
@@ -40,8 +42,8 @@ export class ProjectControllers {
     });
   }
 
-  @UseGuards(AuthGuard)
   @Get('/projects/:id')
+  @UseGuards(PermissionGuard, MemberGuard)
   async get(@Param('id') request: string, @Res() res: Response) {
     const project = await this.projectService.get(request);
     return res.status(HttpStatus.OK).json({
@@ -50,7 +52,6 @@ export class ProjectControllers {
     });
   }
 
-  @UseGuards(AuthGuard)
   @Get('/projects')
   async getAll(@Req() req: Request, @Res() res: Response) {
     const project = await this.projectService.getAll(req.user.id);
@@ -60,8 +61,8 @@ export class ProjectControllers {
     });
   }
 
-  @UseGuards(AuthGuard)
   @Patch(':id')
+  @UseGuards(PermissionGuard)
   async update(
     @Param('id') id: string,
     @Body() request: UpdateProjectDto,
@@ -74,10 +75,10 @@ export class ProjectControllers {
     });
   }
 
-  @UseGuards(AuthGuard)
   @Delete(':id')
+  @UseGuards(PermissionGuard)
   async delete(@Param('id') id: string, @Res() res: Response) {
     await this.projectService.delete(id);
-    return res.status(HttpStatus.OK).json();
+    return res.status(HttpStatus.NO_CONTENT).json();
   }
 }

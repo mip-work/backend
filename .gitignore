@@ -29,3 +29,5 @@ yarn-error.log*
 **/.env
 
 express-backend/dados_mysq/*
+
+docker-compose-dev.yml

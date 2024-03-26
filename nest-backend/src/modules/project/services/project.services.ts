@@ -51,12 +51,7 @@ export class ProjectServices {
 
   async getAll(userId: string) {
     const projects: Project[] = await this.projectRepository.getAll(userId);
-    if (projects.length < 1) {
-      throw new NotFoundException(`You can't create a project`);
-    }
-
     const projectsView = ProjectBuilder.listProjectView(projects);
-
     return projectsView;
   }
 

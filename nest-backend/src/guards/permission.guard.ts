@@ -37,7 +37,7 @@ export class PermissionGuard implements CanActivate {
   }
 
   private async getProjectFromParam(req: Request): Promise<string | undefined> {
-    const projectId = req.params.projectId;
+    const projectId = req.params.id;
     if (!projectId) {
       throw new BadRequestException('Did not found a project ID');
     }

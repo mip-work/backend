@@ -5,7 +5,7 @@ interface Props {
   children: JSX.Element;
   className?: string;
   onClose: () => void;
-  onSubmit?: () => Promise<void>;
+  onSubmit?: any;
   isLoading?: boolean;
 }
 

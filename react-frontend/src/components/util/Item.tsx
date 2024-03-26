@@ -8,8 +8,7 @@ interface Props {
   className?: string;
 }
 
-const Item = (props: Props) => {
-  const { className, text, icon, size, variant = 'SQUARE' } = props;
+const Item = ({ className, text, icon, size, variant = 'SQUARE' }: Props) => {
 
   return (
     <div className='flex items-center truncate font-normal text-c-1'>

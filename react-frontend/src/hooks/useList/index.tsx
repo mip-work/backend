@@ -33,12 +33,12 @@ const useGetList = ({ projectId, id }: IParamsRequestGetList) => {
   return { data, isLoading };
 };
 
-const useCreateList = () => {
+const useCreateList = (projectId: string | undefined) => {
   const queryClient = useQueryClient();
 
   const { mutateAsync } = useMutation({
-    mutationFn: async (newList: IParamsRequestCreateList) => {
-      const { data, status } = await mipAPI.post("/list", newList);
+    mutationFn: async (body: IParamsRequestCreateList) => {
+      const { data, status } = await mipAPI.post(`/list/${projectId}`, body);
       return { data, status };
     },
     onSuccess: () => {
@@ -76,9 +76,9 @@ const useDeleteList = () => {
   const queryClient = useQueryClient();
 
   const { mutateAsync } = useMutation({
-    mutationFn: async ({ projectId, listId }: IParamsRequestDeleteList) => {
+    mutationFn: async ({ projectId }: IParamsRequestDeleteList) => {
       const { data, status } = await mipAPI.delete(
-        `/list/${projectId}/${listId}`
+        `/list/${projectId}`
       );
       return { data, status };
     },

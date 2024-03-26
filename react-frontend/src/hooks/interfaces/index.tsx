@@ -13,12 +13,10 @@ export interface IParamsRequestUpdateList {
 
 export interface IParamsRequestDeleteList {
   projectId: number;
-  listId: number;
 }
 
 export interface IParamsRequestCreateList {
   name: string;
-  projectId: string | undefined;
   parentId: string;
 }
 
@@ -36,8 +34,7 @@ export interface IParamsRequestCreateIssue {
 }
 
 export interface IParamsRequestGetIssue extends AxiosRequestConfig<any> {
-  projectId?: string | undefined;
-  body?: { listId: number | null | string } | undefined;
+  projectId: string | undefined;
 }
 
 export interface IParamsRequestUpdateProject {

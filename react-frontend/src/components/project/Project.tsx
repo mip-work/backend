@@ -13,18 +13,17 @@ const Project = () => {
   const issueQuery = useAppSelector((state) => state.query.issue);
   const [isDragDisabled, setIsDragDisabled] = useState(false);
   const { useGetAllList } = useList();
-  
-  const { data } = useGetAllList(projectId);
 
+  const { data } = useGetAllList(projectId);
 
   const { data: issues, error: issueError } = useIssuesQuery(
     { projectId, ...issueQuery },
     { refetchOnMountOrArgChange: true }
   );
 
-  if (data?.status && issueError) {
-    if (data?.status === 401 || (issueError as APIERROR).status === 401)
-      return <Navigate to="/login" />;
+  if (data?.status === 401) return <Navigate to="/login" />;
+
+  if (!data?.data) {
     return (
       <div className="grid h-full grow place-items-center text-xl">
         You are not part of this project ☝

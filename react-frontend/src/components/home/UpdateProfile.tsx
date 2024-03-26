@@ -22,7 +22,8 @@ function UpdateProfile({ user: u }: { user: AuthUser }) {
           form.profileUrl === u.profileUrl)
       )
         return;
-      await updateUser.mutateAsync(form);
+      const { username, email } = form;
+      await updateUser.mutateAsync({ username, email });
       toast("Updated profile!");
     } catch (error) {
       toast("Error!");

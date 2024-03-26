@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { mipAPI } from "../../api/axios";
 
+// Falta: post, delete e patch
+
 const useGetAllMembers = (projectId: string | number | undefined) => {
   const { data, isLoading } = useQuery({
     queryKey: ["getAllMembers"],

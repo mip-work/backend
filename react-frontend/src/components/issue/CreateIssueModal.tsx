@@ -1,7 +1,6 @@
 import { useReducer, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import { APIERROR, CreateIssue } from "../../api/apiTypes";
-import { selectAuthUser } from "../../api/endpoints/auth.endpoint";
 import { useCreateIssueMutation } from "../../api/endpoints/issues.endpoint";
 import DropDown from "../util/DropDown";
 import WithLabel from "../util/WithLabel";
@@ -11,6 +10,7 @@ import type { IssueModalProps } from "./IssueModelHOC";
 import TextInput from "./TextInput";
 import toast from "react-hot-toast";
 import { useIssue } from "../../hooks/useIssue";
+import { useUser } from "../../hooks/useUser";
 
 const reducer = (state: State, { type, value }: A): State => {
   switch (type) {
@@ -41,24 +41,25 @@ const CreateIssueModal = ({
   onClose,
 }: IssueModalProps) => {
   const projectId = useParams().projectId;
-  const { authUser: u } = selectAuthUser();
+  const { useGetUser } = useUser()
+  const { data: user } = useGetUser()
   const [form, dispatch] = useReducer(reducer, initial);
   const { priority, type, summary, descr, listId } = form;
-  const { useGetIssue, useCreateIssue } = useIssue();
+  const { useGetAllIssue, useCreateIssue } = useIssue();
   const createIssue = useCreateIssue();
-  const { data: dataIssue } = useGetIssue({projectId, body: { listId: lists[0].id }});
+  const { data: dataIssue } = useGetAllIssue({projectId});
   const [err, setErr] = useState("");
-  // const parentId =
-  //   dataIssue?.data.data.length === 0
-  //     ? null
-  //     : dataIssue?.data.data[dataIssue.data.data.length - 1].id;
+  const parentId =
+    dataIssue?.data.data.length === 0
+      ? null
+      : dataIssue?.data.data[dataIssue.data.data.length - 1].id;
   console.log(dataIssue, "id")
   console.log(lists, "aqui");
-  if (!u) return null;
+  if (!user?.data) return null;
 
   const handleCreateIssue = async () => {
     if (!form.summary) return setErr("summary must not be empty");
-    if (!u || form.summary.length > 100 || form.descr.length > 500) return;
+    if (!user?.data || form.summary.length > 100 || form.descr.length > 500) return;
     const { status } = await createIssue.mutateAsync({
       projectId,
       body: { priority, type, title: summary, descr, listId, parentId },
@@ -106,7 +107,7 @@ const CreateIssueModal = ({
             <WithLabel label="Reporter">
               <div className="rounded-sm bg-[#f4f5f7] px-3 py-[5px]">
                 <Item
-                  {...members.filter(({ value: v }) => v === u.id)[0]}
+                  {...members.filter(({ value: v }) => v === user?.data.data.id)[0]}
                   size="h-6 w-6"
                   variant="ROUND"
                 />

@@ -5,14 +5,13 @@ import {
   IParamsRequestGetIssue,
 } from "../interfaces";
 
-const useGetIssue = ({ projectId, body }: IParamsRequestGetIssue) => {
+// Falta o getIssue, delete e patch
+
+const useGetAllIssue = ({ projectId }: IParamsRequestGetIssue) => {
   const { data, isLoading } = useQuery({
-    queryKey: ["getIssue"],
+    queryKey: ["getAllIssue"],
     queryFn: async () => {
-      const { data, status } = await mipAPI.get(
-        `/issue/${projectId}`,
-        body as IParamsRequestGetIssue
-      );
+      const { data, status } = await mipAPI.get(`/issue/${projectId}`);
       return { data, status };
     },
   });
@@ -36,4 +35,4 @@ const useCreateIssue = () => {
   return { mutateAsync };
 };
 
-export const useIssue = () => ({ useGetIssue, useCreateIssue });
+export const useIssue = () => ({ useGetAllIssue, useCreateIssue });

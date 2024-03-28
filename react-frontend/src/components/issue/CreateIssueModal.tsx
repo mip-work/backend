@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 import { useIssue } from "../../hooks/useIssue";
 import { useUser } from "../../hooks/useUser";
 
-const reducer = (state: State, { type, value }: A): State => {
+const reducer = (state: State, { type, value }: any): State => {
   switch (type) {
     case "type":
       return { ...state, type: value as number };
@@ -27,7 +27,7 @@ const reducer = (state: State, { type, value }: A): State => {
     case "progress":
       return { ...state, progress: value as number };
     case "listId":
-      return { ...state, listId: value as number };
+      return { ...state, listId: value as StaticRange };
     default:
       return state;
   }
@@ -41,32 +41,39 @@ const CreateIssueModal = ({
   onClose,
 }: IssueModalProps) => {
   const projectId = useParams().projectId;
-  const { useGetUser } = useUser()
-  const { data: user } = useGetUser()
+  const { useGetUser } = useUser();
+  const { data: user } = useGetUser();
   const [form, dispatch] = useReducer(reducer, initial);
   const { priority, type, summary, descr, listId } = form;
-  const { useGetAllIssue, useCreateIssue } = useIssue();
+  const { useCreateIssue } = useIssue();
   const createIssue = useCreateIssue();
-  const { data: dataIssue } = useGetAllIssue({projectId});
   const [err, setErr] = useState("");
-  const parentId =
-    dataIssue?.data.data.length === 0
-      ? null
-      : dataIssue?.data.data[dataIssue.data.data.length - 1].id;
-  console.log(dataIssue, "id")
-  console.log(lists, "aqui");
+
   if (!user?.data) return null;
 
   const handleCreateIssue = async () => {
-    if (!form.summary) return setErr("summary must not be empty");
-    if (!user?.data || form.summary.length > 100 || form.descr.length > 500) return;
-    const { status } = await createIssue.mutateAsync({
-      projectId,
-      body: { priority, type, title: summary, descr, listId, parentId },
-    });
-    if (status === 401) return <Navigate to="/login" />;
-    toast("Created an issue!");
-    onClose();
+    try {
+      if (!form.summary) return setErr("summary must not be empty");
+      if (!user?.data || form.summary.length > 100 || form.descr.length > 500)
+        return;
+      const body = {
+        priority: Number(priority?.value),
+        type: Number(type?.value),
+        title: summary,
+        descr,
+        listId: listId?.id,
+      };
+      console.log(body)
+      const { status } = await createIssue.mutateAsync({
+        projectId,
+        body,
+      });
+      if (status === 401) return <Navigate to="/login" />;
+      toast("Created an issue!");
+      onClose();
+    } catch (error) {
+      toast("Error!");
+    }
   };
 
   return (
@@ -107,7 +114,9 @@ const CreateIssueModal = ({
             <WithLabel label="Reporter">
               <div className="rounded-sm bg-[#f4f5f7] px-3 py-[5px]">
                 <Item
-                  {...members.filter(({ value: v }) => v === user?.data.data.id)[0]}
+                  {...members.filter(
+                    ({ value: v }) => v === user?.data.data.id
+                  )[0]}
                   size="h-6 w-6"
                   variant="ROUND"
                 />
@@ -160,7 +169,7 @@ export type T =
   | "listId"
   | "progress";
 
-export type A = { type: T; value: number | number[] | string };
+export type A = { type: T; value: any };
 
 const initial: State = {
   descr: "",
@@ -173,4 +182,5 @@ const initial: State = {
   listId: null,
 };
 
-type State = Omit<CreateIssue, "projectId">;
+type State = Omit<any, "projectId">; // débito técnico ICreateIssue
+

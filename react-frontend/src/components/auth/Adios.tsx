@@ -18,6 +18,8 @@ function Adios() {
   const { data: authUser } = useGetUser()
   const [submitError, setSubmitError] = useState('');
   const navigate = useNavigate();
+  const { useDeleteUser } = useUser()
+  const deleteUser = useDeleteUser()
   
   if (authUser?.status === 401) return <Navigate to='/login' />;
 
@@ -29,11 +31,10 @@ function Adios() {
     setSubmitError('');
     if (form.name.trim() !== name) return setSubmitError("the name doesn't match");
     try {
-      await deleteACC(form);
+      await deleteUser.mutateAsync();
       toast('Your account is deleted!');
       navigate('/login');
     } catch (error) {
-      window.alert(error)
       setSubmitError(((error as AxiosError).response?.data as APIERROR).message);
     }
   };
@@ -92,10 +93,3 @@ function Adios() {
 }
 
 export default Adios;
-
-const deleteACC = async (body: FieldValues) => {
-  const result = await mipAPI.post('/user/delete', body, {
-    withCredentials: true,
-  });
-  return result.data;
-};

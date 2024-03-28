@@ -6,21 +6,18 @@ export interface IParamsRequestGetList {
 }
 
 export interface IParamsRequestUpdateList {
-  projectId: number;
-  listId: number;
+  projectId: string | undefined | number;
+  listId: string | number
   body: { name: string };
 }
 
 export interface IParamsRequestDeleteList extends AxiosRequestConfig<any> {
   projectId: number;
-  body: {
-    id: string;
-  }
+  listId: string;
 }
 
 export interface IParamsRequestCreateList {
   name: string;
-  parentId: string;
 }
 
 export interface IParamsRequestCreateIssue {
@@ -30,8 +27,8 @@ export interface IParamsRequestCreateIssue {
     type: number;
     title: string;
     descr: string;
-    listId: string | number | null;
-    parentId: string | null;
+    listId: string | undefined | null;
+    parentId?: string | undefined;
     sprintId?: string;
   };
 }
@@ -39,6 +36,11 @@ export interface IParamsRequestCreateIssue {
 export interface IParamsRequestGetIssue extends AxiosRequestConfig<any> {
   projectId: string | undefined;
   listId: string | undefined
+}
+
+export interface IParamsRequestUpdateIssue {
+  projectId: string | undefined;
+  issueId: string | undefined
 }
 
 export interface IParamsRequestUpdateProject {

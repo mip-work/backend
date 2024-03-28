@@ -22,7 +22,7 @@ const MemberInput = ({ projectId, members, readOnly }: Props) => {
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const uname = members && members[selectedIdx as number]?.username;
-  console.log(users, "users");
+
   const { useGetUser } = useUser();
   const { data: user } = useGetUser();
 
@@ -34,7 +34,7 @@ const MemberInput = ({ projectId, members, readOnly }: Props) => {
       setSelectedIdx(null);
       setIsOpen(false);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -56,7 +56,7 @@ const MemberInput = ({ projectId, members, readOnly }: Props) => {
       <input
         value={input}
         onChange={handleInputChange}
-        placeholder="username"
+        placeholder="email"
         className={`mt-2 block w-full rounded-sm border-2 border-transparent bg-c-6 px-3 py-[3px] text-sm text-c-text outline-none duration-200 hover:bg-c-7 focus:border-chakra-blue focus:bg-c-1 ${
           readOnly ? "pointer-events-none" : ""
         }`}
@@ -112,7 +112,7 @@ const MemberInput = ({ projectId, members, readOnly }: Props) => {
               </span>
             ) : (
               <>
-                <span className="mb-2 block text-sm">Is this the one?</span>
+                {/* <span className="mb-2 block text-sm">Is this the one?</span>
                 {users.map((info: any) => (
                   <UserMember
                     key={info.id}
@@ -124,7 +124,7 @@ const MemberInput = ({ projectId, members, readOnly }: Props) => {
                     }
                     {...info}
                   />
-                ))}
+                ))} */}
               </>
             )}
           </div>

@@ -3,6 +3,7 @@ import { mipAPI } from "../../api/axios";
 import {
   IParamsRequestCreateIssue,
   IParamsRequestGetIssue,
+  IParamsRequestUpdateIssue,
 } from "../interfaces";
 
 // Falta o patch
@@ -69,12 +70,13 @@ const useUpdateIssue = () => {
   const queryClient = useQueryClient();
 
   const { mutateAsync } = useMutation({
-    mutationFn: async (projectId: string) => {
-      const { data, status } = await mipAPI.patch(`/issue/${projectId}`);
+    mutationFn: async ({ projectId, issueId }: IParamsRequestUpdateIssue) => {
+      const { data, status } = await mipAPI.patch(`/issue/${projectId}?issueId=${issueId}`);
       return { data, status };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["getAllIssue"] });
+      queryClient.invalidateQueries({ queryKey: ["getIssue"] });
     },
   });
 

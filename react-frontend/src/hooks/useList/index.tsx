@@ -59,7 +59,7 @@ const useUpdateList = () => {
       body,
     }: IParamsRequestUpdateList) => {
       const { data, status } = await mipAPI.patch(
-        `list/${projectId}/${listId}`,
+        `list/${projectId}?listId=${listId}`,
         body
       );
       return { data, status };
@@ -76,9 +76,9 @@ const useDeleteList = () => {
   const queryClient = useQueryClient();
 
   const { mutateAsync } = useMutation({
-    mutationFn: async ({ projectId, body }: IParamsRequestDeleteList) => {
+    mutationFn: async ({ projectId, listId }: IParamsRequestDeleteList) => {
       const { data, status } = await mipAPI.delete(
-        `/list/${projectId}`, body
+        `/list/${projectId}?listId=${listId}`
       );
       return { data, status };
     },

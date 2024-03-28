@@ -134,11 +134,11 @@ export interface dndOrderData {
 
 export interface CreateIssue {
   id?: number;
-  type: number;
+  type: null | { id: string; value: number };
   reporterId: number | null;
   assignees: number[];
-  listId: number | null;
-  priority: number;
+  listId: null | { id: string; value: number; };
+  priority: null | { id: string; value: number };
   progress: number;
   summary: string;
   descr: string;

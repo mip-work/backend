@@ -16,8 +16,6 @@ interface Props {
 
 const Board = ({ data, issues, isDragDisabled }: Props) => {
   const projectId = useParams().projectId;
-  console.log(data)
-  const parentId = data.length === 0 ? null : data[data.length - 1].id;
 
   const { useCreateList } = useList();
 
@@ -37,7 +35,7 @@ const Board = ({ data, issues, isDragDisabled }: Props) => {
     try {
       await createList.mutateAsync({
         name: "unnamed list",
-        parentId,
+        // parentId,
       });
       toast("Created a list!");
     } catch (error) {

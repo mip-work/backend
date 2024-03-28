@@ -13,15 +13,16 @@ type Prop = {
   className?: string;
 };
 
-function DropDown({
-  list,
-  defaultValue: dv,
-  type,
-  variant = "normal",
-  dispatch,
-  actionType,
-  className,
-}: Prop) {
+function DropDown(props: Prop) {
+  const {
+    list,
+    defaultValue: dv,
+    type,
+    variant = "normal",
+    dispatch,
+    actionType,
+    className,
+  } = props;
   const isMulti = type === "multiple";
   const [localList, setLocalList] = useState<Category[]>(
     isMulti ? (dv ? multiDefault(list, dv as Category[]) : list.slice(1)) : list
@@ -41,7 +42,7 @@ function DropDown({
     });
   }, []);
 
-  const handleSelect = (value: number) => () => {
+  const handleSelect = (value: number, id: string) => () => {
     const [clone, resultList] = modifyItems(
       value,
       localList,
@@ -49,17 +50,17 @@ function DropDown({
     );
     dispatch({
       type: actionType,
-      value: isMulti ? parseIds(resultList) : value,
+      value: isMulti ? parseIds(resultList) : { value, id },
     });
     setLocalList(clone);
     setCurrent(resultList);
     setOn(false);
   };
 
-  const handleClick = (value: number) => () => {
+  const handleClick = (value: number, id: string) => () => {
     if (value === current) return setOn(false);
     setCurrent(value);
-    dispatch({ type: actionType, value });
+    dispatch({ type: actionType, value: { value, id } });
     setOn(false);
   };
 
@@ -139,7 +140,10 @@ function DropDown({
             localList.map((props) => (
               <li
                 className="cursor-pointer px-4 py-2 hover:bg-[#e2e8f0]"
-                onClick={(isMulti ? handleSelect : handleClick)(props.value)}
+                onClick={(isMulti ? handleSelect : handleClick)(
+                  props.value,
+                  props.id
+                )}
                 key={props.value}
               >
                 <Item
@@ -164,8 +168,8 @@ export default DropDown;
 export type Category = {
   text: string;
   icon?: string;
-  value: number;
   id: string;
+  value: number;
 };
 
 // helpers

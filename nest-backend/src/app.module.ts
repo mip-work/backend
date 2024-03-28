@@ -10,6 +10,7 @@ import { ListModule } from './modules/list/list.module';
 import { MemberModule } from './modules/member/member.module';
 import { SprintModule } from './modules/sprint/sprint.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { RedisModule } from './db/redis.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AuthModule } from './modules/auth/auth.module';
       isGlobal: true,
       envFilePath: './.env',
     }),
+    RedisModule,
     AuthModule,
     CommentModule,
     AssigneeModule,

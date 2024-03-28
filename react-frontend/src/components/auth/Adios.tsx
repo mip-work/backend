@@ -2,11 +2,11 @@ import { FieldError, FieldValues, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
 import InputWithValidation from '../util/InputWithValidation';
-import { useAuthUserQuery } from '../../api/endpoints/auth.endpoint';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { APIERROR } from '../../api/apiTypes';
-import axiosDf from '../../api/axios';
+import { mipAPI } from '../../api/axios';
 import toast from 'react-hot-toast';
+import { useUser } from '../../hooks/useUser';
 
 function Adios() {
   const {
@@ -14,21 +14,24 @@ function Adios() {
     formState: { errors, isSubmitting: loading },
     handleSubmit,
   } = useForm();
-  const { data: authUser, error } = useAuthUserQuery();
+  const { useGetUser } = useUser()
+  const { data: authUser } = useGetUser()
   const [submitError, setSubmitError] = useState('');
   const navigate = useNavigate();
+  const { useDeleteUser } = useUser()
+  const deleteUser = useDeleteUser()
+  
+  if (authUser?.status === 401) return <Navigate to='/login' />;
 
-  if (error && (error as APIERROR).status === 401) return <Navigate to='/login' />;
+  if (!authUser?.data) return null;
 
-  if (!authUser) return null;
-
-  const name = authUser.username;
+  const name = authUser.data.data.username;
 
   const onSubmit = async (form: FieldValues) => {
     setSubmitError('');
     if (form.name.trim() !== name) return setSubmitError("the name doesn't match");
     try {
-      await deleteACC(form);
+      await deleteUser.mutateAsync();
       toast('Your account is deleted!');
       navigate('/login');
     } catch (error) {
@@ -90,10 +93,3 @@ function Adios() {
 }
 
 export default Adios;
-
-const deleteACC = async (body: FieldValues) => {
-  const result = await axiosDf.post('api/user/authUser/delete', body, {
-    withCredentials: true,
-  });
-  return result.data;
-};

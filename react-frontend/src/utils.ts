@@ -25,9 +25,17 @@ export const types = [
 ];
 
 export const priorities = [
-  { text: 'Lowest', icon: '/assets/lowest.svg', value: 0 },
-  { text: 'Low', icon: '/assets/low.svg', value: 1 },
-  { text: 'Medium', icon: '/assets/medium.svg', value: 2 },
-  { text: 'High', icon: '/assets/high.svg', value: 3 },
-  { text: 'Highest', icon: '/assets/highest.svg', value: 4 },
+  { text: "Lowest", icon: "/assets/lowest.svg", value: 0 },
+  { text: "Low", icon: "/assets/low.svg", value: 1 },
+  { text: "Medium", icon: "/assets/medium.svg", value: 2 },
+  { text: "High", icon: "/assets/high.svg", value: 3 },
+  { text: "Highest", icon: "/assets/highest.svg", value: 4 },
+];
+
+export const progresses = [
+  { text: "0%", value: 0 },
+  { text: "25%", value: 25 },
+  { text: "50%", value: 50 },
+  { text: "75%", value: 75 },
+  { text: "100% ", value: 100 },
 ];

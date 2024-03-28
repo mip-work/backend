@@ -15,6 +15,8 @@ export interface List {
   name: string;
   order: number;
   projectId: number;
+  parentId: string;
+  data?: any
 }
 
 export interface CreateList {
@@ -38,6 +40,7 @@ export interface Issue {
   abbreviationProject: string;
   type: number;
   priority: number;
+  progress: number;
   order: number;
   listId: number;
   reporterId: number;
@@ -131,11 +134,12 @@ export interface dndOrderData {
 
 export interface CreateIssue {
   id?: number;
-  type: number;
+  type: null | { id: string; value: number };
   reporterId: number | null;
   assignees: number[];
-  listId: number | null;
-  priority: number;
+  listId: null | { id: string; value: number; };
+  priority: null | { id: string; value: number };
+  progress: number;
   summary: string;
   descr: string;
   createdAt?: string;
@@ -151,6 +155,7 @@ export type UpdateIssueType =
   | 'priority'
   | 'listId'
   | 'addAssignee'
+  | 'progress'  
   | 'removeAssignee';
 
 export interface UpdateIssue {

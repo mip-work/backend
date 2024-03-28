@@ -1,6 +1,6 @@
 import { FieldValues, useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-import axiosDf from '../../api/axios';
+import { mipAPI } from '../../api/axios';
 import SS from '../util/SpinningCircle';
 import Form from './Form';
 
@@ -8,13 +8,27 @@ interface Props {
   type: 'LOGIN' | 'REGISTER';
 }
 
-const Welcome = (props: Props) => {
-  const isLogin = props.type === 'LOGIN';
+export interface IDataRegisterUser {
+  email: string;
+  username: string;
+  pwd: string;
+  repeatPwd: string;
+}
+
+export interface IDataLoginUser {
+  email: string;
+  pwd: string;
+}
+
+export type DataUser = IDataRegisterUser & IDataLoginUser;
+
+const Welcome = ({ type }: Props) => {
+  const isLogin = type === 'LOGIN';
   const {
     register,
     formState: { errors, isSubmitting: loading, isSubmitSuccessful: success },
     handleSubmit,
-  } = useForm();
+  } = useForm<DataUser>();
   const isLoading = loading && !success;
 
   return ( 
@@ -43,7 +57,6 @@ const Welcome = (props: Props) => {
             <h3 className='mb-5 text-center text-[15px] text-gray-600 animate-[scaleKey_1.5s_ease-in-out]'>Free for testing</h3>
             <Form
               type={isLogin ? 'LOGIN' : 'SIGNUP'}
-              onSubmit={isLogin ? logIn : registerUser}
               {...{ errors, handleSubmit, register, loading }}
             />
             <div className='flex items-center'>
@@ -65,13 +78,3 @@ const Welcome = (props: Props) => {
 };
 
 export default Welcome;
-
-const logIn = async (body: FieldValues) => {
-  const result = await axiosDf.post('auth/login', body);
-  return result.data;
-};
-
-const registerUser = async (body: FieldValues) => {
-  const result = await axiosDf.post('auth/register', body);
-  return result.data;
-};

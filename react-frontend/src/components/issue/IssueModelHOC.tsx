@@ -1,35 +1,36 @@
 import { FC } from 'react';
 import { useParams } from 'react-router-dom';
-import { selectLists } from '../../api/endpoints/lists.endpoint';
-import { selectMembers } from '../../api/endpoints/member.endpoint';
-import { types, priorities } from '../../utils';
+import { types, priorities, progresses } from '../../utils';
 import { Category } from '../util/DropDown';
+import { useList } from '../../hooks/useList';
+import { useMember } from '../../hooks/useMember';
 
 export type IssueMetaData = { listIdx: number; listId: number; idx: number };
 
 interface Props {
   onClose: () => void;
-  children: FC<IssueModalProps>;
+  children: any;
   issue?: IssueMetaData;
 }
 
-const IssueModelHOC = (props: Props) => {
-  const projectId = Number(useParams().projectId);
-  const { children: Component, ...PROPS } = props;
-  const { members: apiMembers } = selectMembers(projectId);
-  const { lists: apiLists } = selectLists(projectId);
+const IssueModelHOC = ({ children: Component, ...PROPS }: Props) => {
+  const projectId = useParams().projectId;
+  const { useGetAllMembers } = useMember()
+  const { data: apiMembers } = useGetAllMembers(projectId)
+  const { useGetAllList } = useList()
+  const { data } = useGetAllList(projectId)
 
   const members = apiMembers
-    ? (apiMembers.map(({ username: u, profileUrl: p, userId }) => ({
+    ? (apiMembers.data.data.map(({ username: u, profileUrl: p, userId }: any) => ({
         text: u,
         icon: p,
         value: userId,
       })) as Category[])
     : [];
-  const lists = apiLists
-    ? (apiLists.map(({ id, name }) => ({
+  const lists = data
+    ? (data?.data.data.map(({ id, name }: any) => ({
         text: name,
-        value: id,
+        id,
       })) as Category[])
     : [];
 
@@ -41,6 +42,7 @@ const IssueModelHOC = (props: Props) => {
         members,
         types,
         priorities,
+        progresses
       }}
       {...PROPS}
     />
@@ -56,5 +58,6 @@ export interface IssueModalProps {
   lists: Category[];
   types: Category[];
   priorities: Category[];
+  progresses: Category[];
   onClose: () => void;
 }

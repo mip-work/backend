@@ -8,7 +8,7 @@ import {
   Patch,
   Post,
   Query,
-  Res,
+  Res,Req,
   UseGuards,
 } from '@nestjs/common';
 import { ListServices } from '../services/list.services';
@@ -18,6 +18,7 @@ import { AuthGuard } from 'src/modules/auth/guards/auth.guard';
 import { PermissionGuard } from 'src/guards/permission.guard';
 import { MemberGuard } from 'src/guards/member.guard';
 import { CreateListDtoReq } from '../dtos/requests/create-list-req.dto';
+import { UpdateListDTO } from '../dtos/requests/update-list-dto';
 
 @ApiTags('List')
 @UseGuards(AuthGuard)

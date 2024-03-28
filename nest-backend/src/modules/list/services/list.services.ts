@@ -72,6 +72,7 @@ export class ListServices {
     lists.splice(listIndex, 1);
 
     if (!child) {
+      await this.listRepository.delete(id)
       return;
     }
     child.parentId = list.parentId;

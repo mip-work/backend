@@ -1,11 +1,13 @@
 import { Icon } from "@iconify/react";
-import { selectMembers } from "../../api/endpoints/member.endpoint";
 import { useParams } from "react-router-dom";
 import Avatar from "../util/Avatar";
+import { useMember } from "../../hooks/useMember";
 
 const Members = () => {
-  const projectId = Number(useParams().projectId);
-  const { members } = selectMembers(projectId);
+  const projectId = useParams().projectId;
+  const { useGetAllMembers } = useMember()
+  const { data: members } = useGetAllMembers(projectId)
+
 
   function admin(admin: any) {
     if (admin) {
@@ -47,7 +49,7 @@ const Members = () => {
         <hr className="my-5 border-t-[.5px] border-gray-300" />
 
         {members &&
-          members.map(
+          members.data.data.map(
             ({ id, userId, username, email, isAdmin, profileUrl }) => (
               <div key={id}>
                 <div className="flex min-w-0 items-center justify-between gap-x-4">

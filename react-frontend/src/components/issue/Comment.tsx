@@ -16,6 +16,7 @@ function Comment(props: Props) {
   const [deleteCmt] = useDeleteCmtMutation();
   const isMine = u.id === userId;
 
+
   return (
     <>
       <li className='mb-6 flex items-start gap-3'>

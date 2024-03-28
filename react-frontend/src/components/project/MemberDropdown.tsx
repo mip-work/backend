@@ -1,17 +1,18 @@
 import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { selectMembers } from "../../api/endpoints/member.endpoint";
 import { useParams } from "react-router-dom";
 import Avatar from "../util/Avatar";
+import { useMember } from "../../hooks/useMember";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function MembersDropdown() {
-  const projectId = Number(useParams().projectId);
-  const { members } = selectMembers(projectId);
+  const projectId = useParams().projectId;
+  const { useGetAllMembers } = useMember()
+  const { data: members } = useGetAllMembers(projectId)
 
   return (
     <Menu as="div" className="relative inline-block text-left">
@@ -37,7 +38,7 @@ export default function MembersDropdown() {
         <Menu.Items className="absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="py-1">
             {members &&
-              members.map(({ id, userId, username, profileUrl }) => (
+              members.data.data.map(({ id, userId, username, profileUrl }) => (
                 <Menu.Item key={id}>
                   {({ active }) => (
                     <div

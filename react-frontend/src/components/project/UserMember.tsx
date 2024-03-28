@@ -1,8 +1,8 @@
 import { Icon } from '@iconify/react';
 import toast from 'react-hot-toast';
 import { PublicUser } from '../../api/apiTypes';
-import { useAddMemberMutation } from '../../api/endpoints/member.endpoint';
 import Avatar from '../util/Avatar';
+import { useMember } from '../../hooks/useMember';
 
 interface Props extends PublicUser {
   added: boolean;
@@ -10,9 +10,10 @@ interface Props extends PublicUser {
   setInput: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const UserMember = (props: Props) => {
-  const { id, username, email, profileUrl, added, projectId, setInput } = props;
+const UserMember = ({ id, username, email, profileUrl, added, projectId, setInput }: Props) => {
   const [addMember] = useAddMemberMutation();
+  const { useCreateMember } = useMember();
+  const createMember = useCreateMember(projectId)
 
   const handleAddMember = async () => {
     if (added) return;

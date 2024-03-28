@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom';
 import DraggableWrapper from '../dnd/DraggableWrapper';
 import { Issue as JiraIssue } from '../../api/apiTypes';
 import { types, priorities } from '../../utils';
-import { selectMembers } from '../../api/endpoints/member.endpoint';
 import AssignedMembers from './AssignedMembers';
+import { useMember } from '../../hooks/useMember';
 const IssueModelHOC = lazy(() => import('./IssueModelHOC'));
 const IssueDetailModal = lazy(() => import('./IssueDetailModal'));
 
@@ -12,8 +12,9 @@ const Issue = (props: Props) => {
   const { listId, listIdx, idx, summary, id, type, priority, assignees, comments, isDragDisabled } =
     props;
   const [isOpen, setIsOpen] = useState(false);
-  const projectId = Number(useParams().projectId);
-  const { members } = selectMembers(projectId);
+  const projectId = useParams().projectId;
+  const { useGetAllMembers } = useMember()
+  const { data: members } = useGetAllMembers(projectId)
   const { icon, text } = priorities[priority];
 
   if (!members) return null;
